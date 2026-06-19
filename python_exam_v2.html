@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Foundations — CBT Exam</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --purple:#534AB7;--purple-light:#EEEDFE;--purple-mid:#7F77DD;--purple-dark:#3C3489;
+  --teal:#0F6E56;--teal-light:#E1F5EE;
+  --red:#A32D2D;--red-light:#FCEBEB;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --gray-50:#F8F8F7;--gray-100:#F1EFE8;--gray-200:#D3D1C7;
+  --gray-400:#888780;--gray-600:#5F5E5A;--gray-900:#1A1A18;
+  --border:#E2E0D8;--radius:10px;--radius-lg:14px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F4F0;color:var(--gray-900);min-height:100vh}
+.shell{max-width:740px;margin:0 auto;padding:2rem 1rem 4rem}
+.screen{display:none}.screen.active{display:block}
+
+/* START */
+.start-hero{text-align:center;padding:3rem 1rem 2rem}
+.start-icon{width:64px;height:64px;background:var(--purple-light);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
+.start-icon svg{width:32px;height:32px;color:var(--purple)}
+.start-title{font-size:26px;font-weight:600;margin-bottom:8px}
+.start-sub{font-size:15px;color:var(--gray-600);line-height:1.6;max-width:420px;margin:0 auto 2rem}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 auto 2rem;max-width:520px}
+.info-box{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:14px 10px;text-align:center}
+.info-num{font-size:22px;font-weight:700;color:var(--purple)}
+.info-lbl{font-size:11px;color:var(--gray-600);margin-top:2px}
+.name-wrap{max-width:320px;margin:0 auto 1.5rem;text-align:left}
+.name-wrap label{font-size:13px;font-weight:500;color:var(--gray-600);display:block;margin-bottom:6px}
+.name-wrap input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:15px;background:white;color:var(--gray-900);outline:none}
+.name-wrap input:focus{border-color:var(--purple-mid);box-shadow:0 0 0 3px rgba(83,74,183,.1)}
+.rules-box{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;max-width:420px;margin:0 auto 2rem;text-align:left}
+.rule{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--gray-600);padding:4px 0;line-height:1.5}
+.rule-dot{width:6px;height:6px;background:var(--purple);border-radius:50%;margin-top:6px;flex-shrink:0}
+.btn-start{background:var(--purple);color:white;border:none;padding:12px 36px;border-radius:var(--radius);font-size:15px;font-weight:500;cursor:pointer;transition:background .15s}
+.btn-start:hover{background:var(--purple-dark)}
+
+/* EXAM HEADER */
+.exam-header{display:flex;justify-content:space-between;align-items:center;background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.hd-title{font-size:15px;font-weight:600}.hd-sub{font-size:12px;color:var(--gray-600);margin-top:2px}
+.timer-pill{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;padding:7px 14px;border-radius:999px;background:var(--gray-100);border:1px solid var(--border);transition:all .3s}
+.timer-pill svg{width:16px;height:16px}
+.timer-pill.warn{background:var(--amber-light);border-color:#FAC775;color:var(--amber)}
+.timer-pill.danger{background:var(--red-light);border-color:#F7C1C1;color:var(--red)}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:1rem}
+.progress-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-600);margin-bottom:6px}
+.progress-track{height:4px;background:var(--gray-200);border-radius:2px}
+.progress-bar{height:4px;background:var(--purple);border-radius:2px;transition:width .3s}
+
+/* Q GRID */
+.q-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-bottom:1rem;background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
+.q-dot{aspect-ratio:1;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;cursor:pointer;color:var(--gray-600);transition:all .15s}
+.q-dot:hover{border-color:var(--purple-mid);color:var(--purple)}
+.q-dot.answered{background:var(--purple);border-color:var(--purple);color:white}
+.q-dot.current{border-color:var(--purple);color:var(--purple);font-weight:700}
+.q-dot.answered.current{background:var(--purple-dark)}
+.q-dot.fill-done{background:#6BA6E0;border-color:#4A8AC4;color:white}
+.q-dot.code-done{background:#9B59B6;border-color:#7D3C98;color:white}
+
+/* Q CARD */
+.q-card{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1rem}
+.q-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--purple);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.badge-mcq{font-size:10px;padding:2px 8px;border-radius:999px;background:var(--purple-light);color:var(--purple);font-weight:600;text-transform:none;letter-spacing:0}
+.badge-fill{font-size:10px;padding:2px 8px;border-radius:999px;background:#E1F5EE;color:#0F6E56;font-weight:600;text-transform:none;letter-spacing:0}
+.badge-code{font-size:10px;padding:2px 8px;border-radius:999px;background:#F3E8FF;color:#7D3C98;font-weight:600;text-transform:none;letter-spacing:0}
+.q-text{font-size:15px;color:var(--gray-900);line-height:1.65;margin-bottom:1rem}
+.q-text code{font-family:'Courier New',monospace;font-size:13px;background:var(--gray-100);padding:1px 5px;border-radius:4px}
+.code-block{font-family:'Courier New',monospace;font-size:13px;background:#1E1E2E;color:#CDD6F4;border-radius:var(--radius);padding:14px 16px;margin-bottom:1rem;line-height:1.8;white-space:pre;overflow-x:auto}
+.code-block .blank{background:#45475A;border-bottom:2px solid #89B4FA;padding:0 6px;border-radius:3px;color:#89B4FA;font-style:italic}
+
+/* MCQ */
+.options{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s}
+.opt:hover{border-color:var(--purple-mid);background:var(--purple-light)}
+.opt.selected{border-color:var(--purple);background:var(--purple-light)}
+.opt-key{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;color:var(--gray-600)}
+.opt.selected .opt-key{background:var(--purple);border-color:var(--purple);color:white}
+.opt-text{font-size:14px;color:var(--gray-900);line-height:1.5}
+.opt-text code{font-family:'Courier New',monospace;font-size:12px;background:var(--gray-100);padding:1px 4px;border-radius:3px}
+
+/* FILL INPUT */
+.fill-wrap{margin-top:.5rem}
+.fill-label{font-size:13px;color:var(--gray-600);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fill-input{width:100%;font-family:'Courier New',monospace;font-size:14px;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius);background:#F8F8FC;color:var(--gray-900);outline:none;transition:border-color .15s}
+.fill-input:focus{border-color:var(--purple-mid);box-shadow:0 0 0 3px rgba(83,74,183,.1)}
+.fill-input.correct{border-color:#1D9E75;background:#F0FFF9}
+.fill-input.wrong{border-color:#E24B4A;background:#FFF5F5}
+.fill-hint{font-size:12px;margin-top:6px;padding:6px 10px;border-radius:6px;display:none}
+.fill-hint.show{display:block}
+.fill-hint.correct{background:var(--teal-light);color:var(--teal)}
+.fill-hint.wrong{background:var(--red-light);color:var(--red)}
+
+/* CODE WRITE TEXTAREA */
+.code-write-wrap{margin-top:.5rem}
+.code-write-label{font-size:13px;color:var(--gray-600);margin-bottom:8px;display:flex;align-items:center;gap:6px;font-weight:500}
+.code-textarea{width:100%;font-family:'Courier New',monospace;font-size:13px;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);background:#1E1E2E;color:#CDD6F4;outline:none;resize:vertical;min-height:160px;line-height:1.8;transition:border-color .15s;tab-size:4}
+.code-textarea:focus{border-color:var(--purple-mid);box-shadow:0 0 0 3px rgba(83,74,183,.15)}
+.code-textarea.has-content{border-color:#9B59B6}
+.code-note{font-size:11px;color:var(--gray-400);margin-top:5px;display:flex;align-items:center;gap:4px}
+.ai-grading-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 10px;border-radius:999px;background:#F3E8FF;color:#7D3C98;border:1px solid #D7AEEE;margin-top:6px}
+
+/* NAV */
+.nav-bar{display:flex;justify-content:space-between;align-items:center}
+.btn{padding:9px 20px;border-radius:var(--radius);border:1px solid var(--border);background:white;font-size:14px;font-weight:500;cursor:pointer;color:var(--gray-900);transition:all .15s;display:flex;align-items:center;gap:6px}
+.btn:hover{background:var(--gray-100)}
+.btn-primary{background:var(--purple);border-color:var(--purple);color:white}
+.btn-primary:hover{background:var(--purple-dark);border-color:var(--purple-dark)}
+.btn-submit{background:#C0392B;border-color:#C0392B;color:white}
+.btn-submit:hover{background:#922B21;border-color:#922B21}
+
+/* RESULTS */
+.result-hero{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1rem}
+.score-display{display:flex;align-items:flex-end;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.score-big{font-size:64px;font-weight:700;color:var(--purple);line-height:1}
+.score-fraction{font-size:18px;font-weight:600}
+.score-name{font-size:14px;color:var(--gray-600);margin-top:2px}
+.grade-badge{display:inline-flex;align-items:center;padding:4px 14px;border-radius:999px;font-size:13px;font-weight:600;margin-top:4px}
+.grade-pass{background:var(--teal-light);color:var(--teal)}
+.grade-fail{background:var(--red-light);color:var(--red)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+.stat-box{background:var(--gray-50);border-radius:var(--radius);padding:12px;text-align:center;border:1px solid var(--border)}
+.stat-n{font-size:22px;font-weight:600}
+.stat-l{font-size:11px;color:var(--gray-600);margin-top:2px}
+.email-status{padding:10px 14px;border-radius:var(--radius);background:var(--gray-100);font-size:13px;color:var(--gray-600);display:flex;align-items:center;gap:8px}
+.email-status svg{width:16px;height:16px;flex-shrink:0}
+.email-status.sending{color:var(--purple);background:var(--purple-light)}
+.email-status.sent{color:var(--teal);background:var(--teal-light)}
+.email-status.error{color:var(--red);background:var(--red-light)}
+
+/* REVIEW */
+.review-section{background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-top:1rem}
+.review-title{font-size:16px;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.review-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.review-item:last-child{border-bottom:none}
+.review-q{font-size:13px;color:var(--gray-900);margin-bottom:6px;line-height:1.5;font-weight:500}
+.review-ans{font-size:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;flex-direction:column}
+.rbadge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:500;display:inline-block}
+.rb-correct{background:var(--teal-light);color:var(--teal)}
+.rb-wrong{background:var(--red-light);color:var(--red)}
+.rb-skip{background:var(--gray-100);color:var(--gray-600)}
+.rb-answer{background:var(--purple-light);color:var(--purple)}
+.rb-partial{background:#FFF3CD;color:#856404}
+.review-code-block{font-family:'Courier New',monospace;font-size:12px;background:#1E1E2E;color:#CDD6F4;border-radius:8px;padding:10px 12px;margin-top:6px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.review-code-block.model-ans{background:#0D2418;color:#A8E6CF;border:1px solid #1D9E75}
+.ai-verdict{font-size:12px;padding:8px 12px;border-radius:8px;margin-top:6px;line-height:1.6}
+.ai-verdict.correct{background:var(--teal-light);color:var(--teal)}
+.ai-verdict.partial{background:#FFF3CD;color:#856404}
+.ai-verdict.wrong{background:var(--red-light);color:var(--red)}
+.ai-verdict.pending{background:var(--purple-light);color:var(--purple)}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:.75rem}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gray-600)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+
+/* LOADING OVERLAY */
+#grading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
+#grading-overlay.show{display:flex}
+.grading-card{background:white;border-radius:var(--radius-lg);padding:2rem 2.5rem;text-align:center;max-width:340px}
+.grading-spinner{width:36px;height:36px;border:3px solid var(--purple-light);border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.grading-title{font-size:16px;font-weight:600;margin-bottom:4px}
+.grading-sub{font-size:13px;color:var(--gray-600)}
+
+svg{display:inline-block;vertical-align:middle}
+@media(max-width:500px){.q-grid{grid-template-columns:repeat(8,1fr)}.stats-row{grid-template-columns:repeat(2,1fr)}.info-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- START -->
+<div id="start-screen" class="screen active">
+  <div class="start-hero">
+    <div class="start-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="10" y1="13" x2="10" y2="17"/><line x1="14" y1="13" x2="14" y2="17"/><line x1="8" y1="15" x2="16" y2="15"/></svg></div>
+    <div class="start-title">Python Foundations — CBT Exam</div>
+    <div class="start-sub">Variables · Data Types · Operators · Input/Output · Conditionals · Loops</div>
+    <div class="info-grid">
+      <div class="info-box"><div class="info-num">40</div><div class="info-lbl">Questions</div></div>
+      <div class="info-box"><div class="info-num">50</div><div class="info-lbl">Minutes</div></div>
+      <div class="info-box"><div class="info-num">12</div><div class="info-lbl">Fill-in-blank</div></div>
+      <div class="info-box"><div class="info-num">4</div><div class="info-lbl">Write code</div></div>
+    </div>
+    <div class="name-wrap">
+      <label for="sname">Your full name</label>
+      <input type="text" id="sname" placeholder="e.g. Amara Johnson" autocomplete="off"/>
+    </div>
+    <div class="rules-box">
+      <div class="rule"><div class="rule-dot"></div>24 multiple-choice — select the best answer</div>
+      <div class="rule"><div class="rule-dot"></div>12 fill-in-the-blank — type the missing line exactly</div>
+      <div class="rule"><div class="rule-dot"></div>4 write-the-code — write a complete Python solution</div>
+      <div class="rule"><div class="rule-dot"></div>Timer auto-submits at 50 minutes</div>
+      <div class="rule"><div class="rule-dot"></div>Full score + correction shown immediately after submit</div>
+      <div class="rule"><div class="rule-dot"></div>Results sent to your teacher automatically</div>
+    </div>
+    <button class="btn-start" onclick="startExam()">Start exam &rarr;</button>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div id="exam-screen" class="screen">
+  <div class="exam-header">
+    <div><div class="hd-title">Python Foundations Exam</div><div class="hd-sub" id="q-counter">Question 1 of 40</div></div>
+    <div class="timer-pill" id="timer-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span id="timer-text">50:00</span>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-meta"><span id="prog-answered">0 answered</span><span id="prog-remain">40 remaining</span></div>
+    <div class="progress-track"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
+  </div>
+  <div class="q-grid" id="q-grid"></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>MCQ answered</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#6BA6E0"></div>Fill-in done</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9B59B6"></div>Code written</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--border)"></div>Not answered</div>
+  </div>
+  <div id="q-area"></div>
+  <div class="nav-bar">
+    <button class="btn" onclick="goQ(current-1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Previous</button>
+    <button class="btn btn-submit" onclick="confirmSubmit()">Submit exam</button>
+    <button class="btn btn-primary" onclick="goQ(current+1)">Next <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="result-screen" class="screen">
+  <div id="result-content"></div>
+</div>
+
+</div>
+
+<!-- GRADING OVERLAY -->
+<div id="grading-overlay">
+  <div class="grading-card">
+    <div class="grading-spinner"></div>
+    <div class="grading-title">Grading your exam...</div>
+    <div class="grading-sub" id="grading-sub">Checking written code answers with AI</div>
+  </div>
+</div>
+
+<script>
+emailjs.init('SWB27gqq5Qq3WmwIY');
+
+/* ═══════════════════════════════════════════════════════
+   QUESTION BANK  (24 MCQ + 12 FILL + 4 CODE = 40)
+═══════════════════════════════════════════════════════ */
+const QUESTIONS = [
+// ── MCQ 1-24 ──────────────────────────────────────────
+{type:'mcq',q:'What is the correct way to store a student\'s name in a Python variable?',opts:['name = Amara','name = "Amara"','"Amara" = name','var name = "Amara"'],ans:1},
+{type:'mcq',q:'Which of the following is a valid Python variable name?',opts:['2score','first name','_total_marks','class'],ans:2},
+{type:'mcq',q:'What data type does Python assign to the value <code>3.14</code>?',opts:['int','str','float','bool'],ans:2},
+{type:'mcq',q:'What will <code>type(True)</code> output?',opts:["<class 'str'>","<class 'int'>","<class 'bool'>","<class 'float'>"],ans:2},
+{type:'mcq',q:'A market trader stores an item price of ₦450.50. Which data type is most appropriate?',opts:['int','bool','str','float'],ans:3},
+{type:'mcq',q:'What does the <code>%</code> operator return?',opts:['The result of integer division','The remainder after division','The percentage of a number','The power of a number'],ans:1},
+{type:'mcq',q:'What will <code>print(10 ** 3)</code> output?',opts:['30','13','1000','100'],ans:2},
+{type:'mcq',q:'What will <code>print(17 // 5)</code> output?',opts:['3.4','3','2','12'],ans:1},
+{type:'mcq',q:'What does <code>input()</code> always return, regardless of what the user types?',opts:['An integer','A float','A string','A boolean'],ans:2},
+{type:'mcq',q:'A student writes this code. What is the problem?',code:'age = input("Enter age: ")\nnext_year = age + 1',opts:['Nothing is wrong','input() returns a string — you cannot add 1 directly','print() is missing','Variables cannot be called age'],ans:1},
+{type:'mcq',q:'Which f-string correctly embeds the variable <code>score</code> into a sentence?',opts:['f"Your score is (score)"','f"Your score is {score}"','"Your score is " + {score}','f"Your score is $score"'],ans:1},
+{type:'mcq',q:'What does <code>str(95)</code> do?',opts:['Converts "95" into the integer 95','Converts the integer 95 into the string "95"','Checks if 95 is a string','Raises a TypeError'],ans:1},
+{type:'mcq',q:'What will the following code print?',code:'x = 5\nif x > 3:\n    print("Big")\nelse:\n    print("Small")',opts:['Small','Big','Nothing','Error'],ans:1},
+{type:'mcq',q:'A student earns 73 marks. Which grade is printed?',code:'score = 73\nif score >= 90:\n    print("A")\nelif score >= 80:\n    print("B")\nelif score >= 70:\n    print("C")\nelse:\n    print("F")',opts:['A','B','C','F'],ans:2},
+{type:'mcq',q:'What is the purpose of <code>elif</code> in a conditional statement?',opts:['It ends the if block','It checks another condition when all previous ones were False','It is identical to else','It creates a loop'],ans:1},
+{type:'mcq',q:'Which operator checks if two values are NOT equal?',opts:['==','>=','!=','<='],ans:2},
+{type:'mcq',q:'What will <code>print(20 >= 18 and True)</code> output?',opts:['False','True','Error','None'],ans:1},
+{type:'mcq',q:'What does <code>not True</code> evaluate to?',opts:['True','False','None','Error'],ans:1},
+{type:'mcq',q:'How many times does the loop body execute?',code:'for i in range(5):\n    print(i)',opts:['4','5','6','0'],ans:1},
+{type:'mcq',q:'What sequence does <code>range(1, 6)</code> produce?',opts:['0, 1, 2, 3, 4, 5','1, 2, 3, 4, 5, 6','1, 2, 3, 4, 5','1, 2, 3, 4'],ans:2},
+{type:'mcq',q:'What is the purpose of the <code>break</code> statement inside a loop?',opts:['Skips the current iteration and moves to the next','Exits the loop immediately','Restarts the loop from the beginning','Pauses the program'],ans:1},
+{type:'mcq',q:'What does <code>continue</code> do in a loop?',opts:['Exits the entire loop','Skips the rest of the current iteration and goes to the next','Stops the program','Does nothing'],ans:1},
+{type:'mcq',q:'What will this while loop print?',code:'count = 1\nwhile count <= 3:\n    print(count)\n    count += 1',opts:['1 2 3 4','1 2 3','0 1 2 3','Runs forever'],ans:1},
+{type:'mcq',q:'A student forgets to increment the counter in a while loop. What happens?',opts:['The loop never runs','The loop runs once then stops','The loop runs forever — infinite loop','Python raises a SyntaxError'],ans:2},
+
+// ── FILL 25-36 ─────────────────────────────────────────
+{type:'fill',q:'Complete the code so it prints: <code>Hello, Amara!</code>',code:'name = "Amara"\nprint(______)',ans:'f"Hello, {name}!"',alts:["f'Hello, {name}!'",'"Hello, " + name + "!"'],hint:'Use an f-string with the variable inside curly braces.'},
+{type:'fill',q:'Fill in the blank so <code>age</code> is stored as an integer from user input.',code:'______\nprint(age + 1)',ans:'age = int(input("Enter your age: "))',alts:['age = int(input())','age=int(input("Enter your age: "))','age = int(input("Enter age: "))'],hint:'Use int() to convert what input() returns.'},
+{type:'fill',q:'Complete the blank so this prints the remainder when 17 is divided by 5.',code:'print(______)',ans:'17 % 5',alts:['17%5'],hint:'Use the modulus operator %.'},
+{type:'fill',q:'Fill in the blank to complete the grade check so scores of 70+ print "C".',code:'score = 73\nif score >= 90:\n    print("A")\nelif score >= 80:\n    print("B")\n______:\n    print("C")',ans:'elif score >= 70',alts:['elif score>=70'],hint:'You need another elif checking if score is at least 70.'},
+{type:'fill',q:'Complete the loop so it prints even numbers from 2 to 10 inclusive.',code:'for i in ______:\n    print(i)',ans:'range(2, 11, 2)',alts:['range(2,11,2)'],hint:'range(start, stop, step) — stop is exclusive, step is 2.'},
+{type:'fill',q:'Fill in the blank so the loop exits as soon as it finds "butter".',code:'items = ["milk","bread","butter","eggs"]\nfor item in items:\n    if item == "butter":\n        ______',ans:'break',alts:[],hint:'One keyword immediately exits the loop.'},
+{type:'fill',q:'Complete the blank so the loop skips even numbers and only prints odd ones.',code:'for i in range(1, 11):\n    if i % 2 == 0:\n        ______\n    print(i)',ans:'continue',alts:[],hint:'One keyword skips the rest of the current iteration.'},
+{type:'fill',q:'Fill in the blank so the while loop counts from 1 to 5 without running forever.',code:'count = 1\nwhile count <= 5:\n    print(count)\n    ______',ans:'count += 1',alts:['count=count+1','count +=1','count+= 1'],hint:'Increase count by 1 each time.'},
+{type:'fill',q:'Complete the blank so price is stored as a decimal number from user input.',code:'______\nprint(f"Price is ₦{price:.2f}")',ans:'price = float(input("Enter price: "))',alts:['price = float(input())','price=float(input("Enter price: "))'],hint:'Use float() to convert input to a decimal.'},
+{type:'fill',q:'Fill in the blank so the f-string correctly shows both name and score.',code:'name = "Temi"\nscore = 88\nprint(______)',ans:'f"{name} scored {score}"',alts:["f'{name} scored {score}'"],hint:'Inside the f-string, wrap each variable in curly braces.'},
+{type:'fill',q:'Complete the assignment operator so x becomes 24 (x is currently 12).',code:'x = 12\n______',ans:'x *= 2',alts:['x=x*2','x = x * 2'],hint:'Use the *= compound assignment operator.'},
+{type:'fill',q:'Fill in the blank to complete the nested condition correctly.',code:'has_ticket = True\nage = 17\nif has_ticket:\n    ______:\n        print("Welcome!")\n    else:\n        print("Too young.")',ans:'if age >= 18',alts:['if age>=18'],hint:'You need a second if checking the age threshold.'},
+
+// ── CODE-WRITE 37-40 ────────────────────────────────────
+{type:'code',
+ q:'Write a Python program that asks the user for their name and age. If the age is 18 or older, print: <code>Welcome, [name]! You are an adult.</code> Otherwise print: <code>Sorry, [name]. You must be 18 to enter.</code>',
+ modelAns:`name = input("Enter your name: ")
+age = int(input("Enter your age: "))
+if age >= 18:
+    print(f"Welcome, {name}! You are an adult.")
+else:
+    print(f"Sorry, {name}. You must be 18 to enter.")`,
+ rubric:'Uses input(), converts age to int, uses if/else, prints correct message with name using f-string or concatenation'},
+
+{type:'code',
+ q:'Write a Python program that uses a <code>for</code> loop to print the 5 times table from 5×1 to 5×10. Each line should look like: <code>5 x 1 = 5</code>',
+ modelAns:`for i in range(1, 11):
+    result = 5 * i
+    print(f"5 x {i} = {result}")`,
+ rubric:'Uses for loop with range(1,11), calculates 5*i, prints in correct format'},
+
+{type:'code',
+ q:'Write a Python program that asks the user to enter numbers one by one. The program should keep asking until the user types <code>done</code>. At the end, print the total sum of all numbers entered.',
+ modelAns:`total = 0
+while True:
+    entry = input("Enter a number (or 'done' to stop): ")
+    if entry == "done":
+        break
+    total += float(entry)
+print(f"Total: {total}")`,
+ rubric:'Uses while loop, input inside loop, break on "done", accumulates total, prints sum'},
+
+{type:'code',
+ q:'Write a Python program that stores a list of 5 student scores. Loop through the list and print each score. Then print the highest score using the <code>max()</code> function.',
+ modelAns:`scores = [72, 88, 65, 91, 78]
+for score in scores:
+    print(score)
+print(f"Highest score: {max(scores)}")`,
+ rubric:'Creates a list with at least 3 scores, uses for loop to iterate and print, uses max() to find highest'},
+];
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+let current = 0;
+let mcqAnswers  = new Array(40).fill(null);
+let fillAnswers = new Array(40).fill('');
+let codeAnswers = new Array(40).fill('');
+let studentName = '';
+let timerInterval, secondsLeft = 50*60, submitted = false;
+let codeGrades = {}; // idx -> {score:0-2, feedback:''}
+
+/* ═══════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════ */
+function startExam(){
+  studentName = document.getElementById('sname').value.trim();
+  if(!studentName){alert('Please enter your name before starting.');return;}
+  document.getElementById('start-screen').classList.remove('active');
+  document.getElementById('exam-screen').classList.add('active');
+  buildGrid(); renderQ(); startTimer();
+}
+
+function startTimer(){
+  updateTimer();
+  timerInterval = setInterval(()=>{secondsLeft--;updateTimer();if(secondsLeft<=0){clearInterval(timerInterval);submitExam(true);}},1000);
+}
+
+function updateTimer(){
+  const m=Math.floor(secondsLeft/60),s=secondsLeft%60;
+  document.getElementById('timer-text').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const p=document.getElementById('timer-pill');
+  p.className='timer-pill';
+  if(secondsLeft<=300)p.classList.add('danger');
+  else if(secondsLeft<=600)p.classList.add('warn');
+}
+
+/* ═══════════════════════════════════════════
+   GRID
+═══════════════════════════════════════════ */
+function buildGrid(){
+  const g=document.getElementById('q-grid');g.innerHTML='';
+  let answeredCount=0;
+  for(let i=0;i<40;i++){
+    const q=QUESTIONS[i];
+    const d=document.createElement('div');
+    let cls='q-dot';
+    if(i===current)cls+=' current';
+    if(q.type==='mcq'){if(mcqAnswers[i]!==null){cls+=' answered';answeredCount++;}}
+    else if(q.type==='fill'){if(fillAnswers[i].trim()){cls+=' fill-done';answeredCount++;}}
+    else{if(codeAnswers[i].trim()){cls+=' code-done';answeredCount++;}}
+    d.className=cls;d.textContent=i+1;d.onclick=()=>goQ(i);g.appendChild(d);
+  }
+  document.getElementById('prog-answered').textContent=`${answeredCount} answered`;
+  document.getElementById('prog-remain').textContent=`${40-answeredCount} remaining`;
+  document.getElementById('prog-bar').style.width=`${Math.round((answeredCount/40)*100)}%`;
+  document.getElementById('q-counter').textContent=`Question ${current+1} of 40`;
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+function goQ(idx){
+  if(idx<0||idx>39)return;
+  saveCurrent();current=idx;buildGrid();renderQ();
+}
+
+function saveCurrent(){
+  const q=QUESTIONS[current];
+  if(q.type==='fill'){const el=document.getElementById('fill-input');if(el)fillAnswers[current]=el.value;}
+  if(q.type==='code'){const el=document.getElementById('code-textarea');if(el)codeAnswers[current]=el.value;}
+}
+
+/* ═══════════════════════════════════════════
+   RENDER QUESTION
+═══════════════════════════════════════════ */
+function renderQ(){
+  const q=QUESTIONS[current];
+  const keys=['A','B','C','D'];
+  let typeBadge='';
+  if(q.type==='mcq')typeBadge='<span class="badge-mcq">Multiple choice</span>';
+  else if(q.type==='fill')typeBadge='<span class="badge-fill">Fill in the blank</span>';
+  else typeBadge='<span class="badge-code">Write the code</span>';
+
+  let codeHtml='';
+  if(q.code){
+    let disp=q.code;
+    if(q.type==='fill')disp=q.code.replace('______','<span class="blank">______</span>');
+    codeHtml=`<div class="code-block">${disp}</div>`;
+  }
+
+  let bodyHtml='';
+  if(q.type==='mcq'){
+    bodyHtml=`<div class="options">${q.opts.map((o,i)=>`
+      <div class="opt ${mcqAnswers[current]===i?'selected':''}" onclick="selectMCQ(${i})">
+        <div class="opt-key">${keys[i]}</div>
+        <div class="opt-text">${o}</div>
+      </div>`).join('')}</div>`;
+  } else if(q.type==='fill'){
+    const stored=fillAnswers[current]||'';
+    const checked=stored.trim()!=='';
+    const ok=checked&&checkFill(current,stored.trim());
+    let inputCls='fill-input';
+    if(checked)inputCls+=ok?' correct':' wrong';
+    let hint='';
+    if(checked)hint=ok
+      ?`<div class="fill-hint correct show">&#10003; Correct!</div>`
+      :`<div class="fill-hint wrong show">Not quite — ${q.hint}</div>`;
+    bodyHtml=`<div class="fill-wrap">
+      <div class="fill-label"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#0F6E56" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Type the missing line of code:</div>
+      <input class="${inputCls}" id="fill-input" type="text" placeholder="Type your answer here..." value="${stored.replace(/"/g,'&quot;')}" oninput="onFillInput(this)" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      ${hint}</div>`;
+  } else {
+    const stored=codeAnswers[current]||'';
+    bodyHtml=`<div class="code-write-wrap">
+      <div class="code-write-label">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#7D3C98" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Write your complete Python solution below:
+      </div>
+      <textarea class="code-textarea ${stored.trim()?'has-content':''}" id="code-textarea" placeholder="# Write your Python code here..." oninput="onCodeInput(this)" onkeydown="handleTab(event)">${stored}</textarea>
+      <div class="code-note">&#9; Press Tab to indent &nbsp;&middot;&nbsp; This answer is graded by AI after submission</div>
+      <div class="ai-grading-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> AI-graded · worth 2 marks</div>
+    </div>`;
+  }
+
+  document.getElementById('q-area').innerHTML=`
+    <div class="q-card">
+      <div class="q-label">Question ${current+1} of 40 ${typeBadge}</div>
+      <div class="q-text">${q.q}</div>
+      ${codeHtml}${bodyHtml}
+    </div>`;
+}
+
+function selectMCQ(idx){mcqAnswers[current]=idx;buildGrid();renderQ();}
+
+function onFillInput(el){
+  fillAnswers[current]=el.value;
+  const v=el.value.trim();const q=QUESTIONS[current];
+  el.className='fill-input';
+  let hint=el.nextElementSibling;
+  if(!hint||!hint.classList.contains('fill-hint')){hint=document.createElement('div');hint.className='fill-hint';el.parentNode.appendChild(hint);}
+  if(!v){hint.className='fill-hint';return;}
+  if(checkFill(current,v)){el.classList.add('correct');hint.className='fill-hint correct show';hint.textContent='✓ Correct!';}
+  else{el.classList.add('wrong');hint.className='fill-hint wrong show';hint.textContent=`Not quite — ${q.hint}`;}
+  buildGrid();
+}
+
+function onCodeInput(el){
+  codeAnswers[current]=el.value;
+  el.className='code-textarea'+(el.value.trim()?' has-content':'');
+  buildGrid();
+}
+
+function handleTab(e){
+  if(e.key==='Tab'){e.preventDefault();const s=e.target.selectionStart,end=e.target.selectionEnd;e.target.value=e.target.value.substring(0,s)+'    '+e.target.value.substring(end);e.target.selectionStart=e.target.selectionEnd=s+4;}
+}
+
+/* ═══════════════════════════════════════════
+   FILL CHECK
+═══════════════════════════════════════════ */
+function norm(s){return s.trim().replace(/\s+/g,' ').replace(/\s*=\s*/g,'=').replace(/\s*\(\s*/g,'(').replace(/\s*\)\s*/g,')').replace(/\s*,\s*/g,',').toLowerCase();}
+function checkFill(idx,val){
+  const q=QUESTIONS[idx];if(q.type!=='fill')return false;
+  if(norm(q.ans)===norm(val))return true;
+  return(q.alts||[]).some(a=>norm(a)===norm(val));
+}
+
+/* ═══════════════════════════════════════════
+   SUBMIT
+═══════════════════════════════════════════ */
+function confirmSubmit(){
+  saveCurrent();
+  const done=QUESTIONS.reduce((acc,q,i)=>{
+    if(q.type==='mcq')return acc+(mcqAnswers[i]!==null?1:0);
+    if(q.type==='fill')return acc+(fillAnswers[i].trim()?1:0);
+    return acc+(codeAnswers[i].trim()?1:0);
+  },0);
+  const left=40-done;
+  if(left>0){if(!confirm(`You have ${left} unanswered question(s). Submit anyway?`))return;}
+  else{if(!confirm('Submit your exam now?'))return;}
+  submitExam(false);
+}
+
+async function submitExam(auto){
+  if(submitted)return;
+  submitted=true;saveCurrent();clearInterval(timerInterval);
+
+  // Show grading overlay
+  document.getElementById('grading-overlay').classList.add('show');
+
+  // Grade code questions with AI
+  const codeQs=QUESTIONS.map((q,i)=>q.type==='code'?i:-1).filter(i=>i>=0);
+  for(let i=0;i<codeQs.length;i++){
+    const idx=codeQs[i];
+    const q=QUESTIONS[idx];
+    document.getElementById('grading-sub').textContent=`Grading code question ${i+1} of ${codeQs.length}...`;
+    const studentCode=codeAnswers[idx].trim();
+    if(!studentCode){codeGrades[idx]={score:0,feedback:'No code written.'};continue;}
+    try{
+      const res=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          model:'claude-sonnet-4-6',
+          max_tokens:400,
+          messages:[{role:'user',content:`You are grading a beginner Python exam question. Grade the student's code strictly but fairly.
+
+QUESTION: ${q.q.replace(/<[^>]*>/g,'')}
+
+RUBRIC: ${q.rubric}
+
+MODEL ANSWER:
+${q.modelAns}
+
+STUDENT CODE:
+${studentCode}
+
+Respond ONLY with valid JSON in this exact format (no markdown, no extra text):
+{"score":0,"feedback":"reason"}
+
+score must be 0, 1, or 2:
+- 2 = fully correct, all rubric points met
+- 1 = partially correct, some rubric points met but has errors or missing elements  
+- 0 = incorrect or blank, major errors, does not address the question`}]
+        })
+      });
+      const data=await res.json();
+      const text=(data.content||[]).map(c=>c.text||'').join('').trim();
+      const clean=text.replace(/```json|```/g,'').trim();
+      const parsed=JSON.parse(clean);
+      codeGrades[idx]={score:Math.min(2,Math.max(0,parsed.score||0)),feedback:parsed.feedback||'No feedback.'};
+    }catch(e){codeGrades[idx]={score:0,feedback:'Could not grade automatically — teacher will review manually.'};}
+  }
+
+  document.getElementById('grading-overlay').classList.remove('show');
+
+  // Tally scores
+  // MCQ & Fill = 1 mark each, Code = 2 marks each
+  // Total possible = 24 + 12 + (4×2) = 44
+  const TOTAL_MARKS=44;
+  let earned=0,breakdown=[];
+
+  QUESTIONS.forEach((q,i)=>{
+    if(q.type==='mcq'){
+      const sel=mcqAnswers[i];
+      if(sel===null){breakdown.push(`Q${i+1} [MCQ]: UNANSWERED | Correct: ${q.opts[q.ans]}`);
+      }else if(sel===q.ans){earned+=1;breakdown.push(`Q${i+1} [MCQ]: CORRECT | ${q.opts[sel]}`);
+      }else{breakdown.push(`Q${i+1} [MCQ]: WRONG | Chose: ${q.opts[sel]} | Correct: ${q.opts[q.ans]}`);}
+    } else if(q.type==='fill'){
+      const v=fillAnswers[i].trim();
+      if(!v){breakdown.push(`Q${i+1} [FILL]: UNANSWERED | Correct: ${q.ans}`);
+      }else if(checkFill(i,v)){earned+=1;breakdown.push(`Q${i+1} [FILL]: CORRECT | ${v}`);
+      }else{breakdown.push(`Q${i+1} [FILL]: WRONG | Typed: ${v} | Correct: ${q.ans}`);}
+    } else {
+      const g=codeGrades[i]||{score:0,feedback:'Not graded'};
+      earned+=g.score;
+      breakdown.push(`Q${i+1} [CODE]: ${g.score}/2 marks | ${g.feedback}`);
+    }
+  });
+
+  const pct=Math.round((earned/TOTAL_MARKS)*100);
+  const timeTaken=50*60-secondsLeft;
+  const mins=Math.floor(timeTaken/60),secs=timeTaken%60;
+  const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'F';
+
+  document.getElementById('exam-screen').classList.remove('active');
+  document.getElementById('result-screen').classList.add('active');
+
+  // Build detailed review
+  const reviewHtml=QUESTIONS.map((q,i)=>{
+    const keys=['A','B','C','D'];
+    let statusHtml='',correctionHtml='';
+
+    if(q.type==='mcq'){
+      const sel=mcqAnswers[i];
+      if(sel===null){
+        statusHtml=`<span class="rbadge rb-skip">Not answered</span>`;
+        correctionHtml=`<span class="rbadge rb-answer">&#10003; Correct answer: ${keys[q.ans]}: ${q.opts[q.ans]}</span>`;
+      }else if(sel===q.ans){
+        statusHtml=`<span class="rbadge rb-correct">&#10003; Correct — ${keys[sel]}: ${q.opts[sel]}</span>`;
+      }else{
+        statusHtml=`<span class="rbadge rb-wrong">&#10007; Your answer: ${keys[sel]}: ${q.opts[sel]}</span>`;
+        correctionHtml=`<span class="rbadge rb-answer">&#10003; Correct answer: ${keys[q.ans]}: ${q.opts[q.ans]}</span>`;
+      }
+    } else if(q.type==='fill'){
+      const v=fillAnswers[i].trim();
+      if(!v){
+        statusHtml=`<span class="rbadge rb-skip">Not answered</span>`;
+        correctionHtml=`<span class="rbadge rb-answer">&#10003; Correct: <code>${q.ans}</code></span>`;
+      }else if(checkFill(i,v)){
+        statusHtml=`<span class="rbadge rb-correct">&#10003; Correct — ${v}</span>`;
+      }else{
+        statusHtml=`<span class="rbadge rb-wrong">&#10007; You wrote: <code>${v}</code></span>`;
+        correctionHtml=`<span class="rbadge rb-answer">&#10003; Correct: <code>${q.ans}</code></span>`;
+      }
+    } else {
+      const g=codeGrades[i]||{score:0,feedback:'Not graded'};
+      const code=codeAnswers[i].trim();
+      const verdictCls=g.score===2?'correct':g.score===1?'partial':'wrong';
+      const verdictLabel=g.score===2?`&#10003; Full marks (2/2)`:`${g.score===1?'&#9900; Partial credit':'&#10007; Incorrect'} (${g.score}/2)`;
+      if(g.score===2){statusHtml=`<span class="rbadge rb-correct">${verdictLabel}</span>`;}
+      else if(g.score===1){statusHtml=`<span class="rbadge rb-partial">${verdictLabel}</span>`;}
+      else{statusHtml=`<span class="rbadge rb-wrong">${verdictLabel}</span>`;}
+      const codeWritten=code?`<div style="margin-top:6px;font-size:11px;color:var(--gray-600);font-weight:500">Your code:</div><div class="review-code-block">${escHtml(code)}</div>`:`<div style="margin-top:4px;font-size:12px;color:var(--gray-400)">No code written</div>`;
+      correctionHtml=`
+        <div class="ai-verdict ${verdictCls}"><strong>AI Feedback:</strong> ${g.feedback}</div>
+        ${codeWritten}
+        <div style="margin-top:6px;font-size:11px;color:var(--gray-600);font-weight:500">Model answer:</div>
+        <div class="review-code-block model-ans">${escHtml(q.modelAns)}</div>`;
+    }
+
+    return `<div class="review-item">
+      <div class="review-q">${i+1}. ${q.q.replace(/<[^>]*>/g,'')} ${q.type==='code'?'<span class="rbadge rb-answer" style="font-size:10px">2 marks</span>':''}</div>
+      <div class="review-ans">${statusHtml}${correctionHtml}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('result-content').innerHTML=`
+    <div class="result-hero">
+      <div class="score-display">
+        <div class="score-big">${pct}%</div>
+        <div style="padding-bottom:6px">
+          <div class="score-fraction">${earned} / ${TOTAL_MARKS} marks</div>
+          <div class="score-name">${studentName} &middot; ${mins}m ${secs}s${auto?' (auto-submitted)':''}</div>
+          <div class="grade-badge ${pct>=50?'grade-pass':'grade-fail'}">Grade ${grade} &mdash; ${pct>=50?'PASS':'FAIL'}</div>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" style="color:var(--purple)">${pct}%</div><div class="stat-l">Score</div></div>
+        <div class="stat-box"><div class="stat-n">${grade}</div><div class="stat-l">Grade</div></div>
+        <div class="stat-box"><div class="stat-n" style="color:var(--teal)">${earned}</div><div class="stat-l">Marks earned</div></div>
+        <div class="stat-box"><div class="stat-n" style="color:var(--gray-400)">${TOTAL_MARKS-earned}</div><div class="stat-l">Marks lost</div></div>
+      </div>
+      <div class="email-status sending" id="email-status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Sending results to teacher...
+      </div>
+    </div>
+    <div class="review-section">
+      <div class="review-title">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Full correction &amp; review
+      </div>
+      ${reviewHtml}
+    </div>`;
+
+  sendEmail({
+    student_name:studentName,
+    score:earned,total:TOTAL_MARKS,
+    percentage:pct+'%',grade,
+    correct:earned,wrong:TOTAL_MARKS-earned,unanswered:0,
+    time_taken:`${mins} minutes ${secs} seconds`,
+    auto_submitted:auto?'Yes (timer ran out)':'No',
+    breakdown:breakdown.join('\n')
+  });
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+async function sendEmail(p){
+  try{
+    await emailjs.send('service_qtpw0mp','template_2bsxhxm',p);
+    const el=document.getElementById('email-status');
+    el.className='email-status sent';
+    el.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Results sent to teacher successfully!`;
+  }catch(err){
+    const el=document.getElementById('email-status');
+    el.className='email-status error';
+    el.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Could not send automatically — please screenshot your results.`;
+  }
+}
+</script>
+</body>
+</html>
