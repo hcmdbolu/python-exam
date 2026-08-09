@@ -1,0 +1,900 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --nb-bg:#f5f3ef;
+  --nb-page:#fff;
+  --nb-rule:#e8e4dc;
+  --nb-tab-w:148px;
+  --nb-purple:#5b4fcf;
+  --nb-purple-light:#ede9fb;
+  --nb-teal:#0f6e56;
+  --nb-teal-light:#e1f5ee;
+  --nb-amber:#b56c10;
+  --nb-amber-light:#fef3dc;
+  --nb-coral:#c84b22;
+  --nb-coral-light:#faece7;
+  --nb-pink:#993556;
+  --nb-pink-light:#fbeaf0;
+  --nb-blue:#185fa5;
+  --nb-blue-light:#e6f1fb;
+  --nb-green:#3b6d11;
+  --nb-green-light:#eaf3de;
+  --nb-ink:#1a1a1a;
+  --nb-ink2:#444;
+  --nb-ink3:#777;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--nb-bg);min-height:600px}
+
+.notebook{display:flex;min-height:640px;border-radius:12px;overflow:hidden;border:1px solid #d4cfc5;box-shadow:0 2px 12px rgba(0,0,0,.10)}
+
+.tabs-col{width:var(--nb-tab-w);background:#e9e5df;border-right:1px solid #d4cfc5;display:flex;flex-direction:column;padding-top:12px;gap:2px;flex-shrink:0}
+.tab-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;cursor:pointer;
+  font-size:12.5px;font-weight:500;
+  color:var(--nb-ink2);border:none;background:none;
+  text-align:left;border-radius:6px 0 0 6px;
+  margin:0 0 0 6px;
+  border-left:3px solid transparent;
+  transition:background .15s,color .15s;
+  position:relative;
+}
+.tab-btn:hover{background:#ddd9d2;color:var(--nb-ink)}
+.tab-btn.active{background:var(--nb-page);color:var(--nb-purple);border-left-color:var(--nb-purple);font-weight:600;margin-right:-1px;border-radius:6px 0 0 6px;z-index:2}
+.tab-icon{font-size:15px;flex-shrink:0}
+
+.page{flex:1;background:var(--nb-page);overflow-y:auto;position:relative}
+.section{display:none;padding:28px 32px 40px;animation:fadeIn .2s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.page-header{margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--nb-rule)}
+.page-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+.page-title{font-size:22px;font-weight:700;color:var(--nb-ink);line-height:1.2;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--nb-ink3);line-height:1.5}
+
+.callout{border-radius:8px;padding:14px 16px;margin:16px 0;display:flex;gap:12px;align-items:flex-start}
+.callout-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.callout-body{flex:1}
+.callout-title{font-size:12.5px;font-weight:700;margin-bottom:4px}
+.callout-text{font-size:13px;line-height:1.6}
+
+.callout.tip{background:var(--nb-amber-light);color:var(--nb-amber)}
+.callout.remember{background:var(--nb-purple-light);color:var(--nb-purple)}
+.callout.watch{background:var(--nb-coral-light);color:var(--nb-coral)}
+.callout.good{background:var(--nb-green-light);color:var(--nb-green)}
+
+h2.sh{font-size:16px;font-weight:700;color:var(--nb-ink);margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+h2.sh::after{content:'';flex:1;height:1px;background:var(--nb-rule)}
+h3.sh3{font-size:14px;font-weight:600;color:var(--nb-ink2);margin:14px 0 8px}
+
+p.body{font-size:13.5px;line-height:1.75;color:var(--nb-ink2);margin-bottom:10px}
+ul.notes{list-style:none;padding:0;margin:0 0 12px}
+ul.notes li{font-size:13px;line-height:1.65;color:var(--nb-ink2);padding:3px 0 3px 20px;position:relative}
+ul.notes li::before{content:'→';position:absolute;left:0;color:var(--nb-purple);font-weight:700;font-size:12px}
+
+.highlight{background:linear-gradient(120deg,#fffde7 0%,#fff9c4 100%);border-left:3px solid #f9c900;padding:2px 6px;border-radius:2px;font-weight:600}
+
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.kv-card{background:var(--nb-bg);border:1px solid var(--nb-rule);border-radius:8px;padding:12px 14px}
+.kv-label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--nb-ink3);margin-bottom:4px}
+.kv-val{font-size:13px;color:var(--nb-ink2);line-height:1.5}
+
+.code-block{background:#1e1e2e;border-radius:8px;padding:16px 18px;margin:12px 0;position:relative;overflow-x:auto}
+.code-block pre{font-family:'Fira Code','Courier New',monospace;font-size:12.5px;line-height:1.75;color:#cdd6f4;margin:0;white-space:pre}
+.code-tag{position:absolute;top:8px;right:10px;font-size:10px;font-weight:700;color:#6c7086;letter-spacing:.05em;text-transform:uppercase}
+.kw{color:#cba6f7}.str{color:#a6e3a1}.cmt{color:#6c7086;font-style:italic}.num{color:#fab387}.fn{color:#89dceb}.var{color:#cdd6f4}
+
+.step-trace{border:1px solid var(--nb-rule);border-radius:8px;overflow:hidden;margin:12px 0}
+.step-trace table{width:100%;border-collapse:collapse}
+.step-trace th{background:#f0ede8;font-size:12px;font-weight:700;color:var(--nb-ink2);padding:8px 12px;text-align:left;border-bottom:1px solid var(--nb-rule)}
+.step-trace td{font-size:12.5px;padding:7px 12px;border-bottom:1px solid #f2efe8;color:var(--nb-ink2);font-family:'Fira Code',monospace}
+.step-trace tr:last-child td{border-bottom:none}
+.step-trace tr.hl td{background:#fffde7;font-weight:600}
+
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.compare-card{border-radius:8px;padding:14px 16px;border:1px solid}
+.vs-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.compare-card h4{font-size:14px;font-weight:700;margin-bottom:8px}
+.compare-card ul{list-style:none;padding:0}
+.compare-card ul li{font-size:12.5px;line-height:1.6;padding:2px 0 2px 16px;position:relative}
+.compare-card ul li::before{content:'•';position:absolute;left:0;font-weight:900}
+
+.algo-vis{border:1px solid var(--nb-rule);border-radius:8px;padding:16px;margin:12px 0;background:#fafaf8}
+.algo-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nb-ink3);margin-bottom:10px}
+.bars-wrap{display:flex;align-items:flex-end;gap:4px;height:80px;padding:0 4px}
+.bar{flex:1;border-radius:3px 3px 0 0;transition:all .4s ease;position:relative}
+.bar-num{position:absolute;bottom:-18px;width:100%;text-align:center;font-size:10px;color:var(--nb-ink3);font-family:monospace}
+.sort-controls{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap}
+.sort-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--nb-rule);background:white;font-size:12px;font-weight:600;cursor:pointer;color:var(--nb-ink2);transition:all .15s}
+.sort-btn:hover{background:var(--nb-purple-light);color:var(--nb-purple);border-color:var(--nb-purple)}
+.sort-btn.active{background:var(--nb-purple);color:white;border-color:var(--nb-purple)}
+.sort-info{margin-top:10px;font-size:12.5px;color:var(--nb-ink3);min-height:20px;font-style:italic}
+
+.search-demo{margin:12px 0}
+.search-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.search-cell{width:38px;height:38px;border-radius:6px;border:1.5px solid var(--nb-rule);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--nb-ink2);background:white;transition:all .3s;cursor:default}
+.search-cell.checked{background:#fef9c3;border-color:#f9c900;color:var(--nb-amber)}
+.search-cell.found{background:var(--nb-teal-light);border-color:var(--nb-teal);color:var(--nb-teal)}
+.search-cell.mid{background:var(--nb-purple-light);border-color:var(--nb-purple);color:var(--nb-purple)}
+.search-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.search-input{padding:6px 10px;border-radius:6px;border:1px solid var(--nb-rule);font-size:13px;width:80px}
+.search-msg{font-size:12.5px;color:var(--nb-ink3);font-style:italic;margin-top:6px;min-height:18px}
+
+.exam-q{background:var(--nb-bg);border:1px solid var(--nb-rule);border-radius:8px;padding:14px 16px;margin:12px 0}
+.exam-q .q{font-size:13px;font-weight:600;color:var(--nb-ink);margin-bottom:8px}
+.exam-q .ans{font-size:12.5px;color:var(--nb-ink2);line-height:1.65;display:none;border-top:1px solid var(--nb-rule);padding-top:8px;margin-top:4px}
+.reveal-btn{font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid var(--nb-purple);color:var(--nb-purple);background:none;cursor:pointer;font-weight:600;transition:all .15s}
+.reveal-btn:hover{background:var(--nb-purple-light)}
+
+.tag-purple{background:var(--nb-purple-light);color:var(--nb-purple)}
+.tag-teal{background:var(--nb-teal-light);color:var(--nb-teal)}
+.tag-amber{background:var(--nb-amber-light);color:var(--nb-amber)}
+.tag-coral{background:var(--nb-coral-light);color:var(--nb-coral)}
+.tag-blue{background:var(--nb-blue-light);color:var(--nb-blue)}
+.tag-green{background:var(--nb-green-light);color:var(--nb-green)}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;margin-right:4px}
+
+.complexity-row{display:flex;gap:10px;margin:10px 0;flex-wrap:wrap}
+.complexity-item{flex:1;min-width:120px;border-radius:8px;padding:10px 12px;text-align:center}
+.complexity-item .big{font-size:18px;font-weight:700;font-family:'Fira Code',monospace;margin-bottom:3px}
+.complexity-item .small{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+
+.sticky-note{background:#fffde7;border:1px solid #f9c900;border-radius:4px;padding:12px 14px;margin:12px 0;position:relative;box-shadow:2px 2px 4px rgba(0,0,0,.08);transform:rotate(-0.5deg)}
+.sticky-note::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#f9c900;border-radius:4px 4px 0 0}
+.sticky-note p{font-size:12.5px;color:#4a3f00;line-height:1.65;font-family:'Segoe UI',sans-serif}
+
+.divider{height:1px;background:var(--nb-rule);margin:20px 0}
+
+@media(prefers-color-scheme:dark){
+  :root{
+    --nb-bg:#1a1916;--nb-page:#212020;--nb-rule:#2e2c28;
+    --nb-ink:#f0ede8;--nb-ink2:#c8c4bc;--nb-ink3:#888480;
+    --nb-purple-light:#26215c;--nb-teal-light:#04342c;
+    --nb-amber-light:#412402;--nb-coral-light:#4a1b0c;
+    --nb-blue-light:#042c53;--nb-green-light:#173404;
+  }
+  .kv-card{background:#1a1916}
+  .algo-vis{background:#1c1b1a}
+  .exam-q{background:#1a1916}
+  .step-trace th{background:#252320}
+  .step-trace tr.hl td{background:#2a2700}
+  .search-cell{background:#252320}
+  .sort-btn{background:#252320;color:var(--nb-ink2)}
+  .sticky-note{background:#2a2700;border-color:#6b5500}
+  .sticky-note p{color:#e6c84a}
+  .sticky-note::before{background:#6b5500}
+}
+</style>
+
+<h2 class="sr-only">Interactive student notebook on GCSE Computer Science Algorithms, covering computational thinking, flowcharts, pseudocode, searching, sorting, and trace tables.</h2>
+
+<div class="notebook">
+  <nav class="tabs-col" role="tablist" aria-label="Notebook sections">
+    <button class="tab-btn active" onclick="switchTab('ct')" role="tab" aria-selected="true">
+      <i class="ti ti-bulb tab-icon" aria-hidden="true"></i>Comp. Thinking
+    </button>
+    <button class="tab-btn" onclick="switchTab('pseudo')" role="tab">
+      <i class="ti ti-code tab-icon" aria-hidden="true"></i>Pseudocode
+    </button>
+    <button class="tab-btn" onclick="switchTab('flow')" role="tab">
+      <i class="ti ti-git-branch tab-icon" aria-hidden="true"></i>Flowcharts
+    </button>
+    <button class="tab-btn" onclick="switchTab('search')" role="tab">
+      <i class="ti ti-search tab-icon" aria-hidden="true"></i>Searching
+    </button>
+    <button class="tab-btn" onclick="switchTab('sort')" role="tab">
+      <i class="ti ti-arrows-sort tab-icon" aria-hidden="true"></i>Sorting
+    </button>
+    <button class="tab-btn" onclick="switchTab('trace')" role="tab">
+      <i class="ti ti-table tab-icon" aria-hidden="true"></i>Trace Tables
+    </button>
+    <button class="tab-btn" onclick="switchTab('exam')" role="tab">
+      <i class="ti ti-pencil tab-icon" aria-hidden="true"></i>Exam Practice
+    </button>
+  </nav>
+
+  <main class="page">
+
+    <!-- ── COMPUTATIONAL THINKING ── -->
+    <div class="section active" id="sec-ct">
+      <div class="page-header">
+        <span class="page-tag tag-purple">2.1.1</span>
+        <div class="page-title">Computational Thinking</div>
+        <div class="page-sub">How to approach problems like a computer scientist</div>
+      </div>
+
+      <p class="body">Computational thinking is a way of <span class="highlight">solving problems</span> by breaking them down into steps a computer can follow. It has three key pillars.</p>
+
+      <h2 class="sh">The three pillars</h2>
+
+      <div class="kv-grid">
+        <div class="kv-card" style="border-left:3px solid var(--nb-purple)">
+          <div class="kv-label" style="color:var(--nb-purple)"><i class="ti ti-scissors" aria-hidden="true"></i> Decomposition</div>
+          <div class="kv-val">Breaking a big problem into <strong>smaller sub-problems</strong> that are easier to solve individually.</div>
+        </div>
+        <div class="kv-card" style="border-left:3px solid var(--nb-teal)">
+          <div class="kv-label" style="color:var(--nb-teal)"><i class="ti ti-filter" aria-hidden="true"></i> Abstraction</div>
+          <div class="kv-val">Removing <strong>unnecessary detail</strong> — focusing only on what matters for the solution.</div>
+        </div>
+        <div class="kv-card" style="border-left:3px solid var(--nb-amber)">
+          <div class="kv-label" style="color:var(--nb-amber)"><i class="ti ti-list-check" aria-hidden="true"></i> Algorithmic thinking</div>
+          <div class="kv-val">Defining a clear, <strong>step-by-step set of rules</strong> (an algorithm) that solves the problem.</div>
+        </div>
+        <div class="kv-card" style="border-left:3px solid var(--nb-coral)">
+          <div class="kv-label" style="color:var(--nb-coral)"><i class="ti ti-repeat" aria-hidden="true"></i> Pattern recognition</div>
+          <div class="kv-val">Spotting <strong>similarities and patterns</strong> between problems so you can reuse existing solutions.</div>
+        </div>
+      </div>
+
+      <h2 class="sh">Real-world example — building a game</h2>
+      <p class="body">Imagine you have to build a quiz app. Use computational thinking to plan it:</p>
+      <ul class="notes">
+        <li><strong>Decompose:</strong> Load questions → Display question → Get user answer → Check answer → Show score → Repeat</li>
+        <li><strong>Abstract:</strong> Ignore how the screen looks for now. Focus on the logic.</li>
+        <li><strong>Algorithm:</strong> Write out each step as instructions the computer can follow.</li>
+        <li><strong>Pattern:</strong> "Check answer" works the same for every question — write it once, reuse it.</li>
+      </ul>
+
+      <div class="sticky-note">
+        <p>🧠 <strong>Memory trick:</strong> Think of planning a birthday party.<br>
+        Decompose = write the to-do list (venue, cake, guests…)<br>
+        Abstract = ignore the colour of the tablecloth (not important!)<br>
+        Algorithm = write the steps in the right order</p>
+      </div>
+
+      <h2 class="sh">What makes a good algorithm?</h2>
+      <ul class="notes">
+        <li><strong>Unambiguous</strong> — every step has one clear meaning</li>
+        <li><strong>Finite</strong> — it must eventually stop (not loop forever)</li>
+        <li><strong>Correct</strong> — it produces the right output for all valid inputs</li>
+        <li><strong>Efficient</strong> — it uses as little time and memory as possible</li>
+      </ul>
+
+      <div class="callout remember">
+        <div class="callout-icon"><i class="ti ti-star" aria-hidden="true"></i></div>
+        <div class="callout-body">
+          <div class="callout-title">Key definition — Algorithm</div>
+          <div class="callout-text">A finite set of unambiguous, step-by-step instructions that solves a problem or achieves a goal. Every program you write IS an algorithm.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PSEUDOCODE ── -->
+    <div class="section" id="sec-pseudo">
+      <div class="page-header">
+        <span class="page-tag tag-teal">2.1.2</span>
+        <div class="page-title">Pseudocode</div>
+        <div class="page-sub">Writing algorithms in structured English — no strict syntax needed</div>
+      </div>
+
+      <p class="body">Pseudocode lets you plan your algorithm without worrying about a specific programming language. It uses <span class="highlight">English-like commands</span> with a clear, consistent structure.</p>
+
+      <h2 class="sh">Core constructs</h2>
+
+      <h3 class="sh3">1. Variables and input/output</h3>
+      <div class="code-block">
+        <span class="code-tag">pseudocode</span>
+        <pre><span class="cmt">// Store a value in a variable using ←</span>
+<span class="var">name</span> <span class="kw">←</span> <span class="str">"Alice"</span>
+<span class="var">score</span> <span class="kw">←</span> <span class="num">0</span>
+<span class="var">age</span> <span class="kw">←</span> <span class="fn">INPUT</span>(<span class="str">"Enter your age: "</span>)
+
+<span class="cmt">// Display output</span>
+<span class="fn">OUTPUT</span>(<span class="str">"Hello, "</span> <span class="kw">+</span> <span class="var">name</span>)
+<span class="fn">OUTPUT</span>(<span class="str">"Score: "</span> <span class="kw">+</span> <span class="fn">STR</span>(<span class="var">score</span>))</pre>
+      </div>
+
+      <h3 class="sh3">2. Selection (IF statements)</h3>
+      <div class="code-block">
+        <span class="code-tag">pseudocode</span>
+        <pre><span class="kw">IF</span> <span class="var">score</span> <span class="kw">>=</span> <span class="num">70</span> <span class="kw">THEN</span>
+    <span class="fn">OUTPUT</span>(<span class="str">"Distinction"</span>)
+<span class="kw">ELSE IF</span> <span class="var">score</span> <span class="kw">>=</span> <span class="num">50</span> <span class="kw">THEN</span>
+    <span class="fn">OUTPUT</span>(<span class="str">"Pass"</span>)
+<span class="kw">ELSE</span>
+    <span class="fn">OUTPUT</span>(<span class="str">"Fail"</span>)
+<span class="kw">END IF</span></pre>
+      </div>
+
+      <h3 class="sh3">3. Iteration — FOR loop (count-controlled)</h3>
+      <div class="code-block">
+        <span class="code-tag">pseudocode</span>
+        <pre><span class="cmt">// Runs exactly 5 times</span>
+<span class="kw">FOR</span> <span class="var">i</span> <span class="kw">←</span> <span class="num">1</span> <span class="kw">TO</span> <span class="num">5</span>
+    <span class="fn">OUTPUT</span>(<span class="var">i</span> <span class="kw">*</span> <span class="num">2</span>)
+<span class="kw">END FOR</span>
+<span class="cmt">// Outputs: 2, 4, 6, 8, 10</span></pre>
+      </div>
+
+      <h3 class="sh3">4. Iteration — WHILE loop (condition-controlled)</h3>
+      <div class="code-block">
+        <span class="code-tag">pseudocode</span>
+        <pre><span class="var">password</span> <span class="kw">←</span> <span class="str">""</span>
+<span class="kw">WHILE</span> <span class="var">password</span> <span class="kw">≠</span> <span class="str">"letmein"</span>
+    <span class="var">password</span> <span class="kw">←</span> <span class="fn">INPUT</span>(<span class="str">"Enter password: "</span>)
+<span class="kw">END WHILE</span>
+<span class="fn">OUTPUT</span>(<span class="str">"Access granted!"</span>)</pre>
+      </div>
+
+      <h3 class="sh3">5. DO...UNTIL (always runs at least once)</h3>
+      <div class="code-block">
+        <span class="code-tag">pseudocode</span>
+        <pre><span class="kw">DO</span>
+    <span class="var">number</span> <span class="kw">←</span> <span class="fn">INPUT</span>(<span class="str">"Enter a positive number: "</span>)
+<span class="kw">UNTIL</span> <span class="var">number</span> <span class="kw">></span> <span class="num">0</span></pre>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-icon"><i class="ti ti-lamp" aria-hidden="true"></i></div>
+        <div class="callout-body">
+          <div class="callout-title">WHILE vs DO...UNTIL</div>
+          <div class="callout-text">WHILE checks the condition BEFORE running — it might run 0 times. DO...UNTIL checks AFTER — it always runs at least once. This is a very common exam question!</div>
+        </div>
+      </div>
+
+      <h2 class="sh">Common operators</h2>
+      <div class="kv-grid">
+        <div class="kv-card"><div class="kv-label">Arithmetic</div><div class="kv-val"><code>+  −  *  /  DIV  MOD  ^</code><br><small>7 DIV 2 = 3 &nbsp;|&nbsp; 7 MOD 2 = 1</small></div></div>
+        <div class="kv-card"><div class="kv-label">Comparison</div><div class="kv-val"><code>= &nbsp;≠ &nbsp;< &nbsp;> &nbsp;≤ &nbsp;≥</code><br><small>Used inside IF and WHILE conditions</small></div></div>
+        <div class="kv-card"><div class="kv-label">Logical</div><div class="kv-val"><code>AND &nbsp; OR &nbsp; NOT</code><br><small>Combine multiple conditions</small></div></div>
+        <div class="kv-card"><div class="kv-label">String</div><div class="kv-val"><code>LEN() &nbsp; SUBSTRING() &nbsp; UPPER()</code><br><small>Manipulate text values</small></div></div>
+      </div>
+    </div>
+
+    <!-- ── FLOWCHARTS ── -->
+    <div class="section" id="sec-flow">
+      <div class="page-header">
+        <span class="page-tag tag-amber">2.1.2</span>
+        <div class="page-title">Flowcharts</div>
+        <div class="page-sub">Representing algorithms visually with standard symbols</div>
+      </div>
+
+      <p class="body">A flowchart represents an algorithm as a diagram using standardised shapes connected by arrows. Each shape has a specific meaning — you must use the correct shape or lose marks.</p>
+
+      <h2 class="sh">The five symbols you must know</h2>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0">
+        <div style="display:flex;align-items:center;gap:16px;background:var(--nb-bg);border-radius:8px;padding:12px 16px;border:1px solid var(--nb-rule)">
+          <svg width="60" height="36" viewBox="0 0 60 36"><rect x="2" y="2" width="56" height="32" rx="16" fill="none" stroke="var(--nb-purple)" stroke-width="2"/><text x="30" y="22" text-anchor="middle" font-size="11" fill="var(--nb-purple)" font-weight="700">START/STOP</text></svg>
+          <div><div style="font-size:13px;font-weight:700;color:var(--nb-ink)">Terminal (oval / rounded rectangle)</div><div style="font-size:12.5px;color:var(--nb-ink3);margin-top:2px">Used ONLY at the very beginning (START) and very end (STOP/END) of the algorithm. Every flowchart must have exactly one of each.</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;background:var(--nb-bg);border-radius:8px;padding:12px 16px;border:1px solid var(--nb-rule)">
+          <svg width="60" height="36" viewBox="0 0 60 36"><rect x="2" y="2" width="56" height="32" rx="3" fill="none" stroke="var(--nb-teal)" stroke-width="2"/><text x="30" y="22" text-anchor="middle" font-size="11" fill="var(--nb-teal)" font-weight="700">Process</text></svg>
+          <div><div style="font-size:13px;font-weight:700;color:var(--nb-ink)">Process (rectangle)</div><div style="font-size:12.5px;color:var(--nb-ink3);margin-top:2px">An action, calculation, or assignment. e.g. "total ← total + score" or "Set count to 0". The most common shape in a flowchart.</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;background:var(--nb-bg);border-radius:8px;padding:12px 16px;border:1px solid var(--nb-rule)">
+          <svg width="60" height="48" viewBox="0 0 60 48"><polygon points="30,2 58,24 30,46 2,24" fill="none" stroke="var(--nb-amber)" stroke-width="2"/><text x="30" y="28" text-anchor="middle" font-size="10" fill="var(--nb-amber)" font-weight="700">score≥70?</text></svg>
+          <div><div style="font-size:13px;font-weight:700;color:var(--nb-ink)">Decision (diamond)</div><div style="font-size:12.5px;color:var(--nb-ink3);margin-top:2px">A YES/NO question that branches the flow. Always label both exits — one arrow for YES, one for NO. e.g. "Is score ≥ 70?"</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;background:var(--nb-bg);border-radius:8px;padding:12px 16px;border:1px solid var(--nb-rule)">
+          <svg width="60" height="36" viewBox="0 0 60 36"><polygon points="10,2 56,2 50,34 4,34" fill="none" stroke="var(--nb-coral)" stroke-width="2"/><text x="30" y="22" text-anchor="middle" font-size="10" fill="var(--nb-coral)" font-weight="700">Input/Output</text></svg>
+          <div><div style="font-size:13px;font-weight:700;color:var(--nb-ink)">Input / Output (parallelogram)</div><div style="font-size:12.5px;color:var(--nb-ink3);margin-top:2px">Data coming IN from the user (keyboard) or going OUT to the screen. e.g. "INPUT name" or "OUTPUT result". Label it clearly.</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;background:var(--nb-bg);border-radius:8px;padding:12px 16px;border:1px solid var(--nb-rule)">
+          <svg width="60" height="36" viewBox="0 0 60 36"><line x1="10" y1="18" x2="50" y2="18" stroke="var(--nb-ink2)" stroke-width="2" marker-end="url(#arr)"/><defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="var(--nb-ink2)"/></marker></defs><text x="30" y="34" text-anchor="middle" font-size="10" fill="var(--nb-ink3)">Flow arrow</text></svg>
+          <div><div style="font-size:13px;font-weight:700;color:var(--nb-ink)">Flow arrow</div><div style="font-size:12.5px;color:var(--nb-ink3);margin-top:2px">Shows the direction of flow between shapes. Arrows must be labelled where they come from a decision diamond (YES / NO).</div></div>
+        </div>
+      </div>
+
+      <h2 class="sh">Full example — Grade checker</h2>
+      <p class="body">This flowchart takes a score as input and outputs the matching grade:</p>
+      <div style="margin:12px 0;overflow-x:auto">
+        <svg width="300" height="440" viewBox="0 0 300 440" style="display:block;margin:0 auto">
+          <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#888"/></marker></defs>
+          <rect x="95" y="10" width="110" height="34" rx="17" fill="none" stroke="var(--nb-purple)" stroke-width="1.5"/>
+          <text x="150" y="32" text-anchor="middle" font-size="12" fill="var(--nb-purple)" font-weight="600">START</text>
+          <line x1="150" y1="44" x2="150" y2="68" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+          <polygon points="150,70 220,100 150,130 80,100" fill="none" stroke="var(--nb-amber)" stroke-width="1.5"/>
+          <text x="150" y="98" text-anchor="middle" font-size="11" fill="var(--nb-amber)" font-weight="600">INPUT score</text>
+          <text x="150" y="111" text-anchor="middle" font-size="10" fill="var(--nb-amber)">from user?</text>
+          <line x1="150" y1="130" x2="150" y2="154" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+          <polygon points="150,156 225,188 150,220 75,188" fill="none" stroke="var(--nb-amber)" stroke-width="1.5"/>
+          <text x="150" y="183" text-anchor="middle" font-size="10" fill="var(--nb-amber)" font-weight="600">score ≥ 70?</text>
+          <text x="228" y="192" font-size="9" fill="var(--nb-teal)" font-weight="700">YES</text>
+          <line x1="225" y1="188" x2="260" y2="188" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+          <polygon points="250,176 296,176 290,200 244,200" fill="none" stroke="var(--nb-coral)" stroke-width="1.5"/>
+          <text x="270" y="192" text-anchor="middle" font-size="9" fill="var(--nb-coral)" font-weight="700">A grade</text>
+          <text x="120" y="222" font-size="9" fill="var(--nb-coral)" font-weight="700">NO</text>
+          <line x1="150" y1="220" x2="150" y2="250" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+          <polygon points="150,252 220,282 150,312 80,282" fill="none" stroke="var(--nb-amber)" stroke-width="1.5"/>
+          <text x="150" y="277" text-anchor="middle" font-size="10" fill="var(--nb-amber)" font-weight="600">score ≥ 50?</text>
+          <text x="228" y="285" font-size="9" fill="var(--nb-teal)" font-weight="700">YES</text>
+          <line x1="220" y1="282" x2="255" y2="282" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+          <polygon points="248,270 296,270 290,294 244,294" fill="none" stroke="var(--nb-coral)" stroke-width="1.5"/>
+          <text x="270" y="286" text-anchor="middle" font-size="9" fill="var(--nb-coral)" font-weight="700">B grade</text>
+          <text x="120" y="316" font-size="9" fill="var(--nb-coral)" font-weight="700">NO</text>
+          <line x1="150" y1="312" x2="150" y2="342" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+          <polygon points="110,342 190,342 184,366 116,366" fill="none" stroke="var(--nb-coral)" stroke-width="1.5"/>
+          <text x="150" y="358" text-anchor="middle" font-size="10" fill="var(--nb-coral)" font-weight="700">OUTPUT "Fail"</text>
+          <line x1="150" y1="366" x2="150" y2="396" stroke="#888" stroke-width="1.5" marker-end="url(#a)"/>
+          <rect x="95" y="396" width="110" height="34" rx="17" fill="none" stroke="var(--nb-purple)" stroke-width="1.5"/>
+          <text x="150" y="418" text-anchor="middle" font-size="12" fill="var(--nb-purple)" font-weight="600">STOP</text>
+        </svg>
+      </div>
+
+      <div class="callout watch">
+        <div class="callout-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+        <div class="callout-body">
+          <div class="callout-title">Common mistakes to avoid</div>
+          <div class="callout-text">Using rectangles for decisions (must be diamond). Not labelling YES/NO on branches. Forgetting START and STOP terminals. Arrows pointing the wrong way — always show direction!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEARCHING ── -->
+    <div class="section" id="sec-search">
+      <div class="page-header">
+        <span class="page-tag tag-blue">2.1.3</span>
+        <div class="page-title">Searching Algorithms</div>
+        <div class="page-sub">Linear search and binary search — with live demos</div>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-card" style="border-color:#9FE1CB;background:var(--nb-teal-light)">
+          <span class="vs-badge" style="background:var(--nb-teal-light);color:var(--nb-teal)">Linear search</span>
+          <ul style="color:var(--nb-teal)">
+            <li style="color:var(--nb-ink2)">Works on any list (sorted or unsorted)</li>
+            <li style="color:var(--nb-ink2)">Checks each item one by one from the start</li>
+            <li style="color:var(--nb-ink2)">Simple to write and understand</li>
+            <li style="color:var(--nb-ink2)">Slow for large lists — worst case: checks every item</li>
+            <li style="color:var(--nb-ink2)">Time complexity: <strong>O(n)</strong></li>
+          </ul>
+        </div>
+        <div class="compare-card" style="border-color:#AFA9EC;background:var(--nb-purple-light)">
+          <span class="vs-badge" style="background:var(--nb-purple-light);color:var(--nb-purple)">Binary search</span>
+          <ul>
+            <li style="color:var(--nb-ink2)">List MUST be sorted first</li>
+            <li style="color:var(--nb-ink2)">Halves the search space each step</li>
+            <li style="color:var(--nb-ink2)">Much faster for large lists</li>
+            <li style="color:var(--nb-ink2)">More complex to implement</li>
+            <li style="color:var(--nb-ink2)">Time complexity: <strong>O(log n)</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 class="sh">Interactive demo — try both searches</h2>
+      <div class="algo-vis">
+        <div class="algo-label">Sorted list: click a search to find a number</div>
+        <div class="search-row" id="searchRow"></div>
+        <div class="search-controls">
+          <input type="number" class="search-input" id="searchTarget" placeholder="Find..." min="1" max="99">
+          <button class="sort-btn" onclick="doLinear()">Linear search</button>
+          <button class="sort-btn" onclick="doBinary()">Binary search</button>
+          <button class="sort-btn" onclick="resetSearch()">Reset</button>
+        </div>
+        <div class="search-msg" id="searchMsg">Enter a number from the list above and choose a search type.</div>
+        <div style="margin-top:8px;display:flex;gap:12px;font-size:11px;color:var(--nb-ink3)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:#fef9c3;border:1px solid #f9c900;display:inline-block"></span> Checked</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:var(--nb-purple-light);border:1px solid var(--nb-purple);display:inline-block"></span> Mid point</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:var(--nb-teal-light);border:1px solid var(--nb-teal);display:inline-block"></span> Found</span>
+        </div>
+      </div>
+
+      <h2 class="sh">Pseudocode — binary search</h2>
+      <div class="code-block">
+        <span class="code-tag">pseudocode</span>
+        <pre><span class="fn">FUNCTION</span> binarySearch(<span class="var">list</span>, <span class="var">target</span>)
+    <span class="var">low</span>  <span class="kw">←</span> <span class="num">0</span>
+    <span class="var">high</span> <span class="kw">←</span> <span class="fn">LENGTH</span>(<span class="var">list</span>) <span class="kw">-</span> <span class="num">1</span>
+    <span class="kw">WHILE</span> <span class="var">low</span> <span class="kw"><=</span> <span class="var">high</span>
+        <span class="var">mid</span> <span class="kw">←</span> (<span class="var">low</span> <span class="kw">+</span> <span class="var">high</span>) <span class="kw">DIV</span> <span class="num">2</span>
+        <span class="kw">IF</span> <span class="var">list</span>[<span class="var">mid</span>] <span class="kw">=</span> <span class="var">target</span> <span class="kw">THEN</span>
+            <span class="kw">RETURN</span> <span class="var">mid</span>          <span class="cmt">// Found!</span>
+        <span class="kw">ELSE IF</span> <span class="var">list</span>[<span class="var">mid</span>] <span class="kw"><</span> <span class="var">target</span> <span class="kw">THEN</span>
+            <span class="var">low</span> <span class="kw">←</span> <span class="var">mid</span> <span class="kw">+</span> <span class="num">1</span>    <span class="cmt">// Target is in right half</span>
+        <span class="kw">ELSE</span>
+            <span class="var">high</span> <span class="kw">←</span> <span class="var">mid</span> <span class="kw">-</span> <span class="num">1</span>   <span class="cmt">// Target is in left half</span>
+        <span class="kw">END IF</span>
+    <span class="kw">END WHILE</span>
+    <span class="kw">RETURN</span> <span class="kw">-</span><span class="num">1</span>               <span class="cmt">// Not found</span>
+<span class="kw">END FUNCTION</span></pre>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-icon"><i class="ti ti-lamp" aria-hidden="true"></i></div>
+        <div class="callout-body">
+          <div class="callout-title">Why is binary search faster?</div>
+          <div class="callout-text">A list of 1,000 items: linear search may check all 1,000. Binary search takes at most log₂(1000) ≈ 10 comparisons. For 1 million items: linear = 1,000,000 checks; binary = only 20 checks!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SORTING ── -->
+    <div class="section" id="sec-sort">
+      <div class="page-header">
+        <span class="page-tag tag-coral">2.1.4</span>
+        <div class="page-title">Sorting Algorithms</div>
+        <div class="page-sub">Bubble sort, merge sort, and insertion sort — with animations</div>
+      </div>
+
+      <p class="body">You need to know three sorting algorithms, be able to trace them step-by-step, and compare their efficiency.</p>
+
+      <h2 class="sh">Live sorting visualiser</h2>
+      <div class="algo-vis">
+        <div class="algo-label" id="sortLabel">Select an algorithm to see it sort</div>
+        <div class="bars-wrap" id="barsWrap"></div>
+        <div class="sort-controls">
+          <button class="sort-btn" id="btnBubble" onclick="startSort('bubble')">Bubble sort</button>
+          <button class="sort-btn" id="btnMerge" onclick="startSort('merge')">Merge sort</button>
+          <button class="sort-btn" id="btnInsert" onclick="startSort('insert')">Insertion sort</button>
+          <button class="sort-btn" onclick="resetSort()"><i class="ti ti-refresh" aria-hidden="true"></i> Shuffle</button>
+        </div>
+        <div class="sort-info" id="sortInfo">Choose a sort above to begin.</div>
+      </div>
+
+      <h2 class="sh">Bubble sort</h2>
+      <p class="body">Compares adjacent pairs and swaps if they're in the wrong order. Each full pass "bubbles" the largest remaining value to the end.</p>
+      <div class="code-block">
+        <span class="code-tag">pseudocode</span>
+        <pre><span class="fn">PROCEDURE</span> bubbleSort(<span class="var">list</span>)
+    <span class="var">n</span> <span class="kw">←</span> <span class="fn">LENGTH</span>(<span class="var">list</span>)
+    <span class="kw">FOR</span> <span class="var">pass</span> <span class="kw">←</span> <span class="num">1</span> <span class="kw">TO</span> <span class="var">n</span> <span class="kw">-</span> <span class="num">1</span>
+        <span class="kw">FOR</span> <span class="var">i</span> <span class="kw">←</span> <span class="num">0</span> <span class="kw">TO</span> <span class="var">n</span> <span class="kw">-</span> <span class="var">pass</span> <span class="kw">-</span> <span class="num">1</span>
+            <span class="kw">IF</span> <span class="var">list</span>[<span class="var">i</span>] <span class="kw">></span> <span class="var">list</span>[<span class="var">i</span><span class="kw">+</span><span class="num">1</span>] <span class="kw">THEN</span>
+                <span class="cmt">// Swap</span>
+                <span class="var">temp</span> <span class="kw">←</span> <span class="var">list</span>[<span class="var">i</span>]
+                <span class="var">list</span>[<span class="var">i</span>] <span class="kw">←</span> <span class="var">list</span>[<span class="var">i</span><span class="kw">+</span><span class="num">1</span>]
+                <span class="var">list</span>[<span class="var">i</span><span class="kw">+</span><span class="num">1</span>] <span class="kw">←</span> <span class="var">temp</span>
+            <span class="kw">END IF</span>
+        <span class="kw">END FOR</span>
+    <span class="kw">END FOR</span>
+<span class="kw">END PROCEDURE</span></pre>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-icon"><i class="ti ti-lamp" aria-hidden="true"></i></div>
+        <div class="callout-body">
+          <div class="callout-title">Optimisation tip</div>
+          <div class="callout-text">If no swaps happen during a full pass, the list is already sorted — stop early! Add a "swapped" flag and break out of the loop. This gives O(n) best case instead of always doing n-1 passes.</div>
+        </div>
+      </div>
+
+      <h2 class="sh">Merge sort</h2>
+      <p class="body">Divide and conquer. Split the list in half repeatedly until every sub-list has 1 element, then merge pairs back together in sorted order.</p>
+      <ul class="notes">
+        <li><strong>Phase 1 — Divide:</strong> Keep halving until all sub-lists have 1 item (1 item is always "sorted")</li>
+        <li><strong>Phase 2 — Merge:</strong> Compare the fronts of two sub-lists, take the smaller, repeat until merged</li>
+        <li><strong>Efficiency:</strong> O(n log n) always — much better than bubble sort for large data</li>
+        <li><strong>Downside:</strong> Needs extra memory to hold the sub-lists during merging</li>
+      </ul>
+
+      <h2 class="sh">Insertion sort</h2>
+      <p class="body">Builds a sorted section one item at a time. Takes each new item and inserts it into its correct position in the already-sorted section.</p>
+      <ul class="notes">
+        <li>Great for small lists or lists that are already nearly sorted</li>
+        <li>Best case O(n) — already sorted means no moves needed</li>
+        <li>Worst case O(n²) — reverse-sorted list means maximum moves</li>
+      </ul>
+
+      <h2 class="sh">Comparison table</h2>
+      <div class="step-trace">
+        <table>
+          <thead><tr><th>Algorithm</th><th>Best case</th><th>Worst case</th><th>Memory</th><th>Best used when…</th></tr></thead>
+          <tbody>
+            <tr><td>Bubble sort</td><td>O(n)</td><td>O(n²)</td><td>Low</td><td>Small or nearly sorted list</td></tr>
+            <tr class="hl"><td>Merge sort</td><td>O(n log n)</td><td>O(n log n)</td><td>Higher</td><td>Large lists, consistent speed needed</td></tr>
+            <tr><td>Insertion sort</td><td>O(n)</td><td>O(n²)</td><td>Low</td><td>Small or nearly sorted list</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── TRACE TABLES ── -->
+    <div class="section" id="sec-trace">
+      <div class="page-header">
+        <span class="page-tag tag-green">2.1.5</span>
+        <div class="page-title">Trace Tables</div>
+        <div class="page-sub">Manually stepping through algorithms to track variable values</div>
+      </div>
+
+      <p class="body">A trace table records the value of every variable at each step of an algorithm. It is essential for debugging and a very common exam question type.</p>
+
+      <div class="callout remember">
+        <div class="callout-icon"><i class="ti ti-star" aria-hidden="true"></i></div>
+        <div class="callout-body">
+          <div class="callout-title">The golden rule of trace tables</div>
+          <div class="callout-text">Create one column for EACH variable AND a column for OUTPUT. Work through every single step — never skip. Partial marks are awarded for correct intermediate values even if your final answer is wrong.</div>
+        </div>
+      </div>
+
+      <h2 class="sh">How to build a trace table</h2>
+      <ul class="notes">
+        <li><strong>Step 1:</strong> Identify every variable in the algorithm</li>
+        <li><strong>Step 2:</strong> Create a column for each variable plus an OUTPUT column</li>
+        <li><strong>Step 3:</strong> Read through the algorithm line by line</li>
+        <li><strong>Step 4:</strong> Fill in the new value each time a variable changes</li>
+        <li><strong>Step 5:</strong> Leave a cell blank if a variable doesn't change on that step</li>
+      </ul>
+
+      <h2 class="sh">Worked example 1 — FOR loop sum</h2>
+      <div class="code-block">
+        <span class="code-tag">trace this</span>
+        <pre><span class="var">total</span> <span class="kw">←</span> <span class="num">0</span>
+<span class="kw">FOR</span> <span class="var">i</span> <span class="kw">←</span> <span class="num">1</span> <span class="kw">TO</span> <span class="num">5</span>
+    <span class="var">total</span> <span class="kw">←</span> <span class="var">total</span> <span class="kw">+</span> <span class="var">i</span>
+<span class="kw">END FOR</span>
+<span class="fn">OUTPUT</span> <span class="var">total</span></pre>
+      </div>
+      <div class="step-trace">
+        <table>
+          <thead><tr><th>Line</th><th>i</th><th>total</th><th>OUTPUT</th></tr></thead>
+          <tbody>
+            <tr><td>total ← 0</td><td>—</td><td>0</td><td></td></tr>
+            <tr><td>FOR i=1</td><td>1</td><td></td><td></td></tr>
+            <tr class="hl"><td>total ← total+i</td><td></td><td>1</td><td></td></tr>
+            <tr><td>FOR i=2</td><td>2</td><td></td><td></td></tr>
+            <tr class="hl"><td>total ← total+i</td><td></td><td>3</td><td></td></tr>
+            <tr><td>FOR i=3</td><td>3</td><td></td><td></td></tr>
+            <tr class="hl"><td>total ← total+i</td><td></td><td>6</td><td></td></tr>
+            <tr><td>FOR i=4</td><td>4</td><td></td><td></td></tr>
+            <tr class="hl"><td>total ← total+i</td><td></td><td>10</td><td></td></tr>
+            <tr><td>FOR i=5</td><td>5</td><td></td><td></td></tr>
+            <tr class="hl"><td>total ← total+i</td><td></td><td>15</td><td></td></tr>
+            <tr><td>OUTPUT total</td><td></td><td></td><td>15</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="body" style="font-size:12.5px;color:var(--nb-ink3)">This algorithm calculates 1+2+3+4+5 = 15. Highlighted rows show when total changes.</p>
+
+      <h2 class="sh">Worked example 2 — WHILE loop</h2>
+      <div class="code-block">
+        <span class="code-tag">trace this</span>
+        <pre><span class="var">x</span> <span class="kw">←</span> <span class="num">1</span>
+<span class="kw">WHILE</span> <span class="var">x</span> <span class="kw"><</span> <span class="num">30</span>
+    <span class="var">x</span> <span class="kw">←</span> <span class="var">x</span> <span class="kw">*</span> <span class="num">3</span>
+<span class="kw">END WHILE</span>
+<span class="fn">OUTPUT</span> <span class="var">x</span></pre>
+      </div>
+      <div class="step-trace">
+        <table>
+          <thead><tr><th>Step</th><th>x</th><th>x &lt; 30?</th><th>OUTPUT</th></tr></thead>
+          <tbody>
+            <tr><td>x ← 1</td><td>1</td><td></td><td></td></tr>
+            <tr><td>Check condition</td><td></td><td>TRUE (1 &lt; 30)</td><td></td></tr>
+            <tr class="hl"><td>x ← x * 3</td><td>3</td><td></td><td></td></tr>
+            <tr><td>Check condition</td><td></td><td>TRUE (3 &lt; 30)</td><td></td></tr>
+            <tr class="hl"><td>x ← x * 3</td><td>9</td><td></td><td></td></tr>
+            <tr><td>Check condition</td><td></td><td>TRUE (9 &lt; 30)</td><td></td></tr>
+            <tr class="hl"><td>x ← x * 3</td><td>27</td><td></td><td></td></tr>
+            <tr><td>Check condition</td><td></td><td>TRUE (27 &lt; 30)</td><td></td></tr>
+            <tr class="hl"><td>x ← x * 3</td><td>81</td><td></td><td></td></tr>
+            <tr><td>Check condition</td><td></td><td>FALSE (81 &lt; 30)</td><td></td></tr>
+            <tr><td>OUTPUT x</td><td></td><td></td><td>81</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout watch">
+        <div class="callout-icon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+        <div class="callout-body">
+          <div class="callout-title">Don't forget to show the condition check</div>
+          <div class="callout-text">In WHILE loop traces, always show whether the condition is TRUE or FALSE at each iteration. This shows the examiner you understand when the loop continues and when it stops.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EXAM PRACTICE ── -->
+    <div class="section" id="sec-exam">
+      <div class="page-header">
+        <span class="page-tag tag-purple">Exam prep</span>
+        <div class="page-title">Practice Questions</div>
+        <div class="page-sub">Reveal the answer only after you've had a go yourself</div>
+      </div>
+
+      <div class="callout good">
+        <div class="callout-icon"><i class="ti ti-target" aria-hidden="true"></i></div>
+        <div class="callout-body">
+          <div class="callout-title">How to use this section</div>
+          <div class="callout-text">Read the question carefully. Write your answer on paper or in your head. Then click "Show answer" to check. Read the mark scheme carefully — note exactly what language earns marks.</div>
+        </div>
+      </div>
+
+      <h2 class="sh">Section A — Short answers</h2>
+
+      <div class="exam-q">
+        <div class="q">1. Define the term "algorithm". [2 marks]</div>
+        <button class="reveal-btn" onclick="toggleAns(this)">Show answer</button>
+        <div class="ans">A finite (1) set of step-by-step instructions (1) that solve a problem or achieve a specific goal (1). Award up to 2 marks. Key words: finite, unambiguous, step-by-step.</div>
+      </div>
+
+      <div class="exam-q">
+        <div class="q">2. State TWO differences between a linear search and a binary search. [2 marks]</div>
+        <button class="reveal-btn" onclick="toggleAns(this)">Show answer</button>
+        <div class="ans">Any two of: Binary search requires the list to be sorted first; linear search does not (1). Binary search is more efficient / faster for large lists (1). Linear search checks items one at a time; binary search repeatedly halves the search space (1). Binary search has O(log n) complexity; linear has O(n) (1).</div>
+      </div>
+
+      <div class="exam-q">
+        <div class="q">3. A list contains the values: [3, 7, 12, 19, 25, 31, 44]. A binary search is used to find the value 19. Show the steps. [3 marks]</div>
+        <button class="reveal-btn" onclick="toggleAns(this)">Show answer</button>
+        <div class="ans">Step 1: low=0, high=6, mid=3 → list[3]=19. Found at index 3 (1 mark). OR: Step 1: mid=(0+6)÷2=3 (1). list[3]=19 = target (1). Found in 1 comparison (1). Award marks for correct mid calculation, correct comparison, and identifying the item as found.</div>
+      </div>
+
+      <div class="exam-q">
+        <div class="q">4. Trace the following algorithm for the list [5, 2, 8, 1]. Show the state of the list after EACH pass of bubble sort. [3 marks]</div>
+        <button class="reveal-btn" onclick="toggleAns(this)">Show answer</button>
+        <div class="ans">Start: [5, 2, 8, 1]<br>Pass 1: Compare 5,2 → swap → [2,5,8,1]. Compare 5,8 → no swap. Compare 8,1 → swap → [2,5,1,8] (1 mark)<br>Pass 2: Compare 2,5 → no swap. Compare 5,1 → swap → [2,1,5,8] (1 mark)<br>Pass 3: Compare 2,1 → swap → [1,2,5,8] (1 mark). Sorted!</div>
+      </div>
+
+      <h2 class="sh">Section B — Extended questions</h2>
+
+      <div class="exam-q">
+        <div class="q">5. Explain what is meant by "decomposition" in computational thinking and give ONE example of how it could be used when designing a school library system. [3 marks]</div>
+        <button class="reveal-btn" onclick="toggleAns(this)">Show answer</button>
+        <div class="ans">Decomposition means breaking a large/complex problem (1) into smaller, more manageable sub-problems (1). For a library system, this could mean breaking it down into: searching for a book, borrowing a book, returning a book, managing member accounts, and generating overdue notices (1 — award for any sensible, specific sub-problem).</div>
+      </div>
+
+      <div class="exam-q">
+        <div class="q">6. Write pseudocode for a program that asks the user to enter numbers one at a time, adds them to a running total, and stops when the user enters 0. It should then output the total. [4 marks]</div>
+        <button class="reveal-btn" onclick="toggleAns(this)">Show answer</button>
+        <div class="ans">total ← 0 (1)<br>number ← INPUT("Enter a number (0 to stop): ") (1)<br>WHILE number ≠ 0 (1)<br>&nbsp;&nbsp;&nbsp;total ← total + number<br>&nbsp;&nbsp;&nbsp;number ← INPUT("Enter a number (0 to stop): ")<br>END WHILE<br>OUTPUT total (1)<br><br>Mark scheme: 1 for initialising total; 1 for correct input; 1 for correct WHILE condition; 1 for output after loop. Accept DO...UNTIL equivalent.</div>
+      </div>
+
+      <div class="exam-q">
+        <div class="q">7. Compare the efficiency of bubble sort and merge sort. Which would you recommend for sorting a list of 10,000 student names, and why? [4 marks]</div>
+        <button class="reveal-btn" onclick="toggleAns(this)">Show answer</button>
+        <div class="ans">Bubble sort has O(n²) worst case — for 10,000 items this could mean ~100 million comparisons (1). Merge sort has O(n log n) always — for 10,000 items this is ~130,000 comparisons (1). Merge sort is significantly faster for large datasets (1). I would recommend merge sort (1) because the list is large (10,000 items) and merge sort's consistent O(n log n) performance would be much faster than bubble sort's O(n²), despite requiring more memory (accept any well-reasoned answer).</div>
+      </div>
+
+      <div class="sticky-note" style="transform:rotate(0.4deg)">
+        <p>📌 <strong>Exam day reminders:</strong><br>
+        • Always show your working in trace tables — partial credit!<br>
+        • Binary search only works on SORTED lists<br>
+        • State the data type of what you're swapping in sort questions<br>
+        • "Efficient" needs a qualification — efficient in what? Time? Memory?</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function switchTab(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('sec-'+id).classList.add('active');
+}
+function toggleAns(btn){
+  const ans=btn.nextElementSibling;
+  const show=ans.style.display!=='block';
+  ans.style.display=show?'block':'none';
+  btn.textContent=show?'Hide answer':'Show answer';
+}
+
+// ── Search demo ──
+const LIST=[3,8,12,17,21,26,31,38,44,51,58,67,74,82,90];
+function buildSearchRow(){
+  const row=document.getElementById('searchRow');
+  row.innerHTML='';
+  LIST.forEach((v,i)=>{
+    const c=document.createElement('div');
+    c.className='search-cell';
+    c.id='sc'+i;
+    c.textContent=v;
+    row.appendChild(c);
+  });
+}
+function resetSearch(){
+  buildSearchRow();
+  document.getElementById('searchMsg').textContent='Enter a number from the list above and choose a search type.';
+}
+function clearHighlights(){LIST.forEach((_,i)=>{const c=document.getElementById('sc'+i);if(c)c.className='search-cell';})}
+async function doLinear(){
+  clearHighlights();
+  const target=parseInt(document.getElementById('searchTarget').value);
+  if(isNaN(target)){document.getElementById('searchMsg').textContent='Please enter a number first.';return;}
+  let steps=0;
+  for(let i=0;i<LIST.length;i++){
+    const c=document.getElementById('sc'+i);
+    c.className='search-cell checked';
+    steps++;
+    document.getElementById('searchMsg').textContent='Checking index '+i+' (value='+LIST[i]+')... step '+steps;
+    await sleep(400);
+    if(LIST[i]===target){c.className='search-cell found';document.getElementById('searchMsg').textContent='Found '+target+' at index '+i+' after '+steps+' comparison'+(steps>1?'s':'')+'!';return;}
+  }
+  document.getElementById('searchMsg').textContent=target+' not in list. Checked all '+steps+' items.';
+}
+async function doBinary(){
+  clearHighlights();
+  const target=parseInt(document.getElementById('searchTarget').value);
+  if(isNaN(target)){document.getElementById('searchMsg').textContent='Please enter a number first.';return;}
+  let low=0,high=LIST.length-1,steps=0;
+  while(low<=high){
+    const mid=Math.floor((low+high)/2);
+    const c=document.getElementById('sc'+mid);
+    c.className='search-cell mid';
+    steps++;
+    document.getElementById('searchMsg').textContent='low='+low+', high='+high+', mid='+mid+' (value='+LIST[mid]+') — step '+steps;
+    await sleep(600);
+    if(LIST[mid]===target){c.className='search-cell found';document.getElementById('searchMsg').textContent='Found '+target+' at index '+mid+' in only '+steps+' comparison'+(steps>1?'s':'')+'!';return;}
+    else if(LIST[mid]<target){for(let i=low;i<=mid;i++){const x=document.getElementById('sc'+i);if(x&&x.className!=='search-cell found')x.className='search-cell';}low=mid+1;}
+    else{for(let i=mid;i<=high;i++){const x=document.getElementById('sc'+i);if(x&&x.className!=='search-cell found')x.className='search-cell';}high=mid-1;}
+  }
+  document.getElementById('searchMsg').textContent=target+' not found after '+steps+' comparisons.';
+}
+
+// ── Sort visualiser ──
+let sortData=[],sortRunning=false;
+const COLORS=['#5b4fcf','#0f6e56','#c84b22','#b56c10','#185fa5','#993556','#3b6d11','#63380a'];
+function initBars(){
+  sortData=[64,38,72,15,91,27,83,45];
+  renderBars(sortData,-1,-1);
+  document.getElementById('sortInfo').textContent='Choose a sort above to begin.';
+  document.getElementById('sortLabel').textContent='Original unsorted data';
+  ['Bubble','Merge','Insert'].forEach(n=>{document.getElementById('btn'+n).classList.remove('active');});
+}
+function renderBars(arr,hi1=-1,hi2=-1){
+  const w=document.getElementById('barsWrap');
+  w.innerHTML='';
+  const mx=Math.max(...arr);
+  arr.forEach((v,i)=>{
+    const b=document.createElement('div');
+    b.className='bar';
+    b.style.height=Math.round((v/mx)*72)+'px';
+    b.style.background=(i===hi1||i===hi2)?'#f9c900':COLORS[i%COLORS.length];
+    b.innerHTML='<span class="bar-num">'+v+'</span>';
+    w.appendChild(b);
+  });
+}
+function resetSort(){if(!sortRunning)initBars();}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function startSort(type){
+  if(sortRunning)return;
+  sortRunning=true;
+  ['Bubble','Merge','Insert'].forEach(n=>{document.getElementById('btn'+n).classList.remove('active');});
+  document.getElementById('btn'+type.charAt(0).toUpperCase()+type.slice(1)).classList.add('active');
+  let arr=[...sortData];
+  if(type==='bubble'){
+    document.getElementById('sortLabel').textContent='Bubble sort — comparing adjacent pairs';
+    let swaps=0;
+    for(let p=0;p<arr.length-1;p++){
+      let swapped=false;
+      for(let i=0;i<arr.length-p-1;i++){
+        renderBars(arr,i,i+1);
+        await sleep(220);
+        if(arr[i]>arr[i+1]){[arr[i],arr[i+1]]=[arr[i+1],arr[i]];swapped=true;swaps++;}
+      }
+      if(!swapped)break;
+    }
+    document.getElementById('sortInfo').textContent='Sorted! '+swaps+' swaps made.';
+  } else if(type==='merge'){
+    document.getElementById('sortLabel').textContent='Merge sort — divide and conquer';
+    let ops=0;
+    async function merge(a,l,m,r){
+      const L=a.slice(l,m+1),R=a.slice(m+1,r+1);
+      let i=0,j=0,k=l;
+      while(i<L.length&&j<R.length){
+        renderBars(a,k,-1);await sleep(180);ops++;
+        if(L[i]<=R[j]){a[k++]=L[i++];}else{a[k++]=R[j++];}
+      }
+      while(i<L.length){a[k++]=L[i++];renderBars(a,k-1,-1);await sleep(100);}
+      while(j<R.length){a[k++]=R[j++];renderBars(a,k-1,-1);await sleep(100);}
+    }
+    async function mergeSort(a,l,r){
+      if(l>=r)return;
+      const m=Math.floor((l+r)/2);
+      await mergeSort(a,l,m);await mergeSort(a,m+1,r);await merge(a,l,m,r);
+    }
+    await mergeSort(arr,0,arr.length-1);
+    document.getElementById('sortInfo').textContent='Sorted using merge sort!';
+  } else {
+    document.getElementById('sortLabel').textContent='Insertion sort — building sorted section';
+    let moves=0;
+    for(let i=1;i<arr.length;i++){
+      const key=arr[i];let j=i-1;
+      renderBars(arr,i,-1);await sleep(250);
+      while(j>=0&&arr[j]>key){arr[j+1]=arr[j];j--;moves++;renderBars(arr,j+1,-1);await sleep(200);}
+      arr[j+1]=key;renderBars(arr,-1,j+1);await sleep(200);
+    }
+    document.getElementById('sortInfo').textContent='Sorted! '+moves+' moves made.';
+  }
+  renderBars(arr,-1,-1);
+  sortData=arr;
+  sortRunning=false;
+}
+buildSearchRow();
+initBars();
+</script>
