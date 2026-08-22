@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f3f4f6;
+            --dark: #1f2937;
+            --border: #e5e7eb;
+            --text: #374151;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #f9fafb;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Auth Pages */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .auth-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-box h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #059669;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text);
+        }
+
+        .toggle-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid var(--danger);
+        }
+
+        .alert-success {
+            background-color: #dcfce7;
+            color: #166534;
+            border-left: 4px solid var(--secondary);
+        }
+
+        /* Main App */
+        .app-wrapper {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--dark);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px;
+            color: #d1d5db;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+        }
+
+        .top-bar {
+            background-color: white;
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background-color: var(--danger);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--dark);
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: var(--text);
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-subtitle {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 10px;
+        }
+
+        /* Tables */
+        .table-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: var(--light);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background-color: var(--light);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        /* Forms */
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: var(--dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .search-filter input,
+        .search-filter select {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .search-filter input:focus,
+        .search-filter select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn-add {
+            background-color: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .btn-add:hover {
+            background-color: #059669;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text);
+        }
+
+        .spinner {
+            border: 4px solid var(--light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .btn-add {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Pages -->
+    <div id="authPage" class="page active">
+        <div class="auth-container">
+            <div class="auth-box">
+                <h1>📦 Inventory Tracker</h1>
+                <div id="authAlert" class="alert alert-error" style="display: none;"></div>
+                
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <h2 style="text-align: center; margin-bottom: 20px; font-size: 20px;">Login</h2>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="loginUsername" placeholder="Enter your username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password">
+                    </div>
+                    <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+                    <div class="toggle-link">
+                        Don't have an account? <a href="javascript:void(0)" onclick="toggleAuthForms()">Register</a>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" style="display: none;">
+                    <h2 style="text-align: center; margin-bottom: 20px; font-size: 20px;">Register</h2>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="registerUsername" placeholder="Choose a username">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="Create a password">
+                    </div>
+                    <button class="btn btn-primary" onclick="handleRegister()">Register</button>
+                    <div class="toggle-link">
+                        Already have an account? <a href="javascript:void(0)" onclick="toggleAuthForms()">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appPage" class="page">
+        <div class="app-wrapper">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h2>📦 Inventory</h2>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <div class="nav-link active" onclick="switchPage('dashboard')">📊 Dashboard</div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="nav-link" onclick="switchPage('inventory')">📦 Inventory Items</div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="nav-link" onclick="switchPage('categories')">🏷️ Categories</div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="nav-link" onclick="switchPage('transactions')">📝 Transactions</div>
+                    </li>
+                    <li class="nav-item" style="margin-top: 40px; border-top: 1px solid #374151; padding-top: 20px;">
+                        <div class="nav-link" onclick="handleLogout()">🚪 Logout</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Top Bar -->
+                <div class="top-bar">
+                    <h1 id="pageTitle" class="page-title"></h1>
+                    <div class="user-info">
+                        <span id="userDisplay"></span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="container">
+                    <!-- Dashboard Page -->
+                    <div id="dashboardContent" class="page-content">
+                        <div class="dashboard-grid" id="statsGrid"></div>
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3>Low Stock Items</h3>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>SKU</th>
+                                        <th>Current Stock</th>
+                                        <th>Reorder Level</th>
+                                        <th>Unit Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lowStockTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Page -->
+                    <div id="inventoryContent" class="page-content" style="display: none;">
+                        <div class="search-filter">
+                            <input type="text" id="searchInput" placeholder="Search by name or SKU..." onkeyup="filterInventory()">
+                            <select id="categoryFilter" onchange="filterInventory()">
+                                <option value="">All Categories</option>
+                            </select>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="lowStockFilter" onchange="filterInventory()">
+                                Low Stock Only
+                            </label>
+                            <button class="btn-add" onclick="openAddItemModal()">+ Add Item</button>
+                        </div>
+
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>SKU</th>
+                                        <th>Category</th>
+                                        <th>Stock</th>
+                                        <th>Unit Price</th>
+                                        <th>Total Value</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventoryTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Categories Page -->
+                    <div id="categoriesContent" class="page-content" style="display: none;">
+                        <button class="btn-add" onclick="openAddCategoryModal()" style="margin-bottom: 20px;">+ Add Category</button>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Category Name</th>
+                                        <th>Description</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoriesTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Transactions Page -->
+                    <div id="transactionsContent" class="page-content" style="display: none;">
+                        <div class="search-filter">
+                            <select id="transactionTypeFilter" onchange="filterTransactions()">
+                                <option value="">All Types</option>
+                                <option value="add">Add</option>
+                                <option value="remove">Remove</option>
+                                <option value="adjustment">Adjustment</option>
+                            </select>
+                        </div>
+
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Reason</th>
+                                        <th>User</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionsTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Item Modal -->
+    <div id="addItemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Item</h2>
+                <button class="close-btn" onclick="closeModal('addItemModal')">&times;</button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Item Name *</label>
+                    <input type="text" id="itemName" placeholder="Enter item name">
+                </div>
+                <div class="form-group">
+                    <label>SKU *</label>
+                    <input type="text" id="itemSKU" placeholder="Enter SKU">
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="itemCategory"></select>
+                </div>
+                <div class="form-group">
+                    <label>Unit Price *</label>
+                    <input type="number" id="itemPrice" placeholder="0.00" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Initial Quantity</label>
+                    <input type="number" id="itemQuantity" placeholder="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Reorder Level</label>
+                    <input type="number" id="itemReorderLevel" placeholder="10" value="10">
+                </div>
+                <div class="form-group full">
+                    <label>Description</label>
+                    <input type="text" id="itemDescription" placeholder="Enter description">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="handleAddItem()">Add Item</button>
+                <button class="btn btn-secondary" onclick="closeModal('addItemModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Category</h2>
+                <button class="close-btn" onclick="closeModal('addCategoryModal')">&times;</button>
+            </div>
+            <div class="form-group full">
+                <label>Category Name *</label>
+                <input type="text" id="categoryName" placeholder="Enter category name">
+            </div>
+            <div class="form-group full">
+                <label>Description</label>
+                <input type="text" id="categoryDescription" placeholder="Enter description">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="handleAddCategory()">Add Category</button>
+                <button class="btn btn-secondary" onclick="closeModal('addCategoryModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stock Action Modal -->
+    <div id="stockActionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="stockActionTitle">Add Stock</h2>
+                <button class="close-btn" onclick="closeModal('stockActionModal')">&times;</button>
+            </div>
+            <div class="form-group full">
+                <label>Item Name</label>
+                <input type="text" id="stockActionItem" disabled style="background-color: var(--light);">
+            </div>
+            <div class="form-group full">
+                <label>Quantity *</label>
+                <input type="number" id="stockActionQuantity" placeholder="0">
+            </div>
+            <div class="form-group full">
+                <label>Reason</label>
+                <input type="text" id="stockActionReason" placeholder="Enter reason">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" id="stockActionBtn" onclick="handleStockAction()">Submit</button>
+                <button class="btn btn-secondary" onclick="closeModal('stockActionModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
