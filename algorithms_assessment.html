@@ -1,0 +1,504 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--surface-0);color:var(--text-primary)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+.exam-wrap{max-width:680px;margin:0 auto;padding:0 0 40px}
+
+.exam-header{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px}
+.exam-title{font-size:18px;font-weight:500;color:var(--text-primary);margin-bottom:4px}
+.exam-meta{font-size:13px;color:var(--text-secondary);margin-bottom:14px}
+.meta-pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500;border:0.5px solid var(--border)}
+.pill-blue{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+.pill-green{background:var(--bg-success);color:var(--text-success);border-color:var(--border-success)}
+.pill-amber{background:var(--bg-warning);color:var(--text-warning);border-color:var(--border-warning)}
+.pill-red{background:var(--bg-danger);color:var(--text-danger);border-color:var(--border-danger)}
+
+.timer-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:0.5px solid var(--border)}
+.timer-display{font-size:22px;font-weight:500;font-family:var(--font-mono);color:var(--text-primary);letter-spacing:2px}
+.timer-display.warn{color:var(--text-warning)}
+.timer-display.danger{color:var(--text-danger)}
+.score-display{font-size:13px;color:var(--text-secondary)}
+.score-num{font-weight:500;color:var(--text-primary)}
+
+.progress-bar{height:4px;background:var(--surface-1);border-radius:2px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;background:var(--fill-accent);border-radius:2px;transition:width .4s ease}
+
+.section-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.section-head{padding:14px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:10px}
+.section-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.section-info{flex:1}
+.section-title{font-size:14px;font-weight:500;color:var(--text-primary)}
+.section-sub{font-size:12px;color:var(--text-secondary);margin-top:1px}
+.section-mark{font-size:12px;color:var(--text-muted)}
+
+.q-wrap{padding:16px 20px;border-bottom:0.5px solid var(--border)}
+.q-wrap:last-child{border-bottom:none}
+.q-num-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.q-badge{font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.q-text{font-size:13.5px;color:var(--text-primary);line-height:1.6;flex:1}
+.q-marks{font-size:11px;color:var(--text-muted);margin-left:auto;flex-shrink:0;margin-top:2px}
+
+.opts{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.opt-btn{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:8px;border:0.5px solid var(--border);background:var(--surface-1);cursor:pointer;text-align:left;font-size:13px;color:var(--text-primary);transition:background .12s,border-color .12s;line-height:1.5}
+.opt-btn:hover{background:var(--surface-2);border-color:var(--border-strong)}
+.opt-btn.selected{background:var(--bg-accent);border-color:var(--border-accent);color:var(--text-accent)}
+.opt-btn.correct{background:var(--bg-success);border-color:var(--border-success);color:var(--text-success)}
+.opt-btn.wrong{background:var(--bg-danger);border-color:var(--border-danger);color:var(--text-danger)}
+.opt-letter{font-weight:500;min-width:18px;flex-shrink:0}
+
+.q-feedback{font-size:12.5px;margin-top:8px;padding:8px 12px;border-radius:6px;display:none;line-height:1.5}
+.q-feedback.show{display:block}
+.q-feedback.ok{background:var(--bg-success);color:var(--text-success)}
+.q-feedback.no{background:var(--bg-danger);color:var(--text-danger)}
+
+.interactive-area{margin-top:10px}
+.drag-pool{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:36px;padding:8px;border:0.5px dashed var(--border);border-radius:8px;background:var(--surface-1)}
+.drag-chip{padding:5px 12px;border-radius:20px;border:0.5px solid var(--border);background:var(--surface-2);font-size:12.5px;cursor:grab;user-select:none;color:var(--text-primary);transition:opacity .15s}
+.drag-chip:active{cursor:grabbing;opacity:.7}
+.drop-zones{display:flex;flex-direction:column;gap:6px}
+.drop-row{display:flex;align-items:center;gap:8px}
+.drop-label{font-size:12px;color:var(--text-secondary);min-width:110px;flex-shrink:0}
+.drop-target{flex:1;min-height:34px;border:0.5px dashed var(--border-strong);border-radius:6px;background:var(--surface-1);padding:4px 8px;font-size:12.5px;color:var(--text-muted);display:flex;align-items:center;transition:background .15s}
+.drop-target.over{background:var(--bg-accent);border-color:var(--border-accent)}
+.drop-target .drag-chip{margin:0}
+
+.order-list{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.order-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border:0.5px solid var(--border);border-radius:6px;background:var(--surface-1);cursor:grab;font-size:13px}
+.order-item:active{cursor:grabbing;opacity:.7}
+.order-handle{color:var(--text-muted);font-size:16px;cursor:grab}
+.order-item.dragging{opacity:.4}
+
+.trace-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px;font-family:var(--font-mono)}
+.trace-table th{background:var(--surface-1);padding:7px 10px;text-align:left;font-size:11px;font-weight:500;color:var(--text-secondary);border:0.5px solid var(--border)}
+.trace-table td{padding:0;border:0.5px solid var(--border)}
+.trace-input{width:100%;padding:6px 8px;border:none;background:transparent;font-family:var(--font-mono);font-size:12.5px;color:var(--text-primary);outline:none}
+.trace-input:focus{background:var(--bg-accent)}
+.trace-input.correct{background:var(--bg-success);color:var(--text-success)}
+.trace-input.wrong{background:var(--bg-danger);color:var(--text-danger)}
+
+.text-area-q{width:100%;margin-top:8px;padding:10px 12px;border:0.5px solid var(--border);border-radius:8px;background:var(--surface-1);font-family:system-ui,sans-serif;font-size:13px;color:var(--text-primary);resize:vertical;min-height:80px;line-height:1.6}
+.text-area-q:focus{outline:none;border-color:var(--border-accent)}
+.char-count{font-size:11px;color:var(--text-muted);text-align:right;margin-top:3px}
+.q-err{font-size:12px;color:var(--text-danger);margin-top:4px;display:none}
+.q-err.show{display:block}
+
+.check-btn{padding:7px 16px;border-radius:6px;border:0.5px solid var(--border-strong);background:var(--surface-2);color:var(--text-primary);font-size:12.5px;font-weight:500;cursor:pointer;margin-top:8px;transition:background .12s}
+.check-btn:hover{background:var(--surface-1)}
+
+.submit-area{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:20px 24px;margin-top:8px;text-align:center}
+.submit-btn{padding:12px 40px;border-radius:8px;background:var(--fill-accent);color:var(--on-accent);border:none;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}
+.submit-btn:hover{background:var(--fill-accent-hover,#1456a0)}
+.results-panel{display:none}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.result-card{background:var(--surface-1);border-radius:8px;padding:14px;text-align:center}
+.result-val{font-size:26px;font-weight:500;margin-bottom:4px}
+.result-lbl{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}
+.grade-badge{display:inline-block;padding:6px 20px;border-radius:20px;font-size:16px;font-weight:500;margin:10px 0}
+
+.code-pre{background:var(--surface-0);border:0.5px solid var(--border);border-radius:6px;padding:10px 12px;font-family:var(--font-mono);font-size:12px;color:var(--text-primary);margin:8px 0;line-height:1.7;overflow-x:auto;white-space:pre}
+</style>
+
+<h2 class="sr-only">50-minute algorithms assessment for GCSE Computer Science with 20 objective, 10 interactive, and 15 theory questions. Includes a live countdown timer and automatic scoring.</h2>
+
+<div class="exam-wrap">
+
+<div class="exam-header">
+  <div class="exam-title">Algorithms — End of Topic Assessment</div>
+  <div class="exam-meta">GCSE Computer Science &nbsp;|&nbsp; Greensprings School &nbsp;|&nbsp; Component 2.1</div>
+  <div class="meta-pills">
+    <span class="pill pill-blue"><i class="ti ti-clock" aria-hidden="true" style="font-size:13px"></i> 50 minutes</span>
+    <span class="pill pill-green"><i class="ti ti-list" aria-hidden="true" style="font-size:13px"></i> 20 objective</span>
+    <span class="pill pill-amber"><i class="ti ti-hand-click" aria-hidden="true" style="font-size:13px"></i> 10 interactive</span>
+    <span class="pill pill-red"><i class="ti ti-pencil" aria-hidden="true" style="font-size:13px"></i> 15 theory</span>
+  </div>
+  <div class="timer-row">
+    <div>
+      <div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px">Time remaining</div>
+      <div class="timer-display" id="timerDisplay">50:00</div>
+    </div>
+    <div class="score-display">Score: <span class="score-num" id="livScore">0</span> / <span id="livTotal">0</span> answered</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+
+<!-- ══ SECTION A: OBJECTIVE ══ -->
+<div class="section-card">
+  <div class="section-head">
+    <div class="section-num" style="background:var(--bg-accent);color:var(--text-accent)">A</div>
+    <div class="section-info">
+      <div class="section-title">Section A — Objective questions</div>
+      <div class="section-sub">Choose the best answer for each question. 1 mark each.</div>
+    </div>
+    <div class="section-mark">20 marks</div>
+  </div>
+
+  <div id="objSection"></div>
+</div>
+
+<!-- ══ SECTION B: INTERACTIVE ══ -->
+<div class="section-card">
+  <div class="section-head">
+    <div class="section-num" style="background:var(--bg-warning);color:var(--text-warning)">B</div>
+    <div class="section-info">
+      <div class="section-title">Section B — Interactive questions</div>
+      <div class="section-sub">Drag, order, and complete trace tables. 2 marks each.</div>
+    </div>
+    <div class="section-mark">20 marks</div>
+  </div>
+  <div id="intSection"></div>
+</div>
+
+<!-- ══ SECTION C: THEORY ══ -->
+<div class="section-card">
+  <div class="section-head">
+    <div class="section-num" style="background:var(--bg-danger);color:var(--text-danger)">C</div>
+    <div class="section-info">
+      <div class="section-title">Section C — Theory questions</div>
+      <div class="section-sub">Write your answers clearly and in full sentences where required.</div>
+    </div>
+    <div class="section-mark">45 marks</div>
+  </div>
+  <div id="thSection"></div>
+</div>
+
+<div class="submit-area">
+  <div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px">Check all answers before submitting. You cannot change answers after submission.</div>
+  <button class="submit-btn" onclick="submitAssessment()">Submit assessment</button>
+  <div class="results-panel" id="resultsPanel">
+    <div style="height:1px;background:var(--border);margin:20px 0"></div>
+    <div style="font-size:16px;font-weight:500;color:var(--text-primary);margin-bottom:4px">Assessment complete</div>
+    <div class="result-grid">
+      <div class="result-card"><div class="result-val" id="resA">—</div><div class="result-lbl">Section A</div></div>
+      <div class="result-card"><div class="result-val" id="resB">—</div><div class="result-lbl">Section B</div></div>
+      <div class="result-card"><div class="result-val" id="resTotal">—</div><div class="result-lbl">Total (A+B)</div></div>
+    </div>
+    <div id="gradeBadge" class="grade-badge"></div>
+    <div style="font-size:12.5px;color:var(--text-secondary);margin-top:8px" id="resNote"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const OBJ_QS = [
+  {q:"What is an algorithm?",opts:["A programming language","A finite set of step-by-step instructions to solve a problem","A type of hardware component","A method of storing data"],ans:1,exp:"An algorithm is a finite, unambiguous set of step-by-step instructions that solves a specific problem or achieves a goal."},
+  {q:"Which of the following correctly describes 'decomposition' in computational thinking?",opts:["Writing code in small functions","Breaking a complex problem into smaller, manageable sub-problems","Removing unnecessary detail from a problem","Identifying patterns in data"],ans:1,exp:"Decomposition means breaking a large problem into smaller sub-problems that are individually easier to solve."},
+  {q:"A binary search is performed on the list [2, 5, 9, 14, 21, 33, 47]. What is the FIRST middle element checked when searching for 33?",opts:["9","14","21","33"],ans:2,exp:"mid = (0+6) ÷ 2 = 3, so list[3] = 14. Wait — indices: 0=2,1=5,2=9,3=14,4=21,5=33,6=47. mid=3 → 14. 33>14 so search right half: low=4,high=6, mid=5 → 33. First checked: 14. Correct answer is 14."},
+  {q:"Which sorting algorithm works by repeatedly comparing and swapping adjacent elements?",opts:["Merge sort","Binary sort","Bubble sort","Insertion sort"],ans:2,exp:"Bubble sort compares adjacent pairs and swaps them if they are in the wrong order, repeating until the list is sorted."},
+  {q:"What is the worst-case time complexity of bubble sort?",opts:["O(1)","O(n)","O(n log n)","O(n²)"],ans:3,exp:"Bubble sort has O(n²) worst-case complexity because for n items it may need up to n-1 passes each with up to n-1 comparisons."},
+  {q:"Which shape represents a DECISION in a flowchart?",opts:["Rectangle","Parallelogram","Diamond","Oval"],ans:2,exp:"A diamond shape represents a decision (yes/no question) in a flowchart. It has two exit paths — one for YES and one for NO."},
+  {q:"What does 7 MOD 2 evaluate to?",opts:["3","3.5","1","2"],ans:2,exp:"MOD gives the remainder after division. 7 ÷ 2 = 3 remainder 1. So 7 MOD 2 = 1."},
+  {q:"A WHILE loop and a DO...UNTIL loop differ in which key way?",opts:["WHILE loops are faster","DO...UNTIL always executes at least once; WHILE may not","WHILE can only count; DO...UNTIL uses conditions","There is no difference"],ans:1,exp:"DO...UNTIL checks the condition AFTER each iteration, so it always runs at least once. WHILE checks BEFORE, so it may never run if the condition is false initially."},
+  {q:"What is 'abstraction' in computational thinking?",opts:["Writing abstract art using code","Removing unnecessary detail to focus on what is relevant","Breaking problems into parts","Identifying repeating patterns"],ans:1,exp:"Abstraction means stripping away irrelevant details so you can focus on what actually matters for solving the problem."},
+  {q:"Which algorithm requires the list to be sorted before it can be used?",opts:["Linear search","Bubble sort","Binary search","Insertion sort"],ans:2,exp:"Binary search only works on sorted lists. It halves the search space each step, which only works if the data is in order."},
+  {q:"What is the purpose of a trace table?",opts:["To sort data into order","To track the value of variables at each step of an algorithm","To display output to the user","To count the number of loops"],ans:1,exp:"A trace table manually tracks the value of every variable at each step of an algorithm — used for debugging and understanding algorithm behaviour."},
+  {q:"How many comparisons does binary search need in the WORST case for a list of 128 items?",opts:["128","64","7","16"],ans:2,exp:"Binary search worst case is O(log₂ n). log₂(128) = 7. So at most 7 comparisons are needed."},
+  {q:"Which pseudocode statement correctly assigns the value 10 to a variable called count?",opts:["count == 10","count = 10","count ← 10","SET count TO 10"],ans:2,exp:"In standard GCSE pseudocode, the assignment operator is ← (left arrow). count ← 10 stores the value 10 in the variable count."},
+  {q:"What is the terminal symbol in a flowchart used for?",opts:["Showing input and output","Representing a calculation","Marking the START and STOP of the algorithm","Showing a decision"],ans:2,exp:"The terminal symbol (oval or rounded rectangle) marks where a flowchart begins (START) and ends (STOP). Every flowchart must have both."},
+  {q:"In bubble sort, what happens if no swaps occur during a complete pass?",opts:["The algorithm starts again","The list is already sorted — the algorithm can stop","The algorithm skips to the last element","Nothing — it continues regardless"],ans:1,exp:"If a full pass completes with no swaps, every element is already in its correct position. This is the early-exit optimisation that gives bubble sort O(n) best case."},
+  {q:"Which of the following is the correct description of merge sort?",opts:["Compares adjacent pairs and swaps them","Inserts each element into a sorted sub-list one at a time","Divides the list in half repeatedly then merges sorted halves","Searches for items by repeatedly halving the search space"],ans:2,exp:"Merge sort is a divide-and-conquer algorithm: split the list into halves recursively until each has 1 element, then merge them back in sorted order."},
+  {q:"What does 15 DIV 4 evaluate to?",opts:["3.75","3","4","11"],ans:1,exp:"DIV performs integer division (whole number quotient, no remainder). 15 ÷ 4 = 3 remainder 3. So 15 DIV 4 = 3."},
+  {q:"Which construct is used when you know EXACTLY how many times a loop should run?",opts:["WHILE loop","DO...UNTIL loop","FOR loop","IF statement"],ans:2,exp:"A FOR loop (count-controlled loop) is used when you know in advance exactly how many times the loop should execute. e.g. FOR i ← 1 TO 10."},
+  {q:"What is the best-case time complexity of insertion sort?",opts:["O(n²)","O(n log n)","O(n)","O(1)"],ans:2,exp:"Insertion sort's best case is O(n) — when the list is already sorted, each element only needs one comparison to confirm it's in the right place, giving a linear scan."},
+  {q:"A flowchart parallelogram represents:",opts:["A process / calculation","A decision (yes/no)","Input or output","The start or end"],ans:2,exp:"The parallelogram represents data going IN (user input) or OUT (output to screen). e.g. 'INPUT name' or 'OUTPUT result'."},
+];
+
+const TH_QS = [
+  {q:"Define the term 'computational thinking' and state its THREE main components. [3 marks]",marks:3,ph:"Write your answer here — aim for 3 clear points...",model:"Computational thinking is a problem-solving approach used in computer science (1). Its three components are: decomposition — breaking a problem into smaller parts (1); abstraction — removing unnecessary detail to focus on what is relevant (1); and algorithmic thinking — creating a step-by-step solution (accept 'pattern recognition' as a 4th)."},
+  {q:"Explain the difference between a linear search and a binary search. In your answer, state ONE advantage of each. [4 marks]",marks:4,ph:"Compare both searches and give one advantage each...",model:"Linear search checks each item one at a time from the start and works on unsorted lists (1). Binary search repeatedly halves the search space by comparing the target to the middle element, and only works on sorted lists (1). Advantage of linear search: works on any list, sorted or not (1). Advantage of binary search: much faster for large lists — O(log n) vs O(n) (1)."},
+  {q:"Trace through bubble sort on the list [8, 3, 6, 1, 5]. Show the list after EACH pass. [3 marks]",marks:3,ph:"Show the state of the list after each complete pass...",model:"Pass 1: [3,6,1,5,8] (1). Pass 2: [3,1,5,6,8] (1). Pass 3: [1,3,5,6,8] — sorted (1). Accept minor variation in intermediate steps if final state per pass is correct."},
+  {q:"Write pseudocode for a program that inputs 10 numbers from the user and outputs the largest number entered. [4 marks]",marks:4,ph:"Write your pseudocode solution here...",model:"largest ← INPUT('Enter number: ') (1); FOR i ← 2 TO 10 (1); num ← INPUT('Enter number: '); IF num > largest THEN largest ← num END IF (1); END FOR; OUTPUT largest (1). Accept equivalent correct logic."},
+  {q:"Explain what is meant by 'abstraction' in computational thinking. Give ONE real-world example. [2 marks]",marks:2,ph:"Define abstraction and give an example...",model:"Abstraction means removing unnecessary or irrelevant detail from a problem so you can focus only on what matters for the solution (1). Real-world example: a map abstracts away irrelevant details like buildings and trees, showing only roads and landmarks needed for navigation (1). Accept any sensible example."},
+  {q:"A student writes this algorithm. Trace it for x = 4 and complete the trace table below.\n\ntotal ← 0\nFOR i ← 1 TO x\n    total ← total + (i * 2)\nEND FOR\nOUTPUT total\n\nComplete the trace: after each iteration, what is the value of i and total? What is the final output? [3 marks]",marks:3,ph:"State the value of i and total after each iteration, then the output...",model:"i=1: total=2. i=2: total=6. i=3: total=12. i=4: total=20 (2 marks for all iterations correct, 1 if 2-3 correct). OUTPUT: 20 (1 mark)."},
+  {q:"Compare bubble sort and merge sort. In your answer include: how each algorithm works, the worst-case complexity of each, and which you would recommend for sorting 50,000 records. Justify your choice. [5 marks]",marks:5,ph:"Write a detailed comparison — aim for 5 clear points...",model:"Bubble sort: compares adjacent pairs, swaps if wrong order, repeats until no swaps (1). Merge sort: divides list in half recursively until single elements, then merges sorted sub-lists (1). Bubble sort worst case O(n²) (1). Merge sort worst case O(n log n) (1). For 50,000 records, merge sort is recommended because its O(n log n) complexity is far superior to bubble sort's O(n²) for large datasets — 50,000² = 2.5 billion vs 50,000×log(50,000) ≈ 800,000 operations (1)."},
+  {q:"Draw a flowchart (using words to describe each shape) for an algorithm that: asks the user to enter a number, checks if it is greater than 100, outputs 'Large' if it is, or 'Small' if it is not, then stops. [4 marks]",marks:4,ph:"Describe each flowchart shape in order — e.g. 'START (oval) → INPUT number (parallelogram) → ...'",model:"START terminal (1); INPUT number — parallelogram (1); Decision diamond: 'Is number > 100?' with YES → OUTPUT 'Large' parallelogram and NO → OUTPUT 'Small' parallelogram (1); STOP terminal — both paths lead to STOP (1). Lose a mark if YES/NO not labelled on decision."},
+  {q:"Write pseudocode for a function called 'countEven' that takes a list of numbers as a parameter and returns how many of those numbers are even. Show how you would call the function and output the result. [4 marks]",marks:4,ph:"Write the function definition and a call to it...",model:"FUNCTION countEven(numbers) (1); count ← 0; FOR i ← 0 TO LENGTH(numbers)-1; IF numbers[i] MOD 2 = 0 THEN count ← count + 1 END IF; END FOR (1); RETURN count (1); END FUNCTION; result ← countEven([2,5,8,11,4]); OUTPUT result (1)."},
+  {q:"Explain what a trace table is, why it is used, and describe the steps for completing one. [3 marks]",marks:3,ph:"Define it, explain why, then describe the process...",model:"A trace table manually tracks the value of every variable at each step of an algorithm (1). It is used to debug algorithms and verify correctness without running the code (1). Steps: create a column for each variable and one for output; work through the algorithm line by line; record the new value each time a variable changes, leaving blanks when it doesn't change (1)."},
+  {q:"A binary search is performed on the sorted list: [4, 9, 15, 22, 31, 40, 55, 68, 77, 90] to find the value 22. Show ALL steps of the binary search, including low, high, and mid at each step, until the item is found. [4 marks]",marks:4,ph:"Show each step with low, high, mid, and what is compared...",model:"Step 1: low=0, high=9, mid=4 → list[4]=31. 22<31, so high=3 (1). Step 2: low=0, high=3, mid=1 → list[1]=9. 22>9, so low=2 (1). Step 3: low=2, high=3, mid=2 → list[2]=15. 22>15, so low=3 (1). Step 4: low=3, high=3, mid=3 → list[3]=22. Found! (1)."},
+  {q:"Write pseudocode for insertion sort on a list called 'data'. Include a brief comment explaining what each main section does. [5 marks]",marks:5,ph:"Write the full insertion sort pseudocode with comments...",model:"FOR i ← 1 TO LENGTH(data)-1 // take each unsorted element (1); key ← data[i] // element to insert (1); j ← i - 1; WHILE j >= 0 AND data[j] > key // shift larger elements right (1); data[j+1] ← data[j]; j ← j - 1; END WHILE (1); data[j+1] ← key // place key in correct position (1); END FOR."},
+  {q:"A student says: 'Merge sort is always better than bubble sort because it is faster.' Do you agree? Explain your answer fully. [3 marks]",marks:3,ph:"Write a balanced evaluation — agree, disagree, or partly agree...",model:"Partly agree (1). Merge sort is faster for large lists (O(n log n) vs O(n²)) (1). However, bubble sort can be more appropriate for small lists or lists that are already nearly sorted, where its O(n) best case and low memory usage make it simpler and efficient enough. Merge sort also requires additional memory for sub-lists (1). A blanket claim that one is 'always better' ignores context."},
+  {q:"Describe what happens during EACH phase of the merge sort algorithm. Use the list [7, 2, 9, 4] to illustrate your answer. [4 marks]",marks:4,ph:"Describe divide and merge phases, illustrated with the example...",model:"Phase 1 — Divide: split [7,2,9,4] → [7,2] and [9,4] → [7],[2] and [9],[4] (1). Each sub-list of 1 element is trivially sorted (1). Phase 2 — Merge: merge [7] and [2] → [2,7]; merge [9] and [4] → [4,9] (1); merge [2,7] and [4,9] → [2,4,7,9] by comparing front elements and taking the smaller each time (1)."},
+  {q:"Write pseudocode for a program that uses a DO...UNTIL loop to keep asking the user to enter a valid exam score (between 0 and 100 inclusive). Once a valid score is entered, output an appropriate grade (A: 70+, B: 55-69, C: 40-54, Fail: below 40). [5 marks]",marks:5,ph:"Write the full solution with DO...UNTIL loop and grade selection...",model:"DO (1); score ← INPUT('Enter score 0-100: '); UNTIL score >= 0 AND score <= 100 (1); IF score >= 70 THEN OUTPUT 'A' (1); ELSE IF score >= 55 THEN OUTPUT 'B'; ELSE IF score >= 40 THEN OUTPUT 'C' (1); ELSE OUTPUT 'Fail' END IF (1)."},
+];
+
+const INT_QS = [
+  {type:'order',q:"Drag the steps of the binary search algorithm into the correct order. [2 marks]",items:["Find the middle element","Compare middle to the target","If target is smaller, search the LEFT half","If target is larger, search the RIGHT half","If middle equals target, return found","Repeat until found or list is empty"],correct:[0,1,4,2,3,5]},
+  {type:'drag',q:"Match each term to its correct definition. Drag each chip to the correct box. [2 marks]",chips:["Decomposition","Abstraction","Algorithm","Trace table"],targets:["A step-by-step set of instructions to solve a problem","Removing unnecessary detail from a problem","Breaking a problem into smaller sub-problems","A tool to manually track variable values step by step"],correct:[2,0,1,3]},
+  {type:'trace',q:"Complete this trace table for the algorithm below. [2 marks]\n\nFOR i ← 1 TO 4\n    x ← i * i\nEND FOR\nOUTPUT x",headers:["i","x","Output"],rows:[["1","",""],["2","",""],["3","",""],["4","","4th iteration — what is output?"]], answers:[["1","1",""],["2","4",""],["3","9",""],["4","16","16"]]},
+  {type:'order',q:"Put the bubble sort steps in the correct order for ONE pass through [5, 2, 8, 1]. [2 marks]",items:["Compare 5 and 2 → swap → [2,5,8,1]","Compare 2 and 5 (no swap)","Start: [5,2,8,1]","Compare 8 and 1 → swap → [2,5,1,8]","End of pass: [2,5,1,8]"],correct:[2,0,1,3,4]},
+  {type:'drag',q:"Match each sorting algorithm to its key characteristic. [2 marks]",chips:["Bubble sort","Merge sort","Insertion sort","Binary search"],targets:["Divides list in half repeatedly then merges sorted halves","Builds a sorted section by inserting one element at a time","Compares adjacent pairs and swaps if in wrong order","Not a sorting algorithm — used for finding items"],correct:[2,0,1,3]},
+  {type:'trace',q:"Trace this WHILE loop algorithm. Complete the trace table. [2 marks]\n\nn ← 1\nWHILE n < 20\n    n ← n * 3\nEND WHILE\nOUTPUT n",headers:["n before check","n < 20?","n after update"],rows:[["1","TRUE","3"],["3","",""],["9","",""],["","FALSE","(no update)"]],answers:[["1","TRUE","3"],["3","TRUE","9"],["9","TRUE","27"],["27","FALSE","(no update)"]]},
+  {type:'order',q:"Put these pseudocode constructs in order from most to least structured (most rigid execution order first). [2 marks]",items:["Sequence (runs in fixed order)","FOR loop (fixed number of iterations)","WHILE loop (unknown iterations)","IF statement (may or may not execute)"],correct:[0,1,3,2]},
+  {type:'drag',q:"Match each flowchart symbol to its name. [2 marks]",chips:["Oval / rounded rectangle","Diamond","Parallelogram","Rectangle"],targets:["Decision — a yes/no question","Process — a calculation or action","Terminal — start or stop","Input or output"],correct:[2,0,3,1]},
+  {type:'trace',q:"Complete the trace table for this algorithm with list = [3,7,2,9,5], target = 9 (linear search). [2 marks]\n\nFOR i ← 0 TO 4\n    IF list[i] = target THEN OUTPUT i\nEND FOR",headers:["i","list[i]","list[i]=target?","Output"],rows:[["0","3","FALSE",""],["1","7","",""],["2","2","",""],["3","9","",""],["4","5","",""]],answers:[["0","3","FALSE",""],["1","7","FALSE",""],["2","2","FALSE",""],["3","9","TRUE","3"],["4","5","FALSE",""]]},
+  {type:'drag',q:"Match each pseudocode operator to its correct meaning. [2 marks]",chips:["MOD","DIV","←","≠"],targets:["Not equal to","Assignment — store a value","Integer division (whole number quotient)","Remainder after division"],correct:[3,2,1,0]},
+];
+
+let timerInterval, secondsLeft = 3000, answered = 0, totalAns = 0;
+let objScores = {}, intChecked = {}, submitted = false;
+
+function pad(n){return String(n).padStart(2,'0')}
+function updateTimer(){
+  const m=Math.floor(secondsLeft/60), s=secondsLeft%60;
+  const el=document.getElementById('timerDisplay');
+  el.textContent=pad(m)+':'+pad(s);
+  el.className='timer-display'+(secondsLeft<=300?' danger':secondsLeft<=600?' warn':'');
+  if(secondsLeft<=0){clearInterval(timerInterval);submitAssessment();}
+  secondsLeft--;
+}
+function updateProgress(){
+  const total=OBJ_QS.length+INT_QS.length+TH_QS.length;
+  const prog=Math.round((answered/total)*100);
+  document.getElementById('progressFill').style.width=prog+'%';
+  document.getElementById('livScore').textContent=Object.values(objScores).reduce((a,b)=>a+b,0)+intChecked.total||0;
+  document.getElementById('livTotal').textContent=answered;
+}
+
+function buildObjective(){
+  const wrap=document.getElementById('objSection');
+  OBJ_QS.forEach((q,qi)=>{
+    const div=document.createElement('div');
+    div.className='q-wrap';
+    const letters=['A','B','C','D'];
+    div.innerHTML=`<div class="q-num-row"><span class="q-badge pill-blue">${qi+1}</span><span class="q-text">${q.q}</span><span class="q-marks">1 mark</span></div><div class="opts" id="opts${qi}">${q.opts.map((o,oi)=>`<button class="opt-btn" onclick="selectObj(${qi},${oi})" id="obj${qi}_${oi}"><span class="opt-letter">${letters[oi]}</span>${o}</button>`).join('')}</div><div class="q-feedback" id="fb${qi}"></div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function selectObj(qi,oi){
+  if(submitted) return;
+  const wasAnswered=objScores.hasOwnProperty(qi);
+  document.querySelectorAll(`#opts${qi} .opt-btn`).forEach(b=>b.className='opt-btn');
+  document.getElementById(`obj${qi}_${oi}`).className='opt-btn selected';
+  objScores[qi]=oi===OBJ_QS[qi].ans?1:0;
+  if(!wasAnswered){answered++;updateProgress();}
+}
+
+function buildInteractive(){
+  const wrap=document.getElementById('intSection');
+  INT_QS.forEach((q,qi)=>{
+    const div=document.createElement('div');
+    div.className='q-wrap';
+    let inner=`<div class="q-num-row"><span class="q-badge pill-amber">${qi+21}</span><span class="q-text">${q.q.split('\n').join('<br>')}</span><span class="q-marks">2 marks</span></div><div class="interactive-area" id="int${qi}">`;
+    if(q.type==='order'){
+      const shuffled=[...q.items].sort(()=>Math.random()-.5);
+      inner+=`<div class="order-list" id="ol${qi}">`;
+      shuffled.forEach((item,si)=>{
+        inner+=`<div class="order-item" draggable="true" data-val="${q.items.indexOf(item)}" id="oi${qi}_${si}"><i class="ti ti-grip-vertical order-handle" aria-hidden="true"></i>${item}</div>`;
+      });
+      inner+=`</div>`;
+    } else if(q.type==='drag'){
+      inner+=`<div class="drag-pool" id="pool${qi}">`;
+      q.chips.forEach((c,ci)=>{inner+=`<div class="drag-chip" draggable="true" data-idx="${ci}" id="chip${qi}_${ci}">${c}</div>`;});
+      inner+=`</div><div class="drop-zones">`;
+      q.targets.forEach((t,ti)=>{inner+=`<div class="drop-row"><div class="drop-label">${t}</div><div class="drop-target" id="dt${qi}_${ti}" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="dropChip(event,${qi},${ti})"></div></div>`;});
+      inner+=`</div>`;
+    } else if(q.type==='trace'){
+      inner+=`<div class="code-pre">${q.q.split('\n').slice(1).join('\n')}</div><div style="overflow-x:auto"><table class="trace-table"><thead><tr>${q.headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>`;
+      q.rows.forEach((row,ri)=>{
+        inner+=`<tr>`;
+        row.forEach((cell,ci)=>{
+          if(q.answers[ri][ci]!=='' && cell===''){
+            inner+=`<td><input class="trace-input" id="tr${qi}_${ri}_${ci}" placeholder="?" data-ans="${q.answers[ri][ci]}"></td>`;
+          } else {
+            inner+=`<td><span style="padding:6px 8px;display:block;color:var(--text-secondary)">${cell}</span></td>`;
+          }
+        });
+        inner+=`</tr>`;
+      });
+      inner+=`</tbody></table></div>`;
+    }
+    inner+=`</div><div class="q-err" id="err${qi+20}"></div><div class="q-feedback" id="fbi${qi}"></div><button class="check-btn" onclick="checkInt(${qi})">Check answer</button>`;
+    div.innerHTML=inner;
+    wrap.appendChild(div);
+  });
+  setupOrderDrag();
+  setupChipDrag();
+}
+
+function setupOrderDrag(){
+  INT_QS.forEach((q,qi)=>{
+    if(q.type!=='order') return;
+    const list=document.getElementById('ol'+qi);
+    if(!list) return;
+    let dragged=null;
+    list.addEventListener('dragstart',e=>{dragged=e.target.closest('.order-item');if(dragged)dragged.classList.add('dragging');});
+    list.addEventListener('dragend',e=>{if(dragged)dragged.classList.remove('dragging');dragged=null;});
+    list.addEventListener('dragover',e=>{
+      e.preventDefault();
+      const after=[...list.querySelectorAll('.order-item:not(.dragging)')].reduce((closest,child)=>{
+        const box=child.getBoundingClientRect();
+        const offset=e.clientY-box.top-box.height/2;
+        return offset<0&&offset>closest.offset?{offset,element:child}:closest;
+      },{offset:Number.NEGATIVE_INFINITY}).element;
+      if(after&&dragged) list.insertBefore(dragged,after);
+      else if(dragged) list.appendChild(dragged);
+    });
+  });
+}
+
+const chipDropState={};
+function setupChipDrag(){
+  INT_QS.forEach((q,qi)=>{
+    if(q.type!=='drag') return;
+    q.chips.forEach((c,ci)=>{
+      const chip=document.getElementById(`chip${qi}_${ci}`);
+      if(!chip) return;
+      chip.addEventListener('dragstart',e=>e.dataTransfer.setData('text',`${qi}_${ci}`));
+    });
+  });
+}
+
+function dropChip(e,qi,ti){
+  e.preventDefault();
+  const target=document.getElementById(`dt${qi}_${ti}`);
+  target.classList.remove('over');
+  const data=e.dataTransfer.getData('text').split('_');
+  if(data.length<2) return;
+  const fromQi=parseInt(data[0]),fromCi=parseInt(data[1]);
+  const chip=document.getElementById(`chip${fromQi}_${fromCi}`);
+  if(!chip) return;
+  if(target.querySelector('.drag-chip')){
+    const existing=target.querySelector('.drag-chip');
+    document.getElementById(`pool${fromQi}`).appendChild(existing);
+  }
+  target.appendChild(chip);
+}
+
+function checkInt(qi){
+  if(submitted) return;
+  const q=INT_QS[qi];
+  let score=0,max=2;
+  const fb=document.getElementById('fbi'+qi);
+  if(q.type==='order'){
+    const list=document.getElementById('ol'+qi);
+    const order=[...list.querySelectorAll('.order-item')].map(el=>parseInt(el.dataset.val));
+    const correct=q.correct;
+    let correct1=0;
+    order.forEach((v,i)=>{if(v===correct[i])correct1++;});
+    score=correct1>=correct.length?2:correct1>=Math.ceil(correct.length/2)?1:0;
+    fb.className='q-feedback show '+(score>=2?'ok':'no');
+    fb.textContent=score>=2?'Correct order!':'Correct order: '+q.items.map((_,i)=>q.correct[i]).map(i=>q.items[i]).join(' → ');
+  } else if(q.type==='drag'){
+    let correct1=0;
+    q.chips.forEach((c,ci)=>{
+      q.targets.forEach((t,ti)=>{
+        const dt=document.getElementById(`dt${qi}_${ti}`);
+        if(dt&&dt.querySelector(`#chip${qi}_${ci}`)&&q.correct[ti]===ci) correct1++;
+      });
+    });
+    score=correct1>=q.chips.length?2:correct1>=Math.ceil(q.chips.length/2)?1:0;
+    fb.className='q-feedback show '+(score>=2?'ok':'no');
+    fb.textContent=score>=2?'All matched correctly!':correct1+' of '+q.chips.length+' matched correctly.';
+  } else if(q.type==='trace'){
+    let correct1=0,total1=0;
+    q.rows.forEach((row,ri)=>{
+      row.forEach((cell,ci)=>{
+        if(q.answers[ri][ci]!==''&&cell===''){
+          total1++;
+          const inp=document.getElementById(`tr${qi}_${ri}_${ci}`);
+          if(inp){
+            const val=inp.value.trim().toLowerCase();
+            const ans=String(q.answers[ri][ci]).toLowerCase();
+            if(val===ans){inp.className='trace-input correct';correct1++;}
+            else{inp.className='trace-input wrong';}
+          }
+        }
+      });
+    });
+    score=correct1>=total1?2:correct1>0?1:0;
+    fb.className='q-feedback show '+(score>=2?'ok':'no');
+    fb.textContent=score>=2?'All cells correct!':correct1+' of '+total1+' cells correct.';
+  }
+  if(!intChecked[qi]){answered++;updateProgress();}
+  intChecked[qi]=score;
+  intChecked.total=(intChecked.total||0)+(intChecked[qi]?0:0);
+}
+
+function buildTheory(){
+  const wrap=document.getElementById('thSection');
+  TH_QS.forEach((q,qi)=>{
+    const div=document.createElement('div');
+    div.className='q-wrap';
+    const qText=q.q.replace(/\n/g,'<br>');
+    div.innerHTML=`<div class="q-num-row"><span class="q-badge pill-red">${qi+31}</span><span class="q-text">${qText}</span><span class="q-marks">${q.marks} marks</span></div><textarea class="text-area-q" id="th${qi}" placeholder="${q.ph}" oninput="thChanged(${qi},this)"></textarea><div class="char-count" id="cc${qi}">0 characters</div><div class="q-err" id="errt${qi}"></div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function thChanged(qi,el){
+  document.getElementById('cc'+qi).textContent=el.value.length+' characters';
+  if(!thAnswered) thAnswered={};
+  if(!thAnswered[qi]&&el.value.trim().length>0){
+    thAnswered[qi]=true;answered++;updateProgress();
+  }
+}
+let thAnswered={};
+
+function submitAssessment(){
+  if(submitted) return;
+  submitted=true;
+  clearInterval(timerInterval);
+
+  let secAScore=0;
+  OBJ_QS.forEach((q,qi)=>{
+    const wasAnswered=objScores.hasOwnProperty(qi);
+    if(!wasAnswered){objScores[qi]=0;}
+    const correct=objScores[qi]===1;
+    document.querySelectorAll(`#opts${qi} .opt-btn`).forEach((b,oi)=>{
+      b.className='opt-btn'+(oi===q.ans?' correct':'')+(oi!==q.ans&&objScores[qi]!==1&&b.className.includes('selected')?' wrong':'');
+    });
+    const fb=document.getElementById('fb'+qi);
+    fb.className='q-feedback show '+(correct?'ok':'no');
+    fb.textContent=(correct?'Correct! ':'Incorrect. ')+q.exp;
+    secAScore+=objScores[qi]||0;
+  });
+
+  let secBScore=0;
+  INT_QS.forEach((q,qi)=>{secBScore+=intChecked[qi]||0;});
+
+  const secAEl=document.getElementById('resA');
+  const secBEl=document.getElementById('resB');
+  const secTotEl=document.getElementById('resTotal');
+  secAEl.textContent=secAScore+'/20';
+  secBEl.textContent=secBScore+'/20';
+  const abTotal=secAScore+secBScore;
+  secTotEl.textContent=abTotal+'/40';
+
+  const pct=Math.round((abTotal/40)*100);
+  const badge=document.getElementById('gradeBadge');
+  let grade,col;
+  if(pct>=80){grade='Outstanding';col='var(--text-success)';}
+  else if(pct>=70){grade='Exceeding';col='var(--text-accent)';}
+  else if(pct>=55){grade='Meeting';col='var(--text-primary)';}
+  else if(pct>=40){grade='Approaching';col='var(--text-warning)';}
+  else{grade='Needs support';col='var(--text-danger)';}
+  badge.textContent=grade+' — '+pct+'%';
+  badge.style.color=col;
+  badge.style.border='0.5px solid currentColor';
+
+  document.getElementById('resNote').textContent='Section C (theory, 45 marks) is teacher-marked. Model answers are hidden below each question — scroll up to review the mark scheme.';
+  document.getElementById('resultsPanel').style.display='block';
+
+  TH_QS.forEach((q,qi)=>{
+    const ta=document.getElementById('th'+qi);
+    if(ta) ta.style.borderColor='var(--border-warning)';
+    const parent=ta?ta.parentElement:null;
+    if(parent){
+      const ms=document.createElement('div');
+      ms.style.cssText='font-size:12px;color:var(--text-secondary);background:var(--surface-1);border:0.5px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:6px;line-height:1.65';
+      ms.innerHTML='<span style="font-weight:500;color:var(--text-warning)">Model answer:</span> '+q.model;
+      parent.appendChild(ms);
+    }
+  });
+}
+
+buildObjective();
+buildInteractive();
+buildTheory();
+timerInterval=setInterval(updateTimer,1000);
+updateTimer();
+</script>
