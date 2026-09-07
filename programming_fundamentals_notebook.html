@@ -1,0 +1,698 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.nb{display:flex;min-height:640px;border:0.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface-2)}
+.tabs{width:152px;background:var(--surface-1);border-right:0.5px solid var(--border);display:flex;flex-direction:column;padding:10px 0;gap:1px;flex-shrink:0}
+.tab{display:flex;align-items:center;gap:8px;padding:9px 12px 9px 14px;cursor:pointer;font-size:12.5px;font-weight:400;color:var(--text-secondary);border:none;background:none;text-align:left;border-left:2.5px solid transparent;margin:0 0 0 4px;border-radius:6px 0 0 6px;transition:color .12s,background .12s;line-height:1.3}
+.tab i{font-size:15px;flex-shrink:0}
+.tab:hover{background:var(--surface-2);color:var(--text-primary)}
+.tab.on{background:var(--surface-2);color:var(--text-accent);border-left-color:var(--border-accent);font-weight:500;margin-right:-0.5px;z-index:2}
+.pg{flex:1;overflow-y:auto;display:none;padding:26px 28px 40px;animation:fi .18s ease}
+.pg.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ph{margin-bottom:20px;padding-bottom:14px;border-bottom:0.5px solid var(--border)}
+.ptag{display:inline-block;font-size:11px;font-weight:500;padding:2px 9px;border-radius:20px;margin-bottom:7px;letter-spacing:.04em}
+.ptitle{font-size:20px;font-weight:500;color:var(--text-primary);margin-bottom:3px}
+.psub{font-size:13px;color:var(--text-secondary)}
+h2.sh{font-size:14px;font-weight:500;color:var(--text-primary);margin:20px 0 9px;display:flex;align-items:center;gap:8px}
+h2.sh::after{content:'';flex:1;height:0.5px;background:var(--border)}
+h3.sh3{font-size:13px;font-weight:500;color:var(--text-secondary);margin:13px 0 7px}
+p.bd{font-size:13px;line-height:1.72;color:var(--text-secondary);margin-bottom:9px}
+ul.nl{list-style:none;padding:0;margin:0 0 10px}
+ul.nl li{font-size:13px;line-height:1.65;color:var(--text-secondary);padding:2px 0 2px 18px;position:relative}
+ul.nl li::before{content:'→';position:absolute;left:0;color:var(--text-accent);font-size:11px;top:4px}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.kcard{background:var(--surface-1);border:0.5px solid var(--border);border-radius:8px;padding:11px 13px}
+.klbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px}
+.kval{font-size:12.5px;color:var(--text-secondary);line-height:1.5}
+.cb{background:#1a1b2e;border-radius:8px;padding:13px 15px;margin:9px 0;position:relative;overflow-x:auto}
+.cb pre{font-family:var(--font-mono);font-size:12px;line-height:1.78;color:#c9d1d9;margin:0;white-space:pre}
+.cb .ctag{position:absolute;top:7px;right:10px;font-size:10px;font-weight:500;color:#484f58;text-transform:uppercase;letter-spacing:.05em;font-family:var(--font-mono)}
+.kw{color:#ff79c6}.str{color:#f1fa8c}.cm{color:#6272a4;font-style:italic}.num{color:#bd93f9}.fn{color:#8be9fd}.op{color:#ff79c6}.vr{color:#f8f8f2}
+.note{border-radius:8px;padding:12px 14px;margin:10px 0;display:flex;gap:10px;border:0.5px solid}
+.note i{font-size:17px;flex-shrink:0;margin-top:1px}
+.note-body .nt{font-size:12px;font-weight:500;margin-bottom:3px}
+.note-body .nd{font-size:12.5px;line-height:1.6}
+.tip{background:var(--bg-warning);border-color:var(--border-warning);color:var(--text-warning)}
+.tip .nd{color:var(--text-secondary)}
+.mem{background:var(--bg-accent);border-color:var(--border-accent);color:var(--text-accent)}
+.mem .nd{color:var(--text-secondary)}
+.warn{background:var(--bg-danger);border-color:var(--border-danger);color:var(--text-danger)}
+.warn .nd{color:var(--text-secondary)}
+.good{background:var(--bg-success);border-color:var(--border-success);color:var(--text-success)}
+.good .nd{color:var(--text-secondary)}
+.dtbl{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0;border:0.5px solid var(--border);border-radius:8px;overflow:hidden}
+.dtbl th{background:var(--surface-1);padding:7px 10px;text-align:left;font-weight:500;color:var(--text-secondary);font-size:11.5px;border-bottom:0.5px solid var(--border)}
+.dtbl td{padding:7px 10px;border-bottom:0.5px solid var(--border);color:var(--text-secondary)}
+.dtbl tr:last-child td{border-bottom:none}
+.dtbl tr:nth-child(even) td{background:var(--surface-1)}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500}
+.ba{background:var(--bg-accent);color:var(--text-accent)}
+.bs{background:var(--bg-success);color:var(--text-success)}
+.bw{background:var(--bg-warning);color:var(--text-warning)}
+.br{background:var(--bg-danger);color:var(--text-danger)}
+.bp{background:var(--bg-pro);color:var(--text-pro)}
+.sticky{background:#fef9c3;border:0.5px solid #fde047;border-radius:6px;padding:11px 13px;margin:10px 0;font-size:12.5px;color:#713f12;line-height:1.65;position:relative}
+.sticky::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:#fde047;border-radius:6px 6px 0 0}
+.run-area{margin:10px 0}
+.run-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.run-lbl{font-size:12px;font-weight:500;color:var(--text-secondary)}
+.run-btn{padding:5px 14px;border-radius:6px;border:0.5px solid var(--border-strong);background:var(--surface-2);color:var(--text-primary);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:var(--font-sans);transition:background .12s}
+.run-btn:hover{background:var(--surface-1)}
+.run-out{background:var(--surface-1);border:0.5px solid var(--border);border-radius:6px;padding:10px 12px;font-family:var(--font-mono);font-size:12px;color:var(--text-primary);min-height:36px;line-height:1.7;white-space:pre}
+.quiz-q{background:var(--surface-1);border:0.5px solid var(--border);border-radius:8px;padding:13px 15px;margin:10px 0}
+.quiz-q .qt{font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:9px}
+.quiz-opt{display:flex;flex-direction:column;gap:5px}
+.qo{padding:7px 11px;border-radius:6px;border:0.5px solid var(--border);background:var(--surface-2);cursor:pointer;font-size:12.5px;color:var(--text-secondary);text-align:left;font-family:var(--font-sans);transition:border-color .12s,background .12s}
+.qo:hover{border-color:var(--border-strong);background:var(--surface-1)}
+.qo.sel{background:var(--bg-accent);border-color:var(--border-accent);color:var(--text-accent)}
+.qo.ok{background:var(--bg-success);border-color:var(--border-success);color:var(--text-success)}
+.qo.bad{background:var(--bg-danger);border-color:var(--border-danger);color:var(--text-danger)}
+.qfb{font-size:12px;margin-top:7px;padding:7px 10px;border-radius:5px;display:none;line-height:1.55}
+.qfb.show{display:block}
+.qfb.ok{background:var(--bg-success);color:var(--text-success)}
+.qfb.bad{background:var(--bg-danger);color:var(--text-danger)}
+.loop-vis{display:flex;gap:10px;align-items:flex-end;margin:10px 0;flex-wrap:wrap}
+.loop-box{border:0.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;font-family:var(--font-mono);color:var(--text-secondary);background:var(--surface-1);transition:background .3s,border-color .3s}
+.loop-box.active{background:var(--bg-accent);border-color:var(--border-accent);color:var(--text-accent);font-weight:500}
+.loop-controls{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
+.lbtn{padding:5px 13px;border-radius:6px;border:0.5px solid var(--border-strong);background:var(--surface-2);color:var(--text-primary);font-size:12px;cursor:pointer;font-family:var(--font-sans);transition:background .12s}
+.lbtn:hover{background:var(--surface-1)}
+.dtype-card{display:flex;flex-direction:column;gap:0;border:0.5px solid var(--border);border-radius:8px;overflow:hidden;margin:10px 0}
+.dtype-row{display:flex;align-items:stretch;border-bottom:0.5px solid var(--border)}
+.dtype-row:last-child{border-bottom:none}
+.dtype-name{width:110px;padding:9px 12px;font-size:12px;font-weight:500;font-family:var(--font-mono);flex-shrink:0;display:flex;align-items:center;border-right:0.5px solid var(--border)}
+.dtype-desc{flex:1;padding:9px 12px;font-size:12.5px;color:var(--text-secondary);line-height:1.5;display:flex;align-items:center}
+.dtype-ex{width:120px;padding:9px 12px;font-size:12px;font-family:var(--font-mono);color:var(--text-muted);flex-shrink:0;display:flex;align-items:center;border-left:0.5px solid var(--border)}
+.scope-vis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.scope-box{border:0.5px solid var(--border);border-radius:8px;overflow:hidden}
+.scope-head{padding:7px 12px;font-size:12px;font-weight:500}
+.scope-body{padding:10px 12px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);line-height:1.75;background:var(--surface-1)}
+.inout-row{display:flex;gap:8px;align-items:center;margin:8px 0}
+.inout-inp{flex:1;padding:7px 10px;border:0.5px solid var(--border);border-radius:6px;background:var(--surface-2);font-family:var(--font-mono);font-size:12.5px;color:var(--text-primary)}
+.inout-btn{padding:7px 14px;border-radius:6px;border:0.5px solid var(--border-accent);background:var(--bg-accent);color:var(--text-accent);font-size:12.5px;font-weight:500;cursor:pointer;font-family:var(--font-sans)}
+.inout-out{background:var(--surface-1);border:0.5px solid var(--border);border-radius:6px;padding:8px 12px;font-family:var(--font-mono);font-size:12.5px;color:var(--text-primary);min-height:32px;line-height:1.65}
+</style>
+
+<h2 class="sr-only">Interactive OneNote-style student notebook on GCSE Computer Science Programming Fundamentals, covering data types, variables, operators, selection, iteration, strings, arrays, file handling, and sub-programs.</h2>
+
+<div class="nb">
+  <nav class="tabs" role="tablist" aria-label="Notebook sections">
+    <button class="tab on" onclick="sw('dt')" role="tab"><i class="ti ti-database" aria-hidden="true"></i>Data types</button>
+    <button class="tab" onclick="sw('va')" role="tab"><i class="ti ti-variable" aria-hidden="true"></i>Variables</button>
+    <button class="tab" onclick="sw('op')" role="tab"><i class="ti ti-math" aria-hidden="true"></i>Operators</button>
+    <button class="tab" onclick="sw('sel')" role="tab"><i class="ti ti-git-branch" aria-hidden="true"></i>Selection</button>
+    <button class="tab" onclick="sw('it')" role="tab"><i class="ti ti-repeat" aria-hidden="true"></i>Iteration</button>
+    <button class="tab" onclick="sw('str')" role="tab"><i class="ti ti-letter-case" aria-hidden="true"></i>Strings</button>
+    <button class="tab" onclick="sw('arr')" role="tab"><i class="ti ti-layout-list" aria-hidden="true"></i>Arrays</button>
+    <button class="tab" onclick="sw('file')" role="tab"><i class="ti ti-file-text" aria-hidden="true"></i>File handling</button>
+    <button class="tab" onclick="sw('sub')" role="tab"><i class="ti ti-function" aria-hidden="true"></i>Sub-programs</button>
+  </nav>
+  <main style="flex:1;overflow-y:auto">
+
+  <!-- DATA TYPES -->
+  <div class="pg on" id="pg-dt">
+    <div class="ph">
+      <span class="ptag ba">2.2.1</span>
+      <div class="ptitle">Data types</div>
+      <div class="psub">Every value in a program has a type that determines what you can do with it</div>
+    </div>
+    <p class="bd">A data type tells the computer what kind of value a variable holds and what operations are valid on it. Choosing the wrong type causes errors or unexpected results.</p>
+    <div class="dtype-card">
+      <div class="dtype-row"><div class="dtype-name" style="background:var(--bg-pro);color:var(--text-pro)">Integer</div><div class="dtype-desc">Whole numbers — positive, negative, or zero. No decimal point. Used for counting, loop counters, array indices.</div><div class="dtype-ex">-5 &nbsp; 0 &nbsp; 42 &nbsp; 1000</div></div>
+      <div class="dtype-row"><div class="dtype-name" style="background:var(--bg-accent);color:var(--text-accent)">Real / Float</div><div class="dtype-desc">Numbers with a decimal point. Used for measurements, prices, averages, and any result of division.</div><div class="dtype-ex">3.14 &nbsp; -0.5 &nbsp; 99.9</div></div>
+      <div class="dtype-row"><div class="dtype-name" style="background:var(--bg-success);color:var(--text-success)">Boolean</div><div class="dtype-desc">Can only be TRUE or FALSE. Used for conditions, flags, and logical decisions.</div><div class="dtype-ex">TRUE &nbsp; FALSE</div></div>
+      <div class="dtype-row"><div class="dtype-name" style="background:var(--bg-warning);color:var(--text-warning)">Character</div><div class="dtype-desc">A single character — letter, digit, or symbol. Stored as an ASCII/Unicode code internally.</div><div class="dtype-ex">'A' &nbsp; '7' &nbsp; '!'</div></div>
+      <div class="dtype-row"><div class="dtype-name" style="background:var(--bg-danger);color:var(--text-danger)">String</div><div class="dtype-desc">A sequence of zero or more characters. Text data. Name, message, or any combination of characters.</div><div class="dtype-ex">"Hello" &nbsp; "Year 11"</div></div>
+    </div>
+    <h2 class="sh">Choosing the right type</h2>
+    <table class="dtbl">
+      <thead><tr><th>Scenario</th><th>Data type</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>A student's age</td><td><span class="badge ba">Integer</span></td><td>Age is always a whole number</td></tr>
+        <tr><td>A student's name</td><td><span class="badge br">String</span></td><td>Names are text — letters and spaces</td></tr>
+        <tr><td>Is the student present?</td><td><span class="badge bs">Boolean</span></td><td>Only two possibilities: yes or no</td></tr>
+        <tr><td>A student's percentage score</td><td><span class="badge ba" style="background:var(--bg-accent)">Real</span></td><td>Could be 87.5 — needs a decimal point</td></tr>
+        <tr><td>First letter of surname</td><td><span class="badge bw">Character</span></td><td>A single letter, not a full string</td></tr>
+      </tbody>
+    </table>
+    <div class="note tip"><i class="ti ti-lamp" aria-hidden="true"></i><div class="note-body"><div class="nt">Exam tip</div><div class="nd">Exam questions often ask you to state the data type for a given scenario. Always justify your choice — saying "Integer because age is a whole number" scores higher than just "Integer".</div></div></div>
+    <h2 class="sh">Quick quiz</h2>
+    <div class="quiz-q"><div class="qt">What data type would you use to store the price of a product, e.g. £4.99?</div><div class="quiz-opt"><button class="qo" onclick="qa(this,'no')">Integer</button><button class="qo" onclick="qa(this,'ok')">Real / Float</button><button class="qo" onclick="qa(this,'no')">Boolean</button><button class="qo" onclick="qa(this,'no')">Character</button></div><div class="qfb" id="qfb0"></div></div>
+    <div class="quiz-q"><div class="qt">A program stores whether a door is locked or unlocked. What data type is most appropriate?</div><div class="quiz-opt"><button class="qo" onclick="qb(this,'no')">String</button><button class="qo" onclick="qb(this,'no')">Integer</button><button class="qo" onclick="qb(this,'ok')">Boolean</button><button class="qo" onclick="qb(this,'no')">Real</button></div><div class="qfb" id="qfb1"></div></div>
+  </div>
+
+  <!-- VARIABLES & CONSTANTS -->
+  <div class="pg" id="pg-va">
+    <div class="ph">
+      <span class="ptag ba">2.2.2</span>
+      <div class="ptitle">Variables and constants</div>
+      <div class="psub">Named locations in memory that store values during a program's execution</div>
+    </div>
+    <h2 class="sh">Variables</h2>
+    <p class="bd">A variable is a named memory location whose value <strong>can change</strong> during execution. Think of it as a labelled box — you can put something in, take it out, and replace it with something new.</p>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="cm">// Assignment uses the ← operator</span>
+<span class="vr">score</span> <span class="op">←</span> <span class="num">0</span>               <span class="cm">// score starts at 0</span>
+<span class="vr">score</span> <span class="op">←</span> <span class="vr">score</span> <span class="op">+</span> <span class="num">10</span>      <span class="cm">// score is now 10</span>
+<span class="vr">name</span>  <span class="op">←</span> <span class="str">"Alice"</span>          <span class="cm">// name holds a string</span>
+<span class="vr">found</span> <span class="op">←</span> <span class="kw">FALSE</span>           <span class="cm">// found is a Boolean flag</span></pre></div>
+    <h2 class="sh">Constants</h2>
+    <p class="bd">A constant is a named value that is set <strong>once and never changes</strong>. Constants make code easier to read and maintain — change the value in one place and it updates everywhere it's used.</p>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="cm">// Constants are often written in UPPER_CASE</span>
+<span class="kw">CONST</span> <span class="vr">PI</span>          <span class="op">←</span> <span class="num">3.14159</span>
+<span class="kw">CONST</span> <span class="vr">MAX_ATTEMPTS</span> <span class="op">←</span> <span class="num">3</span>
+<span class="kw">CONST</span> <span class="vr">PASS_MARK</span>    <span class="op">←</span> <span class="num">40</span>
+
+<span class="cm">// Now if the pass mark changes, update just one line:</span>
+<span class="kw">IF</span> <span class="vr">score</span> <span class="op">>=</span> <span class="vr">PASS_MARK</span> <span class="kw">THEN</span>
+    <span class="fn">OUTPUT</span>(<span class="str">"Pass"</span>)
+<span class="kw">END IF</span></pre></div>
+    <div class="kgrid">
+      <div class="kcard" style="border-left:2.5px solid var(--border-accent)">
+        <div class="klbl" style="color:var(--text-accent)">Variable</div>
+        <div class="kval">Value CAN change. Use for scores, counters, user input, running totals — anything that updates during the program.</div>
+      </div>
+      <div class="kcard" style="border-left:2.5px solid var(--border-success)">
+        <div class="klbl" style="color:var(--text-success)">Constant</div>
+        <div class="kval">Value CANNOT change. Use for fixed values like PI, tax rates, maximum attempts, screen dimensions.</div>
+      </div>
+    </div>
+    <h2 class="sh">Naming rules</h2>
+    <ul class="nl">
+      <li>Names must start with a letter — not a number or symbol</li>
+      <li>Names can contain letters, digits, and underscores: <code>student_name</code>, <code>score2</code></li>
+      <li>Names cannot contain spaces — use camelCase (<code>totalScore</code>) or underscores (<code>total_score</code>)</li>
+      <li>Names should be meaningful — <code>studentAge</code> is better than <code>x</code></li>
+      <li>Names are usually case-sensitive in real languages</li>
+    </ul>
+    <div class="note tip"><i class="ti ti-lamp" aria-hidden="true"></i><div class="note-body"><div class="nt">Exam tip</div><div class="nd">A common exam question is "state ONE advantage of using a constant instead of a variable". Answer: if the value needs to change, you only need to update it in one place — reducing errors. Also: the name makes the code self-documenting.</div></div></div>
+    <div class="sticky">🧠 Memory trick: A variable is like a whiteboard — you can erase and rewrite. A constant is like text carved in stone — it stays the same forever.</div>
+  </div>
+
+  <!-- OPERATORS -->
+  <div class="pg" id="pg-op">
+    <div class="ph">
+      <span class="ptag ba">2.2.3</span>
+      <div class="ptitle">Operators</div>
+      <div class="psub">Symbols that perform operations on values and variables</div>
+    </div>
+    <h2 class="sh">Arithmetic operators</h2>
+    <table class="dtbl">
+      <thead><tr><th>Operator</th><th>Name</th><th>Example</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td><code>+</code></td><td>Addition</td><td><code>5 + 3</code></td><td>8</td></tr>
+        <tr><td><code>-</code></td><td>Subtraction</td><td><code>10 - 4</code></td><td>6</td></tr>
+        <tr><td><code>*</code></td><td>Multiplication</td><td><code>6 * 7</code></td><td>42</td></tr>
+        <tr><td><code>/</code></td><td>Division (real)</td><td><code>7 / 2</code></td><td>3.5</td></tr>
+        <tr><td><code>DIV</code></td><td>Integer division</td><td><code>7 DIV 2</code></td><td>3 (quotient only)</td></tr>
+        <tr><td><code>MOD</code></td><td>Modulus (remainder)</td><td><code>7 MOD 2</code></td><td>1 (remainder only)</td></tr>
+        <tr><td><code>^</code></td><td>Exponentiation</td><td><code>2 ^ 8</code></td><td>256</td></tr>
+      </tbody>
+    </table>
+    <div class="note mem"><i class="ti ti-info-circle" aria-hidden="true"></i><div class="note-body"><div class="nt">MOD vs DIV</div><div class="nd">17 DIV 5 = 3 (how many times 5 goes into 17 — the quotient). 17 MOD 5 = 2 (what's left over — the remainder). Together they give you both parts of the division: 17 = (5 × 3) + 2.</div></div></div>
+    <h2 class="sh">Comparison operators</h2>
+    <table class="dtbl">
+      <thead><tr><th>Operator</th><th>Meaning</th><th>Example (returns Boolean)</th></tr></thead>
+      <tbody>
+        <tr><td><code>=</code></td><td>Equal to</td><td><code>score = 100</code> → TRUE if score is 100</td></tr>
+        <tr><td><code>≠</code></td><td>Not equal to</td><td><code>name ≠ "Alice"</code></td></tr>
+        <tr><td><code>&lt;</code></td><td>Less than</td><td><code>age &lt; 18</code></td></tr>
+        <tr><td><code>&gt;</code></td><td>Greater than</td><td><code>score &gt; 50</code></td></tr>
+        <tr><td><code>≤</code></td><td>Less than or equal to</td><td><code>grade ≤ 40</code></td></tr>
+        <tr><td><code>≥</code></td><td>Greater than or equal to</td><td><code>mark ≥ 70</code></td></tr>
+      </tbody>
+    </table>
+    <h2 class="sh">Logical operators</h2>
+    <table class="dtbl">
+      <thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>AND</code></td><td>Both conditions must be TRUE</td><td><code>age &gt; 16 AND age &lt; 65</code></td></tr>
+        <tr><td><code>OR</code></td><td>At least one condition must be TRUE</td><td><code>choice = "Y" OR choice = "y"</code></td></tr>
+        <tr><td><code>NOT</code></td><td>Inverts a Boolean value</td><td><code>NOT (found)</code> — TRUE if found is FALSE</td></tr>
+      </tbody>
+    </table>
+    <h2 class="sh">Try it — operator calculator</h2>
+    <div class="run-area">
+      <div class="run-top"><span class="run-lbl">Enter two numbers and pick an operator</span></div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <input type="number" id="oa" value="17" style="width:70px;padding:6px 8px;border:0.5px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--text-primary);font-family:var(--font-mono);font-size:13px">
+        <select id="oop" style="padding:6px 10px;border:0.5px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--text-primary);font-size:13px">
+          <option value="add">+</option><option value="sub">-</option><option value="mul">×</option><option value="div">/</option><option value="idiv">DIV</option><option value="mod">MOD</option>
+        </select>
+        <input type="number" id="ob" value="5" style="width:70px;padding:6px 8px;border:0.5px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--text-primary);font-family:var(--font-mono);font-size:13px">
+        <button class="run-btn" onclick="calcOp()"><i class="ti ti-player-play" aria-hidden="true"></i>Calculate</button>
+      </div>
+      <div class="run-out" id="opOut" style="margin-top:7px">Result appears here...</div>
+    </div>
+    <div class="note tip"><i class="ti ti-lamp" aria-hidden="true"></i><div class="note-body"><div class="nt">Common exam use of MOD</div><div class="nd">MOD is used to check if a number is even: if <code>n MOD 2 = 0</code> then n is even. It's also used to wrap around arrays or implement circular buffers.</div></div></div>
+  </div>
+
+  <!-- SELECTION -->
+  <div class="pg" id="pg-sel">
+    <div class="ph">
+      <span class="ptag bp">2.2.4</span>
+      <div class="ptitle">Selection (IF statements)</div>
+      <div class="psub">Making decisions — executing different code depending on conditions</div>
+    </div>
+    <p class="bd">Selection allows a program to branch — to execute different code depending on whether a condition evaluates to TRUE or FALSE. Without selection, programs could only run the same steps every time.</p>
+    <h2 class="sh">Simple IF...ELSE</h2>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="kw">IF</span> <span class="vr">score</span> <span class="op">>=</span> <span class="num">50</span> <span class="kw">THEN</span>
+    <span class="fn">OUTPUT</span>(<span class="str">"Well done, you passed!"</span>)
+<span class="kw">ELSE</span>
+    <span class="fn">OUTPUT</span>(<span class="str">"Sorry, you failed. Try again."</span>)
+<span class="kw">END IF</span></pre></div>
+    <h2 class="sh">IF...ELSE IF...ELSE (multiple branches)</h2>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="kw">IF</span> <span class="vr">score</span> <span class="op">>=</span> <span class="num">70</span> <span class="kw">THEN</span>
+    <span class="vr">grade</span> <span class="op">←</span> <span class="str">"A"</span>       <span class="cm">// 70 and above</span>
+<span class="kw">ELSE IF</span> <span class="vr">score</span> <span class="op">>=</span> <span class="num">55</span> <span class="kw">THEN</span>
+    <span class="vr">grade</span> <span class="op">←</span> <span class="str">"B"</span>       <span class="cm">// 55 to 69</span>
+<span class="kw">ELSE IF</span> <span class="vr">score</span> <span class="op">>=</span> <span class="num">40</span> <span class="kw">THEN</span>
+    <span class="vr">grade</span> <span class="op">←</span> <span class="str">"C"</span>       <span class="cm">// 40 to 54</span>
+<span class="kw">ELSE</span>
+    <span class="vr">grade</span> <span class="op">←</span> <span class="str">"Fail"</span>   <span class="cm">// below 40</span>
+<span class="kw">END IF</span>
+<span class="fn">OUTPUT</span>(<span class="str">"Your grade: "</span> <span class="op">+</span> <span class="vr">grade</span>)</pre></div>
+    <h2 class="sh">SWITCH / CASE statement</h2>
+    <p class="bd">When selecting between many fixed values of the same variable, SWITCH is cleaner than a long IF...ELSE IF chain.</p>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="vr">day</span> <span class="op">←</span> <span class="fn">INPUT</span>(<span class="str">"Enter day (1-7): "</span>)
+<span class="kw">SWITCH</span> <span class="vr">day</span>:
+    <span class="kw">CASE</span> <span class="num">1</span>: <span class="fn">OUTPUT</span>(<span class="str">"Monday"</span>)
+    <span class="kw">CASE</span> <span class="num">2</span>: <span class="fn">OUTPUT</span>(<span class="str">"Tuesday"</span>)
+    <span class="kw">CASE</span> <span class="num">3</span>: <span class="fn">OUTPUT</span>(<span class="str">"Wednesday"</span>)
+    <span class="kw">CASE</span> <span class="num">4</span>: <span class="fn">OUTPUT</span>(<span class="str">"Thursday"</span>)
+    <span class="kw">CASE</span> <span class="num">5</span>: <span class="fn">OUTPUT</span>(<span class="str">"Friday"</span>)
+    <span class="kw">DEFAULT</span>: <span class="fn">OUTPUT</span>(<span class="str">"Weekend"</span>)
+<span class="kw">END SWITCH</span></pre></div>
+    <h2 class="sh">Try it — grade calculator</h2>
+    <div class="inout-row">
+      <input type="number" class="inout-inp" id="gradeInp" placeholder="Enter score (0–100)" min="0" max="100">
+      <button class="inout-btn" onclick="calcGrade()">Get grade</button>
+    </div>
+    <div class="inout-out" id="gradeOut">Grade will appear here...</div>
+    <div class="note warn"><i class="ti ti-alert-triangle" aria-hidden="true"></i><div class="note-body"><div class="nt">Common mistake</div><div class="nd">Always check conditions from highest to lowest (or lowest to highest consistently). If you check <code>score ≥ 40</code> first, then everyone with 70+ also satisfies that — they'd all get "C" instead of "A"!</div></div></div>
+    <div class="note tip"><i class="ti ti-lamp" aria-hidden="true"></i><div class="note-body"><div class="nt">Exam tip</div><div class="nd">Always include <code>END IF</code> to close your selection block. Forgetting it is the most common pseudocode error in exams.</div></div></div>
+  </div>
+
+  <!-- ITERATION -->
+  <div class="pg" id="pg-it">
+    <div class="ph">
+      <span class="ptag bs">2.2.5</span>
+      <div class="ptitle">Iteration (loops)</div>
+      <div class="psub">Repeating blocks of code — the most powerful tool in programming</div>
+    </div>
+    <p class="bd">Iteration allows a block of code to be executed multiple times without rewriting it. There are two main types: count-controlled (FOR) and condition-controlled (WHILE / DO...UNTIL).</p>
+    <h2 class="sh">FOR loop — count-controlled</h2>
+    <p class="bd">Use when you know exactly how many times the loop should run before it starts.</p>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="cm">// Print the 5 times table</span>
+<span class="kw">FOR</span> <span class="vr">i</span> <span class="op">←</span> <span class="num">1</span> <span class="kw">TO</span> <span class="num">10</span>
+    <span class="fn">OUTPUT</span>(<span class="vr">i</span> <span class="op">*</span> <span class="num">5</span>)
+<span class="kw">END FOR</span>
+<span class="cm">// Outputs: 5, 10, 15, 20, 25, 30, 35, 40, 45, 50</span></pre></div>
+    <h2 class="sh">WHILE loop — pre-condition</h2>
+    <p class="bd">Checks the condition BEFORE each iteration. May never run if condition is false from the start.</p>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="vr">total</span> <span class="op">←</span> <span class="num">0</span>
+<span class="kw">WHILE</span> <span class="vr">total</span> <span class="op">&lt;</span> <span class="num">100</span>
+    <span class="vr">n</span> <span class="op">←</span> <span class="fn">INPUT</span>(<span class="str">"Enter a number: "</span>)
+    <span class="vr">total</span> <span class="op">←</span> <span class="vr">total</span> <span class="op">+</span> <span class="vr">n</span>
+<span class="kw">END WHILE</span>
+<span class="fn">OUTPUT</span>(<span class="str">"Total reached: "</span> <span class="op">+</span> <span class="vr">total</span>)</pre></div>
+    <h2 class="sh">DO...UNTIL — post-condition</h2>
+    <p class="bd">Checks condition AFTER each iteration. Always runs at least once — perfect for input validation.</p>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="kw">DO</span>
+    <span class="vr">age</span> <span class="op">←</span> <span class="fn">INPUT</span>(<span class="str">"Enter your age (0–120): "</span>)
+<span class="kw">UNTIL</span> <span class="vr">age</span> <span class="op">>=</span> <span class="num">0</span> <span class="kw">AND</span> <span class="vr">age</span> <span class="op">&lt;=</span> <span class="num">120</span>
+<span class="fn">OUTPUT</span>(<span class="str">"Valid age entered: "</span> <span class="op">+</span> <span class="vr">age</span>)</pre></div>
+    <h2 class="sh">FOR loop visualiser — watch it step</h2>
+    <div>
+      <div class="loop-vis" id="loopVis"></div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;font-family:var(--font-mono)" id="loopInfo">Press Next to step through FOR i ← 1 TO 6</div>
+      <div class="loop-controls">
+        <button class="lbtn" onclick="loopStep()"><i class="ti ti-arrow-right" aria-hidden="true"></i> Next step</button>
+        <button class="lbtn" onclick="loopReset()"><i class="ti ti-refresh" aria-hidden="true"></i> Reset</button>
+      </div>
+    </div>
+    <div class="kgrid" style="margin-top:14px">
+      <div class="kcard" style="border-left:2.5px solid var(--border-accent)">
+        <div class="klbl" style="color:var(--text-accent)">WHILE vs DO...UNTIL</div>
+        <div class="kval">WHILE: condition checked first — may run 0 times.<br>DO...UNTIL: condition checked last — always runs at least once.</div>
+      </div>
+      <div class="kcard" style="border-left:2.5px solid var(--border-success)">
+        <div class="klbl" style="color:var(--text-success)">When to use each</div>
+        <div class="kval">FOR: you know the count. WHILE: unknown count, check before. DO...UNTIL: must run at least once (e.g. input validation).</div>
+      </div>
+    </div>
+    <div class="note tip"><i class="ti ti-lamp" aria-hidden="true"></i><div class="note-body"><div class="nt">Exam tip — most tested loop question</div><div class="nd">"Explain the difference between a WHILE loop and a DO...UNTIL loop." WHILE checks condition before — may never execute. DO...UNTIL checks after — always executes at least once. This difference earns 2 marks every time it appears.</div></div></div>
+  </div>
+
+  <!-- STRINGS -->
+  <div class="pg" id="pg-str">
+    <div class="ph">
+      <span class="ptag bw">2.2.6</span>
+      <div class="ptitle">String handling</div>
+      <div class="psub">Manipulating text — one of the most common programming tasks</div>
+    </div>
+    <p class="bd">Strings are sequences of characters. Programming languages provide built-in functions to manipulate them. You must know these string operations for the exam and for Section B code-writing questions.</p>
+    <h2 class="sh">Essential string operations</h2>
+    <table class="dtbl">
+      <thead><tr><th>Operation</th><th>Pseudocode</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Concatenation (join)</td><td><code>"Hello" + " " + "World"</code></td><td><code>"Hello World"</code></td></tr>
+        <tr><td>Length</td><td><code>LEN("Computer")</code></td><td><code>8</code></td></tr>
+        <tr><td>Substring</td><td><code>SUBSTRING("Computing", 0, 4)</code></td><td><code>"Comp"</code> (4 chars from index 0)</td></tr>
+        <tr><td>Upper case</td><td><code>UPPER("hello")</code></td><td><code>"HELLO"</code></td></tr>
+        <tr><td>Lower case</td><td><code>LOWER("HELLO")</code></td><td><code>"hello"</code></td></tr>
+        <tr><td>String to integer</td><td><code>INT("42")</code></td><td><code>42</code> (number)</td></tr>
+        <tr><td>Integer to string</td><td><code>STR(42)</code></td><td><code>"42"</code> (text)</td></tr>
+        <tr><td>ASCII value</td><td><code>ASC("A")</code></td><td><code>65</code></td></tr>
+        <tr><td>Character from ASCII</td><td><code>CHR(65)</code></td><td><code>"A"</code></td></tr>
+      </tbody>
+    </table>
+    <h2 class="sh">String indexing</h2>
+    <p class="bd">Each character in a string has an index number. In most GCSE pseudocode, indexing starts at 0 (the first character is at position 0).</p>
+    <div class="cb"><span class="ctag">example</span><pre><span class="vr">word</span> <span class="op">←</span> <span class="str">"Python"</span>
+<span class="cm">// Index:   0  1  2  3  4  5
+//          P  y  t  h  o  n</span>
+<span class="fn">SUBSTRING</span>(<span class="vr">word</span>, <span class="num">0</span>, <span class="num">1</span>)  <span class="cm">// → "P"  (1 char from index 0)</span>
+<span class="fn">SUBSTRING</span>(<span class="vr">word</span>, <span class="num">0</span>, <span class="num">3</span>)  <span class="cm">// → "Pyt" (3 chars from index 0)</span>
+<span class="fn">LEN</span>(<span class="vr">word</span>)               <span class="cm">// → 6</span></pre></div>
+    <h2 class="sh">Worked example — count vowels</h2>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="vr">word</span>  <span class="op">←</span> <span class="fn">INPUT</span>(<span class="str">"Enter a word: "</span>)
+<span class="vr">count</span> <span class="op">←</span> <span class="num">0</span>
+<span class="kw">FOR</span> <span class="vr">i</span> <span class="op">←</span> <span class="num">0</span> <span class="kw">TO</span> <span class="fn">LEN</span>(<span class="vr">word</span>) <span class="op">-</span> <span class="num">1</span>
+    <span class="vr">letter</span> <span class="op">←</span> <span class="fn">SUBSTRING</span>(<span class="fn">LOWER</span>(<span class="vr">word</span>), <span class="vr">i</span>, <span class="num">1</span>)
+    <span class="kw">IF</span> <span class="vr">letter</span> <span class="op">=</span> <span class="str">"a"</span> <span class="kw">OR</span> <span class="vr">letter</span> <span class="op">=</span> <span class="str">"e"</span> <span class="kw">OR</span> <span class="vr">letter</span> <span class="op">=</span> <span class="str">"i"</span>
+    <span class="kw">OR</span>  <span class="vr">letter</span> <span class="op">=</span> <span class="str">"o"</span> <span class="kw">OR</span> <span class="vr">letter</span> <span class="op">=</span> <span class="str">"u"</span> <span class="kw">THEN</span>
+        <span class="vr">count</span> <span class="op">←</span> <span class="vr">count</span> <span class="op">+</span> <span class="num">1</span>
+    <span class="kw">END IF</span>
+<span class="kw">END FOR</span>
+<span class="fn">OUTPUT</span>(<span class="vr">word</span> <span class="op">+</span> <span class="str">" contains "</span> <span class="op">+</span> <span class="fn">STR</span>(<span class="vr">count</span>) <span class="op">+</span> <span class="str">" vowels"</span>)</pre></div>
+    <h2 class="sh">Try it — string explorer</h2>
+    <div class="inout-row">
+      <input type="text" class="inout-inp" id="strInp" placeholder="Type any word or phrase..." style="font-family:var(--font-mono);font-size:13px">
+      <button class="inout-btn" onclick="exploreStr()">Analyse</button>
+    </div>
+    <div class="inout-out" id="strOut">String analysis will appear here...</div>
+    <div class="note mem"><i class="ti ti-info-circle" aria-hidden="true"></i><div class="note-body"><div class="nt">ASC and CHR</div><div class="nd">ASC("A") = 65, ASC("a") = 97. The difference between upper and lower case ASCII values is always 32. CHR(65) = "A". These come up in cipher/encryption questions — e.g. shifting letters by adding to their ASCII value.</div></div></div>
+  </div>
+
+  <!-- ARRAYS -->
+  <div class="pg" id="pg-arr">
+    <div class="ph">
+      <span class="ptag br">2.2.7</span>
+      <div class="ptitle">Arrays</div>
+      <div class="psub">Storing multiple values of the same type under one variable name</div>
+    </div>
+    <p class="bd">An array stores multiple values in a single named structure. Each value is accessed using an index number. Arrays make it much easier to work with lists of data — without them you'd need a separate variable for every value.</p>
+    <h2 class="sh">1D arrays (single-dimensional)</h2>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="cm">// Declare and initialise a 1D array</span>
+<span class="vr">scores</span> <span class="op">←</span> [<span class="num">85</span>, <span class="num">72</span>, <span class="num">91</span>, <span class="num">64</span>, <span class="num">78</span>]
+
+<span class="cm">// Access individual elements by index (starts at 0)</span>
+<span class="fn">OUTPUT</span>(<span class="vr">scores</span>[<span class="num">0</span>])    <span class="cm">// → 85  (first element)</span>
+<span class="fn">OUTPUT</span>(<span class="vr">scores</span>[<span class="num">4</span>])    <span class="cm">// → 78  (last element)</span>
+
+<span class="cm">// Modify an element</span>
+<span class="vr">scores</span>[<span class="num">2</span>] <span class="op">←</span> <span class="num">95</span>       <span class="cm">// changes 91 to 95</span>
+
+<span class="cm">// Traverse ALL elements using a FOR loop</span>
+<span class="kw">FOR</span> <span class="vr">i</span> <span class="op">←</span> <span class="num">0</span> <span class="kw">TO</span> <span class="fn">LENGTH</span>(<span class="vr">scores</span>) <span class="op">-</span> <span class="num">1</span>
+    <span class="fn">OUTPUT</span>(<span class="vr">scores</span>[<span class="vr">i</span>])
+<span class="kw">END FOR</span></pre></div>
+    <h2 class="sh">Visual — how array indices work</h2>
+    <div style="margin:10px 0;overflow-x:auto">
+      <div style="display:inline-flex;gap:0;border:0.5px solid var(--border);border-radius:8px;overflow:hidden;min-width:280px">
+        <div style="background:var(--surface-1);padding:6px 12px;font-size:11px;font-weight:500;color:var(--text-muted);border-right:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:4px;width:50px"><span>idx</span></div>
+        <div id="arrVis" style="display:flex"></div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap" id="arrBtns"></div>
+      <div style="margin-top:6px;font-size:12px;color:var(--text-secondary);font-family:var(--font-mono)" id="arrInfo">Click an index above to highlight that element</div>
+    </div>
+    <h2 class="sh">2D arrays (grids / tables)</h2>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="cm">// A 3x3 2D array — like a grid</span>
+<span class="vr">grid</span> <span class="op">←</span> [[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>],[<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>],[<span class="num">7</span>,<span class="num">8</span>,<span class="num">9</span>]]
+
+<span class="cm">// Access: grid[ROW][COLUMN]</span>
+<span class="fn">OUTPUT</span>(<span class="vr">grid</span>[<span class="num">0</span>][<span class="num">0</span>])   <span class="cm">// → 1  (row 0, col 0)</span>
+<span class="fn">OUTPUT</span>(<span class="vr">grid</span>[<span class="num">1</span>][<span class="num">2</span>])   <span class="cm">// → 6  (row 1, col 2)</span>
+<span class="fn">OUTPUT</span>(<span class="vr">grid</span>[<span class="num">2</span>][<span class="num">1</span>])   <span class="cm">// → 8  (row 2, col 1)</span>
+
+<span class="cm">// Traverse with nested loops</span>
+<span class="kw">FOR</span> <span class="vr">row</span> <span class="op">←</span> <span class="num">0</span> <span class="kw">TO</span> <span class="num">2</span>
+    <span class="kw">FOR</span> <span class="vr">col</span> <span class="op">←</span> <span class="num">0</span> <span class="kw">TO</span> <span class="num">2</span>
+        <span class="fn">OUTPUT</span>(<span class="vr">grid</span>[<span class="vr">row</span>][<span class="vr">col</span>])
+    <span class="kw">END FOR</span>
+<span class="kw">END FOR</span></pre></div>
+    <h2 class="sh">Common array algorithms</h2>
+    <div class="kgrid">
+      <div class="kcard"><div class="klbl">Find maximum</div><div class="kval"><code>max ← list[0]<br>FOR i ← 1 TO LEN-1<br>&nbsp;&nbsp;IF list[i] > max<br>&nbsp;&nbsp;&nbsp;&nbsp;max ← list[i]<br>OUTPUT max</code></div></div>
+      <div class="kcard"><div class="klbl">Calculate total</div><div class="kval"><code>total ← 0<br>FOR i ← 0 TO LEN-1<br>&nbsp;&nbsp;total ← total + list[i]<br>average ← total / LEN<br>OUTPUT average</code></div></div>
+    </div>
+    <div class="note tip"><i class="ti ti-lamp" aria-hidden="true"></i><div class="note-body"><div class="nt">Exam tip — 2D arrays</div><div class="nd">Remember array[ROW][COLUMN] — row first, column second. Think of it like coordinates on a spreadsheet: row = which row down, column = which column across.</div></div></div>
+  </div>
+
+  <!-- FILE HANDLING -->
+  <div class="pg" id="pg-file">
+    <div class="ph">
+      <span class="ptag bs">2.2.8</span>
+      <div class="ptitle">File handling</div>
+      <div class="psub">Reading and writing data that persists between program runs</div>
+    </div>
+    <p class="bd">Variables lose their values when a program ends. File handling allows programs to save data permanently to secondary storage and read it back again. This is how real applications (games, databases, apps) remember information between sessions.</p>
+    <h2 class="sh">Why file handling matters</h2>
+    <ul class="nl">
+      <li>Without files: scores, settings, and records are lost when the program closes</li>
+      <li>With files: data persists — a game remembers your high score, a database keeps records</li>
+      <li>Files are stored on secondary storage (HDD, SSD) — non-volatile memory</li>
+    </ul>
+    <h2 class="sh">Writing to a file</h2>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="cm">// Open file in write mode (creates or overwrites)</span>
+<span class="fn">OPEN</span>(<span class="str">"scores.txt"</span>, <span class="str">"write"</span>)
+<span class="fn">WRITELINE</span>(<span class="str">"scores.txt"</span>, <span class="str">"Alice: 85"</span>)
+<span class="fn">WRITELINE</span>(<span class="str">"scores.txt"</span>, <span class="str">"Bob: 72"</span>)
+<span class="fn">WRITELINE</span>(<span class="str">"scores.txt"</span>, <span class="str">"Carol: 91"</span>)
+<span class="fn">CLOSE</span>(<span class="str">"scores.txt"</span>)    <span class="cm">// ALWAYS close files when done</span></pre></div>
+    <h2 class="sh">Reading from a file</h2>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="fn">OPEN</span>(<span class="str">"scores.txt"</span>, <span class="str">"read"</span>)
+<span class="kw">WHILE</span> <span class="kw">NOT</span> <span class="fn">EOF</span>(<span class="str">"scores.txt"</span>)    <span class="cm">// EOF = End Of File</span>
+    <span class="vr">line</span> <span class="op">←</span> <span class="fn">READLINE</span>(<span class="str">"scores.txt"</span>)
+    <span class="fn">OUTPUT</span>(<span class="vr">line</span>)
+<span class="kw">END WHILE</span>
+<span class="fn">CLOSE</span>(<span class="str">"scores.txt"</span>)</pre></div>
+    <h2 class="sh">Appending to a file</h2>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="cm">// Append mode adds to the end without overwriting</span>
+<span class="fn">OPEN</span>(<span class="str">"scores.txt"</span>, <span class="str">"append"</span>)
+<span class="fn">WRITELINE</span>(<span class="str">"scores.txt"</span>, <span class="str">"Dave: 78"</span>)
+<span class="fn">CLOSE</span>(<span class="str">"scores.txt"</span>)</pre></div>
+    <h2 class="sh">The three file modes</h2>
+    <table class="dtbl">
+      <thead><tr><th>Mode</th><th>Effect</th><th>Use case</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge ba">"read"</span></td><td>Opens for reading only. File must exist.</td><td>Loading saved data, reading a config</td></tr>
+        <tr><td><span class="badge br">"write"</span></td><td>Creates new file or overwrites existing content entirely.</td><td>Saving a new record, overwriting old data</td></tr>
+        <tr><td><span class="badge bs">"append"</span></td><td>Opens existing file and adds to the end without deleting.</td><td>Adding a new log entry, adding a new score</td></tr>
+      </tbody>
+    </table>
+    <div class="note warn"><i class="ti ti-alert-triangle" aria-hidden="true"></i><div class="note-body"><div class="nt">Critical rule</div><div class="nd">Always CLOSE a file after you have finished with it. An unclosed file can become corrupted, and other programs may not be able to access it. Every OPEN must have a matching CLOSE.</div></div></div>
+    <div class="note tip"><i class="ti ti-lamp" aria-hidden="true"></i><div class="note-body"><div class="nt">EOF explained</div><div class="nd">EOF (End Of File) is a signal that the program has reached the last line of the file. The WHILE NOT EOF loop keeps reading until there are no more lines to read — this works for files of any length.</div></div></div>
+    <div class="sticky">🧠 File handling analogy: Opening a file is like taking a book off a shelf. Reading is like turning the pages. Writing is like filling in a notebook. CLOSE is like putting the book back — you must always do it or you'll lose your place (or the whole book).</div>
+  </div>
+
+  <!-- SUB-PROGRAMS -->
+  <div class="pg" id="pg-sub">
+    <div class="ph">
+      <span class="ptag bp">2.2.9</span>
+      <div class="ptitle">Sub-programs</div>
+      <div class="psub">Procedures and functions — the building blocks of modular programs</div>
+    </div>
+    <p class="bd">A sub-program is a named block of code that performs a specific task and can be called from multiple places in a program. They are the foundation of modular programming — breaking a program into reusable, self-contained parts.</p>
+    <h2 class="sh">Why use sub-programs?</h2>
+    <ul class="nl">
+      <li><strong>Reusability</strong> — write once, call many times. No duplicate code</li>
+      <li><strong>Readability</strong> — the main program reads like a list of tasks: greetUser(), getScore(), saveResult()</li>
+      <li><strong>Easier testing</strong> — test each sub-program individually before combining</li>
+      <li><strong>Team development</strong> — different programmers can work on different sub-programs simultaneously</li>
+      <li><strong>Maintainability</strong> — fix a bug in one sub-program and it's fixed everywhere it's called</li>
+    </ul>
+    <h2 class="sh">Procedures — no return value</h2>
+    <p class="bd">A procedure performs a task but does NOT send a value back. It is called by name.</p>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="cm">// Define the procedure</span>
+<span class="kw">PROCEDURE</span> <span class="fn">greet</span>(<span class="vr">name</span>)
+    <span class="fn">OUTPUT</span>(<span class="str">"Hello, "</span> <span class="op">+</span> <span class="vr">name</span> <span class="op">+</span> <span class="str">"! Welcome to the quiz."</span>)
+<span class="kw">END PROCEDURE</span>
+
+<span class="cm">// Call the procedure — it runs the code inside</span>
+<span class="fn">greet</span>(<span class="str">"Alice"</span>)    <span class="cm">// → Hello, Alice! Welcome to the quiz.</span>
+<span class="fn">greet</span>(<span class="str">"Bob"</span>)      <span class="cm">// → Hello, Bob! Welcome to the quiz.</span></pre></div>
+    <h2 class="sh">Functions — return a value</h2>
+    <p class="bd">A function performs a task AND sends a value back using RETURN. The result can be stored in a variable or used in an expression.</p>
+    <div class="cb"><span class="ctag">pseudocode</span><pre><span class="cm">// Define the function</span>
+<span class="kw">FUNCTION</span> <span class="fn">calculateArea</span>(<span class="vr">width</span>, <span class="vr">height</span>)
+    <span class="vr">area</span> <span class="op">←</span> <span class="vr">width</span> <span class="op">*</span> <span class="vr">height</span>
+    <span class="kw">RETURN</span> <span class="vr">area</span>
+<span class="kw">END FUNCTION</span>
+
+<span class="cm">// Call the function — store the returned value</span>
+<span class="vr">roomArea</span> <span class="op">←</span> <span class="fn">calculateArea</span>(<span class="num">5</span>, <span class="num">8</span>)    <span class="cm">// roomArea = 40</span>
+<span class="fn">OUTPUT</span>(<span class="str">"Room area: "</span> <span class="op">+</span> <span class="fn">STR</span>(<span class="vr">roomArea</span>) <span class="op">+</span> <span class="str">" m²"</span>)</pre></div>
+    <h2 class="sh">Key terminology</h2>
+    <div class="scope-vis">
+      <div class="scope-box">
+        <div class="scope-head" style="background:var(--bg-accent);color:var(--text-accent)"><i class="ti ti-arrow-right" aria-hidden="true" style="font-size:14px"></i> Parameters &amp; Arguments</div>
+        <div class="scope-body">FUNCTION add(a, b)&nbsp;&nbsp;&nbsp;← a and b are PARAMETERS (in definition)
+&nbsp;
+result ← add(5, 3)&nbsp;&nbsp;← 5 and 3 are ARGUMENTS (in the call)</div>
+      </div>
+      <div class="scope-box">
+        <div class="scope-head" style="background:var(--bg-success);color:var(--text-success)"><i class="ti ti-home" aria-hidden="true" style="font-size:14px"></i> Local vs Global</div>
+        <div class="scope-body">LOCAL: declared inside a sub-program. Only accessible there. Destroyed when sub-program ends.
+&nbsp;
+GLOBAL: declared outside all sub-programs. Accessible everywhere.</div>
+      </div>
+    </div>
+    <div class="cb"><span class="ctag">scope example</span><pre><span class="vr">total</span> <span class="op">←</span> <span class="num">0</span>          <span class="cm">// GLOBAL — accessible everywhere</span>
+
+<span class="kw">FUNCTION</span> <span class="fn">addTen</span>(<span class="vr">x</span>)
+    <span class="vr">result</span> <span class="op">←</span> <span class="vr">x</span> <span class="op">+</span> <span class="num">10</span>   <span class="cm">// LOCAL — only exists inside addTen</span>
+    <span class="kw">RETURN</span> <span class="vr">result</span>
+<span class="kw">END FUNCTION</span>
+
+<span class="vr">total</span> <span class="op">←</span> <span class="fn">addTen</span>(<span class="num">5</span>)   <span class="cm">// total = 15</span>
+<span class="cm">// OUTPUT(result)    ← ERROR! result is local — doesn't exist here</span></pre></div>
+    <div class="note tip"><i class="ti ti-lamp" aria-hidden="true"></i><div class="note-body"><div class="nt">Exam tip — procedure vs function</div><div class="nd">The key difference: a function RETURNS a value using RETURN; a procedure does NOT. If asked "what is the difference between a procedure and a function?" — this one distinction earns both marks.</div></div></div>
+    <div class="note good"><i class="ti ti-check" aria-hidden="true"></i><div class="note-body"><div class="nt">Best practice — prefer local variables</div><div class="nd">Use local variables wherever possible. Global variables can be changed by any part of the program, making bugs hard to trace. Local variables are safer, more predictable, and easier to debug.</div></div></div>
+  </div>
+
+  </main>
+</div>
+
+<script>
+function sw(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  event.currentTarget.classList.add('on');
+  document.getElementById('pg-'+id).classList.add('on');
+}
+
+function qa(btn,r){
+  const row=btn.closest('.quiz-q');
+  row.querySelectorAll('.qo').forEach(b=>b.className='qo');
+  btn.className='qo '+(r==='ok'?'ok':'bad');
+  const fb=row.querySelector('.qfb');
+  fb.className='qfb show '+(r==='ok'?'ok':'bad');
+  fb.textContent=r==='ok'?'Correct! Prices can have decimal points (like £4.99), so Real / Float is the right type.':'Not quite — prices can have decimal parts (e.g. £4.99), so Integer would lose the pence. Use Real / Float.';
+}
+function qb(btn,r){
+  const row=btn.closest('.quiz-q');
+  row.querySelectorAll('.qo').forEach(b=>b.className='qo');
+  btn.className='qo '+(r==='ok'?'ok':'bad');
+  const fb=row.querySelector('.qfb');
+  fb.className='qfb show '+(r==='ok'?'ok':'bad');
+  fb.textContent=r==='ok'?'Correct! Locked or unlocked is a two-state condition — exactly what Boolean is designed for (TRUE = locked, FALSE = unlocked).':'Not quite — there are only two states (locked / unlocked), making Boolean the perfect choice.';
+}
+
+function calcOp(){
+  const a=parseFloat(document.getElementById('oa').value);
+  const b=parseFloat(document.getElementById('ob').value);
+  const op=document.getElementById('oop').value;
+  let res='',label='';
+  if(isNaN(a)||isNaN(b)){document.getElementById('opOut').textContent='Please enter two numbers.';return;}
+  switch(op){
+    case'add':res=a+b;label=a+' + '+b+' = '+res;break;
+    case'sub':res=a-b;label=a+' - '+b+' = '+res;break;
+    case'mul':res=a*b;label=a+' × '+b+' = '+res;break;
+    case'div':res=b===0?'Error: cannot divide by zero':(a/b).toFixed(4);label=b===0?res:a+' / '+b+' = '+res;break;
+    case'idiv':res=b===0?'Error: cannot divide by zero':Math.floor(a/b);label=b===0?res:a+' DIV '+b+' = '+res+' (whole number quotient only)';break;
+    case'mod':res=b===0?'Error: cannot divide by zero':((a%b+Math.abs(b))%Math.abs(b));label=b===0?res:a+' MOD '+b+' = '+res+' (remainder after dividing '+a+' by '+b+')';break;
+  }
+  document.getElementById('opOut').textContent=label;
+}
+
+function calcGrade(){
+  const s=parseInt(document.getElementById('gradeInp').value);
+  const out=document.getElementById('gradeOut');
+  if(isNaN(s)||s<0||s>100){out.textContent='Please enter a score between 0 and 100.';return;}
+  let g,msg;
+  if(s>=70){g='A';msg='Distinction';}
+  else if(s>=55){g='B';msg='Merit';}
+  else if(s>=40){g='C';msg='Pass';}
+  else{g='Fail';msg='Below pass mark';}
+  out.textContent='Score: '+s+' → Grade '+g+' ('+msg+')\nIF '+s+' >= 70 THEN "A"\nELSE IF '+s+' >= 55 THEN "B"\nELSE IF '+s+' >= 40 THEN "C"\nELSE "Fail"';
+}
+
+let loopI=0;
+function loopReset(){
+  loopI=0;
+  const vis=document.getElementById('loopVis');
+  vis.innerHTML='';
+  document.getElementById('loopInfo').textContent='Press Next to step through FOR i ← 1 TO 6';
+}
+function loopStep(){
+  const vis=document.getElementById('loopVis');
+  const info=document.getElementById('loopInfo');
+  if(loopI>6){info.textContent='Loop complete! FOR i ← 1 TO 6 ran 6 times total.';return;}
+  if(loopI===0){vis.innerHTML='';info.textContent='Loop starting: i will go from 1 to 6';}
+  if(loopI>=1&&loopI<=6){
+    const prev=vis.querySelector('.active');
+    if(prev) prev.classList.remove('active');
+    if(loopI===1){
+      for(let j=1;j<=6;j++){
+        const b=document.createElement('div');
+        b.className='loop-box';
+        b.id='lb'+j;
+        b.textContent='i = '+j;
+        vis.appendChild(b);
+      }
+    }
+    const cur=document.getElementById('lb'+loopI);
+    if(cur) cur.classList.add('active');
+    info.textContent='Iteration '+loopI+': i = '+loopI+', OUTPUT(i × 5) → '+(loopI*5);
+    if(loopI===6) setTimeout(()=>{info.textContent='All 6 iterations done. END FOR reached — loop exits.'},800);
+  }
+  loopI++;
+}
+
+function exploreStr(){
+  const s=document.getElementById('strInp').value;
+  const out=document.getElementById('strOut');
+  if(!s.trim()){out.textContent='Please type something first.';return;}
+  const vowels=s.toLowerCase().split('').filter(c=>'aeiou'.includes(c)).length;
+  const words=s.trim().split(/\s+/).length;
+  out.textContent=[
+    'LEN("'+s+'") = '+s.length,
+    'UPPER → "'+s.toUpperCase()+'"',
+    'LOWER → "'+s.toLowerCase()+'"',
+    'SUBSTRING(0, 3) → "'+(s.length>=3?s.substring(0,3):s)+'"',
+    'Vowel count = '+vowels,
+    'Word count = '+words,
+    'First char ASC = '+s.charCodeAt(0)+' (ASCII of "'+s[0]+'")',
+  ].join('\n');
+}
+
+const arrData=[85,72,91,64,78];
+function buildArr(){
+  const vis=document.getElementById('arrVis');
+  const btns=document.getElementById('arrBtns');
+  if(!vis) return;
+  vis.innerHTML='';
+  btns.innerHTML='';
+  arrData.forEach((v,i)=>{
+    const cell=document.createElement('div');
+    cell.style.cssText='display:flex;flex-direction:column;align-items:center;border-right:0.5px solid var(--border);padding:6px 0;width:52px';
+    cell.innerHTML='<span style="font-size:10px;color:var(--text-muted);padding:3px 0;font-family:var(--font-mono)">['+i+']</span><span class="arr-cell" id="ac'+i+'" style="font-size:14px;font-weight:500;color:var(--text-primary);padding:6px 12px;width:100%;text-align:center">'+v+'</span>';
+    vis.appendChild(cell);
+    const b=document.createElement('button');
+    b.className='lbtn';
+    b.textContent='['+i+'] = '+v;
+    b.onclick=(()=>{const idx=i;return()=>highlightArr(idx);})(i);
+    btns.appendChild(b);
+  });
+}
+function highlightArr(idx){
+  document.querySelectorAll('.arr-cell').forEach(c=>{c.style.background='';c.style.borderRadius='';c.style.color='var(--text-primary)';});
+  const c=document.getElementById('ac'+idx);
+  if(c){c.style.background='var(--bg-accent)';c.style.color='var(--text-accent)';c.style.borderRadius='4px';}
+  document.getElementById('arrInfo').textContent='scores['+idx+'] = '+arrData[idx]+' — index '+idx+' holds the value '+arrData[idx];
+}
+buildArr();
+</script>
