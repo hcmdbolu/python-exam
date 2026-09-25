@@ -1,0 +1,177 @@
+
+<h2 class="sr-only">Interactive Python quiz on dictionary methods and string methods, with 15 questions, instant feedback, score tracking, and explanations for each answer.</h2>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.wrap{padding:4px 0 32px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.top-left{display:flex;flex-direction:column;gap:3px}
+.topic-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;background:var(--bg-pro);color:var(--text-pro);border:0.5px solid var(--border-pro);width:fit-content}
+.top-title{font-size:18px;font-weight:500;color:var(--text-primary)}
+.score-board{display:flex;gap:8px}
+.score-chip{background:var(--surface-1);border:0.5px solid var(--border);border-radius:var(--radius);padding:6px 14px;text-align:center}
+.score-val{font-size:18px;font-weight:500;color:var(--text-primary)}
+.score-lbl{font-size:11px;color:var(--text-muted)}
+.prog-wrap{margin-bottom:20px}
+.prog-bar{height:4px;background:var(--surface-1);border-radius:2px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;background:var(--fill-accent);border-radius:2px;transition:width .4s ease;width:0%}
+.prog-lbl{font-size:12px;color:var(--text-secondary)}
+.q-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px}
+.q-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+.q-badge{font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;font-family:var(--font-mono)}
+.badge-dict{background:var(--bg-accent);color:var(--text-accent);border:0.5px solid var(--border-accent)}
+.badge-str{background:var(--bg-pro);color:var(--text-pro);border:0.5px solid var(--border-pro)}
+.badge-mixed{background:var(--bg-warning);color:var(--text-warning);border:0.5px solid var(--border-warning)}
+.q-num{font-size:11px;color:var(--text-muted);flex-shrink:0;margin-top:3px;font-family:var(--font-mono)}
+.q-text{font-size:14px;color:var(--text-primary);line-height:1.6;flex:1}
+.code-snip{font-family:var(--font-mono);background:var(--surface-1);border:0.5px solid var(--border);border-radius:6px;padding:8px 12px;font-size:12.5px;color:var(--text-primary);margin:8px 0;display:block;overflow-x:auto;white-space:pre;line-height:1.7}
+.opts{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:9px 13px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-1);cursor:pointer;font-size:13px;color:var(--text-primary);text-align:left;transition:border-color .1s,background .1s;line-height:1.5;font-family:inherit;width:100%}
+.opt:hover:not(:disabled){border-color:var(--border-strong);background:var(--surface-2)}
+.opt:disabled{cursor:default}
+.opt.sel-ok{background:var(--bg-success);border-color:var(--border-success);color:var(--text-success)}
+.opt.sel-bad{background:var(--bg-danger);border-color:var(--border-danger);color:var(--text-danger)}
+.opt.show-ok{background:var(--bg-success);border-color:var(--border-success);color:var(--text-success)}
+.opt-letter{font-family:var(--font-mono);font-size:11px;font-weight:500;min-width:16px;flex-shrink:0;margin-top:1px}
+.fb{font-size:12.5px;margin-top:8px;padding:8px 12px;border-radius:6px;line-height:1.6;display:none;border:0.5px solid}
+.fb.show{display:block}
+.fb.ok{background:var(--bg-success);color:var(--text-success);border-color:var(--border-success)}
+.fb.bad{background:var(--bg-danger);color:var(--text-danger);border-color:var(--border-danger)}
+.err{font-size:12px;color:var(--text-danger);margin-top:4px;display:none}
+.err.show{display:block}
+.result-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:24px;text-align:center;margin-top:8px;display:none}
+.result-card.show{display:block}
+.result-pct{font-size:40px;font-weight:500;color:var(--text-primary);margin:8px 0}
+.result-grade{font-size:15px;font-weight:500;margin-bottom:6px}
+.result-sub{font-size:13px;color:var(--text-secondary);margin-bottom:16px}
+.rst-btn{padding:9px 24px;border-radius:var(--radius);background:var(--fill-accent);color:var(--on-accent);border:none;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit}
+.rst-btn:hover{background:var(--fill-accent-hover,#1456a0)}
+</style>
+
+<div class="wrap">
+<div class="top-bar">
+  <div class="top-left">
+    <span class="topic-pill"><i class="ti ti-brand-python" aria-hidden="true" style="font-size:14px"></i>Python</span>
+    <span class="top-title">Dictionary methods and string methods</span>
+  </div>
+  <div class="score-board">
+    <div class="score-chip"><div class="score-val" id="scoreVal">0</div><div class="score-lbl">score</div></div>
+    <div class="score-chip"><div class="score-val" id="answeredVal">0</div><div class="score-lbl">answered</div></div>
+    <div class="score-chip"><div class="score-val">15</div><div class="score-lbl">total</div></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-lbl" id="progLbl">0 of 15 answered</div>
+  <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+</div>
+
+<div id="qContainer"></div>
+<div class="result-card" id="resultCard">
+  <div style="font-size:13px;color:var(--text-secondary);margin-bottom:4px">Final score</div>
+  <div class="result-pct" id="resPct">—</div>
+  <div class="result-grade" id="resGrade"></div>
+  <div class="result-sub" id="resSub"></div>
+  <button class="rst-btn" onclick="restart()"><i class="ti ti-refresh" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>Try again</button>
+</div>
+</div>
+
+<script>
+const QS=[
+  {type:'dict',q:'What does the following code output?',code:'student = {"name": "Amara", "age": 16, "grade": "A"}\nprint(student["age"])',opts:['Amara','A','16','KeyError'],ans:2,exp:'"age" is a key in the dictionary. student["age"] returns its value, which is 16.'},
+  {type:'str',q:'What is the output of this code?',code:'word = "Greensprings"\nprint(word.upper())',opts:['greensprings','GREENSPRINGS','Greensprings','GreenSprings'],ans:1,exp:'.upper() converts every character in the string to uppercase, giving "GREENSPRINGS".'},
+  {type:'dict',q:'Which method returns ALL the keys in a dictionary?',code:'info = {"subject": "CS", "year": 11}\nprint(info.___())',opts:['info.values()','info.items()','info.keys()','info.get()'],ans:2,exp:'.keys() returns a view object containing all the keys in the dictionary — here: dict_keys(["subject", "year"]).'},
+  {type:'str',q:'What does the following return?',code:'sentence = "hello world"\nprint(sentence.count("l"))',opts:['1','2','3','4'],ans:2,exp:'"hello world" contains l at index 2, 3, and 9 — three occurrences. .count() counts how many times a substring appears.'},
+  {type:'dict',q:'What happens when you use .get() with a key that does not exist?',code:'data = {"x": 10}\nprint(data.get("y", 0))',opts:['KeyError','None','0','10'],ans:2,exp:'.get(key, default) returns the default value (0 here) when the key does not exist, instead of raising a KeyError. This makes .get() safer than data["y"].'},
+  {type:'str',q:'What is the output?',code:'name = "  Python  "\nprint(name.strip())',opts:['  Python  ','Python','python','  python  '],ans:1,exp:'.strip() removes leading and trailing whitespace (spaces, tabs, newlines) from both ends of the string, giving "Python".'},
+  {type:'dict',q:'What does .values() return?',code:'scores = {"Alice": 85, "Bob": 72, "Carol": 91}\nprint(list(scores.values()))',opts:['["Alice", "Bob", "Carol"]','[85, 72, 91]','[("Alice",85),("Bob",72),("Carol",91)]','85'],ans:1,exp:'.values() returns a view of all the values in the dictionary. Wrapping it in list() gives [85, 72, 91].'},
+  {type:'str',q:'What does this code output?',code:'text = "banana"\nprint(text.replace("a", "o"))',opts:['bonono','banana','bonona','bonana'],ans:0,exp:'.replace(old, new) replaces ALL occurrences of the old substring with the new one. Every "a" in "banana" becomes "o", giving "bonono".'},
+  {type:'dict',q:'How do you add a new key-value pair to an existing dictionary?',code:'pet = {"name": "Rex"}\npet["breed"] = "Labrador"\nprint(pet)',opts:['{"name":"Rex"}','{"breed":"Labrador"}','{"name":"Rex","breed":"Labrador"}','KeyError'],ans:2,exp:'Assigning to a new key (pet["breed"] = "Labrador") adds it to the dictionary if it does not already exist, or updates it if it does.'},
+  {type:'str',q:'What is the output of this code?',code:'csv = "apple,banana,cherry"\nparts = csv.split(",")\nprint(parts[1])',opts:['apple','banana','cherry','apple,banana,cherry'],ans:1,exp:'.split(",") divides the string at every comma, producing ["apple","banana","cherry"]. Index [1] is "banana".'},
+  {type:'dict',q:'What does .items() return?',code:'d = {"a": 1, "b": 2}\nfor key, val in d.items():\n    print(key, val)',opts:['a b','1 2','a 1\nb 2','("a",1) ("b",2)'],ans:2,exp:'.items() yields each key-value pair as a tuple. The for loop unpacks each tuple into key and val, printing "a 1" then "b 2" on separate lines.'},
+  {type:'str',q:'What does this return?',code:'phrase = "Computer Science"\nprint(phrase.find("Science"))',opts:['0','7','9','True'],ans:2,exp:'.find() returns the index of the FIRST character of the substring. "Science" starts at index 9 in "Computer Science" (counting from 0 including the space).'},
+  {type:'dict',q:'What does the .pop() method do to a dictionary?',code:'colours = {"red": "#FF0000", "blue": "#0000FF"}\nremoved = colours.pop("red")\nprint(removed)',opts:['{"red":"#FF0000"}','#FF0000','None','KeyError'],ans:1,exp:'.pop(key) removes the key-value pair from the dictionary AND returns the value. So removed = "#FF0000" and colours now only contains "blue".'},
+  {type:'str',q:'Which of these correctly checks if a string starts with "Hello"?',code:'message = "Hello, World!"\nprint(message.___("Hello"))',opts:['message.starts("Hello")','message.startswith("Hello")','message.begin("Hello")','message.prefix("Hello")'],ans:1,exp:'.startswith(prefix) is the correct Python string method. It returns True if the string begins with the given prefix, False otherwise.'},
+  {type:'mixed',q:'What is the output of this code that combines both topics?',code:'student = {"name": "Bolu", "school": "Greensprings"}\nkey = "school"\nresult = student.get(key, "unknown").upper()\nprint(result)',opts:['school','GREENSPRINGS','greensprings','unknown'],ans:1,exp:'.get("school", "unknown") returns "Greensprings" (the key exists). Chaining .upper() on that string converts it to "GREENSPRINGS".'},
+];
+
+let score=0,answered=0,selected={};
+
+function build(){
+  const c=document.getElementById('qContainer');
+  c.innerHTML='';
+  const letters=['A','B','C','D'];
+  QS.forEach((q,qi)=>{
+    const div=document.createElement('div');
+    div.className='q-card';
+    div.id='qc'+qi;
+    const badgeCls=q.type==='dict'?'badge-dict':q.type==='str'?'badge-str':'badge-mixed';
+    const badgeTxt=q.type==='dict'?'dict':'string methods';
+    let html=`<div class="q-header">
+      <span class="q-num">${qi+1}.</span>
+      <span class="q-badge ${badgeCls}">${badgeTxt}</span>
+      <span class="q-text">${q.q}</span>
+    </div>`;
+    if(q.code) html+=`<code class="code-snip">${q.code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code>`;
+    html+=`<div class="opts" id="opts${qi}">`;
+    q.opts.forEach((o,oi)=>{
+      html+=`<button class="opt" id="opt${qi}_${oi}" onclick="pick(${qi},${oi})"><span class="opt-letter">${letters[oi]}</span>${o.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</button>`;
+    });
+    html+=`</div><div class="err" id="err${qi}">Select an answer first.</div><div class="fb" id="fb${qi}"></div>`;
+    div.innerHTML=html;
+    c.appendChild(div);
+  });
+}
+
+function pick(qi,oi){
+  if(selected.hasOwnProperty(qi)) return;
+  selected[qi]=oi;
+  const q=QS[qi];
+  const correct=oi===q.ans;
+  document.querySelectorAll(`#opts${qi} .opt`).forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.ans) b.classList.add('show-ok');
+    else if(i===oi&&!correct) b.classList.add('sel-bad');
+  });
+  const fb=document.getElementById('fb'+qi);
+  fb.className='fb show '+(correct?'ok':'bad');
+  fb.textContent=(correct?'Correct! ':'Incorrect. ')+q.exp;
+  if(correct) score++;
+  answered++;
+  document.getElementById('scoreVal').textContent=score;
+  document.getElementById('answeredVal').textContent=answered;
+  const pct=Math.round((answered/QS.length)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progLbl').textContent=answered+' of '+QS.length+' answered';
+  if(answered===QS.length) setTimeout(showResult,600);
+}
+
+function showResult(){
+  const pct=Math.round((score/QS.length)*100);
+  document.getElementById('resPct').textContent=score+' / '+QS.length;
+  let grade,sub;
+  if(pct>=90){grade='Outstanding';sub='Excellent work — you have a strong grasp of both dictionary and string methods.';}
+  else if(pct>=70){grade='Good effort';sub='Well done. Review the questions you missed and practise the methods you found tricky.';}
+  else if(pct>=50){grade='Keep going';sub='A decent start. Go back to your notes on .get(), .items(), and common string methods.';}
+  else{grade='Needs more practice';sub='No worries — read through the explanations below and try again.';}
+  const gradeEl=document.getElementById('resGrade');
+  gradeEl.textContent=grade+' — '+pct+'%';
+  gradeEl.style.color=pct>=70?'var(--text-success)':pct>=50?'var(--text-warning)':'var(--text-danger)';
+  document.getElementById('resSub').textContent=sub;
+  document.getElementById('resultCard').classList.add('show');
+}
+
+function restart(){
+  score=0;answered=0;selected={};
+  document.getElementById('scoreVal').textContent=0;
+  document.getElementById('answeredVal').textContent=0;
+  document.getElementById('progFill').style.width='0%';
+  document.getElementById('progLbl').textContent='0 of 15 answered';
+  document.getElementById('resultCard').classList.remove('show');
+  build();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+build();
+</script>
