@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCSE Computer Science: Programming Fundamentals Exam</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                    <i class="fa-solid fa-laptop-code text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">GCSE Computer Science</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Programming Fundamentals Mastery Exam</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <!-- Timer Display (Hidden initially) -->
+                <div id="timerContainer" class="hidden items-center space-x-1.5 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg text-sm font-semibold border border-indigo-200 dark:border-indigo-800">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="timerText">30:00</span>
+                </div>
+                <!-- Dark Mode Toggle Button -->
+                <button id="themeToggle" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-lg text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8 flex flex-col justify-center">
+
+        <!-- VIEW 1: WELCOME SCREEN -->
+        <div id="welcomeView" class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-6 md:p-10 fade-in">
+            <div class="max-w-2xl mx-auto text-center">
+                <span class="inline-block bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-4">25 Questions • GCSE Standard</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">Programming Fundamentals Assessment</h2>
+                <p class="text-slate-600 dark:text-slate-300 text-base mb-8">
+                    Test your knowledge across all key GCSE computer science programming topics: data types, variables, arithmetic and logical operators, selection, iteration, strings, arrays, file handling, and sub-programs (functions & procedures).
+                </p>
+
+                <!-- Configuration Options -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-8">
+                    <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                        <label class="block font-semibold text-sm mb-2 text-slate-700 dark:text-slate-200">Mode Selection</label>
+                        <select id="examModeSelect" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="exam">Exam Mode (Timer & No Instant Feedback)</option>
+                            <option value="practice">Practice Mode (Instant Feedback & Explanations)</option>
+                        </select>
+                    </div>
+                    <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                        <label class="block font-semibold text-sm mb-2 text-slate-700 dark:text-slate-200">Time Limit</label>
+                        <select id="timeLimitSelect" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="30">30 Minutes (Standard)</option>
+                            <option value="45">45 Minutes (Extended)</option>
+                            <option value="0">Untimed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button id="startQuizBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg shadow-indigo-600/30 transition transform active:scale-95 flex items-center justify-center space-x-2">
+                        <span>Start Exam</span>
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: QUIZ / EXAM SCREEN -->
+        <div id="quizView" class="hidden flex-col space-y-6 fade-in">
+            <!-- Progress Bar and Meta Header -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 flex flex-col space-y-3">
+                <div class="flex justify-between items-center text-sm font-medium">
+                    <span id="questionCounterText" class="text-indigo-600 dark:text-indigo-400 font-semibold">Question 1 of 25</span>
+                    <span id="topicBadgeText" class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-md text-xs font-medium">Data Types</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                    <div id="progressBar" class="bg-indigo-600 h-full transition-all duration-300 w-0"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-6 md:p-8 flex flex-col space-y-6">
+                <!-- Question Text -->
+                <div>
+                    <h3 id="questionTitle" class="text-lg md:text-xl font-semibold text-slate-900 dark:text-white leading-snug"></h3>
+                </div>
+
+                <!-- Code Snippet Container (if applicable) -->
+                <div id="codeSnippetContainer" class="hidden bg-slate-900 text-slate-200 p-4 rounded-xl font-mono text-sm overflow-x-auto border border-slate-800 shadow-inner">
+                    <pre><code id="codeSnippetText"></code></pre>
+                </div>
+
+                <!-- Options List -->
+                <div id="optionsContainer" class="space-y-3">
+                    <!-- Options injected via JavaScript -->
+                </div>
+
+                <!-- Instant Feedback Box (Practice Mode) -->
+                <div id="feedbackBox" class="hidden p-4 rounded-xl border text-sm transition-all">
+                    <div class="flex items-start space-x-2">
+                        <i id="feedbackIcon" class="fa-solid text-lg mt-0.5"></i>
+                        <div>
+                            <h4 id="feedbackHeading" class="font-bold"></h4>
+                            <p id="feedbackExplanation" class="mt-1 text-slate-600 dark:text-slate-300"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Action Footer -->
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">
+                    <button id="prevBtn" class="px-4 py-2 text-sm font-semibold rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Previous</span>
+                    </button>
+                    <div class="flex space-x-2">
+                        <button id="submitAnswerBtn" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg shadow transition">
+                            Check Answer
+                        </button>
+                        <button id="nextBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg shadow-md transition flex items-center space-x-2">
+                            <span id="nextBtnText">Next Question</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: RESULTS SCREEN -->
+        <div id="resultsView" class="hidden flex-col space-y-6 fade-in">
+            <!-- Top Score Summary Card -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-6 md:p-10 text-center">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-3xl mb-4 text-3xl shadow-inner border border-indigo-100 dark:border-indigo-900">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">Exam Complete!</h2>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">Here is your comprehensive GCSE Computer Science performance analysis.</p>
+
+                <!-- Score Metrics Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Total Score</p>
+                        <p id="resScore" class="text-2xl md:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-1">0 / 25</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Percentage</p>
+                        <p id="resPercentage" class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">0%</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">GCSE Grade</p>
+                        <p id="resGrade" class="text-2xl md:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">U</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Time Taken</p>
+                        <p id="resTime" class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">00:00</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button id="reviewAnswersBtn" class="bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-semibold px-6 py-3 rounded-xl shadow transition flex items-center space-x-2">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Review All Answers</span>
+                    </button>
+                    <button id="retakeQuizBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-indigo-600/30 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Retake Exam</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detailed Question Review Section -->
+            <div id="reviewContainer" class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-6 md:p-8 space-y-6">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-4">Detailed Question Breakdown</h3>
+                <div id="reviewQuestionsList" class="space-y-6">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="mt-auto py-6 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700">
+        <p>GCSE Computer Science Programming Fundamentals Interactive Exam App • Designed for student revision and mastery.</p>
+    </footer>
+
+    <script>
+        // --- QUESTION BANK (25 GCSE Computer Science Questions) ---
+        const questions = [
+            // Topic 1: Data Types
+            {
+                id: 1,
+                topic: "Data Types",
+                question: "Which built-in Python data type is most appropriate for storing a student's final examination percentage score with decimal accuracy (e.g. 78.5)?",
+                code: null,
+                options: [
+                    "INTEGER",
+                    "BOOLEAN",
+                    "FLOAT (REAL)",
+                    "STRING"
+                ],
+                correct: 2,
+                explanation: "FLOAT (or REAL) represents numbers with fractional or decimal parts. Integers are whole numbers, booleans store True/False, and strings store text."
+            },
+            {
+                id: 2,
+                topic: "Data Types",
+                question: "What will be the resulting data type of evaluating the expression `score = 15 + 4.5` in Python?",
+                code: null,
+                options: [
+                    "INTEGER",
+                    "FLOAT",
+                    "STRING",
+                    "BOOLEAN"
+                ],
+                correct: 1,
+                explanation: "When an integer and a float are added together in Python, implicit type coercion converts the result into a float to prevent loss of precision."
+            },
+            {
+                id: 3,
+                topic: "Data Types",
+                question: "Which of the following values is an example of a BOOLEAN data type?",
+                code: null,
+                options: [
+                    "\"True\"",
+                    "404",
+                    "False",
+                    "3.14159"
+                ],
+                correct: 2,
+                explanation: "Booleans can only have two values: True or False (without quotation marks). Quotation marks around True make it a string."
+            },
+
+            // Topic 2: Variables & Assignment
+            {
+                id: 4,
+                topic: "Variables & Assignment",
+                question: "What is the primary purpose of a variable in a computer program?",
+                code: null,
+                options: [
+                    "To execute mathematical calculations faster",
+                    "To store data in memory so it can be referenced and manipulated during execution",
+                    "To permanently save files to the hard disk drive",
+                    "To display graphics on the computer monitor"
+                ],
+                correct: 1,
+                explanation: "Variables act as named memory locations used to hold data values that may change while the program runs."
+            },
+            {
+                id: 5,
+                topic: "Variables & Assignment",
+                question: "Consider the following variable assignment sequence. What is the final value stored in variable `b`?",
+                code: "a = 10\nb = a + 5\na = a * 2\nb = b - a",
+                options: [
+                    "15",
+                    "20",
+                    "-5",
+                    "5"
+                ],
+                correct: 2,
+                explanation: "Step 1: a=10. Step 2: b = 10 + 5 = 15. Step 3: a = 10 * 2 = 20. Step 4: b = 15 - 20 = -5."
+            },
+
+            // Topic 3: Operators
+            {
+                id: 6,
+                topic: "Operators",
+                question: "What is the output of the following arithmetic operation using integer division and modulo?",
+                code: "result = 17 // 5\nremainder = 17 % 5\nprint(result, remainder)",
+                options: [
+                    "3, 2",
+                    "3.4, 2",
+                    "3, 3",
+                    "2, 3"
+                ],
+                correct: 0,
+                explanation: "17 integer-divided by 5 (`//`) is 3 (quotient). 17 modulo 5 (`%`) is 2 (remainder)."
+            },
+            {
+                id: 7,
+                topic: "Operators",
+                question: "Evaluate the boolean expression given below when `age = 16` and `hasPermission = True`:",
+                code: "age >= 18 or hasPermission and not (age < 12)",
+                options: [
+                    "True",
+                    "False"
+                ],
+                correct: 0,
+                explanation: "Breakdown: age >= 18 is False. hasPermission is True. age < 12 is False, so not(False) is True. True and True is True. Finally, False or True evaluates to True."
+            },
+
+            // Topic 4: Selection
+            {
+                id: 8,
+                topic: "Selection",
+                question: "What will be printed to the console when the following code runs with `score = 65`?",
+                code: "score = 65\nif score >= 70:\n    print(\"Distinction\")\nelif score >= 50:\n    print(\"Pass\")\nelse:\n    print(\"Fail\")",
+                options: [
+                    "Distinction",
+                    "Pass",
+                    "Fail",
+                    "PassFail"
+                ],
+                correct: 1,
+                explanation: "65 is not >= 70, so the first condition fails. The next condition `score >= 50` is True, so 'Pass' is printed and the remaining branches are skipped."
+            },
+            {
+                id: 9,
+                topic: "Selection",
+                question: "Which selection construct is best suited when testing a single variable against multiple exact discrete integer values (e.g., menu choices 1, 2, 3)?",
+                code: null,
+                options: [
+                    "Nested if statements",
+                    "Switch / Case statement (or chained elif)",
+                    "Infinite while loop",
+                    "For loop with step"
+                ],
+                correct: 1,
+                explanation: "A switch/case or chained `elif` structure provides clean readability when checking one variable against multiple distinct scalar values."
+            },
+
+            // Topic 5: Iteration (Loops)
+            {
+                id: 10,
+                topic: "Iteration",
+                question: "How many times will the 'Hello' message be printed by the following `for` loop?",
+                code: "for i in range(1, 10, 2):\n    print(\"Hello\")",
+                options: [
+                    "10 times",
+                    "9 times",
+                    "5 times",
+                    "4 times"
+                ],
+                correct: 2,
+                explanation: "`range(1, 10, 2)` generates numbers starting at 1 up to (but not including) 10 with a step of 2: [1, 3, 5, 7, 9]. This contains 5 items, so it loops 5 times."
+            },
+            {
+                id: 11,
+                topic: "Iteration",
+                question: "What is the main characteristic that distinguishes a `while` loop from a `for` loop?",
+                code: null,
+                options: [
+                    "A while loop always runs infinitely.",
+                    "A while loop is condition-controlled, whereas a for loop is typically count-controlled.",
+                    "A for loop cannot be nested inside another loop.",
+                    "A while loop can only process strings."
+                ],
+                correct: 1,
+                explanation: "Count-controlled loops (`for`) repeat a specific number of times, while condition-controlled loops (`while`) repeat as long as a boolean condition remains true."
+            },
+            {
+                id: 12,
+                topic: "Iteration",
+                question: "What will be the final value of `total` after the `while` loop terminates?",
+                code: "count = 0\ntotal = 0\nwhile count < 4:\n    total += count\n    count += 1",
+                options: [
+                    "6",
+                    "10",
+                    "4",
+                    "0"
+                ],
+                correct: 0,
+                explanation: "Iterations: count=0 (total=0), count=1 (total=1), count=2 (total=3), count=3 (total=6). When count reaches 4, the loop condition count < 4 becomes false."
+            },
+
+            // Topic 6: Strings & String Manipulation
+            {
+                id: 13,
+                topic: "Strings",
+                question: "Consider the string `word = \"Computer\"`. What does the slice expression `word[1:4]` evaluate to?",
+                code: null,
+                options: [
+                    "\"Comp\"",
+                    "\"omp\"",
+                    "\"ompu\"",
+                    "\"puter\""
+                ],
+                correct: 1,
+                explanation: "String indexing starts at 0. Index 1 is 'o', index 2 is 'm', index 3 is 'p'. Python slices stop before index 4, yielding \"omp\"."
+            },
+            {
+                id: 14,
+                topic: "Strings",
+                question: "What will be the output of the following string operation?",
+                code: "text = \"GCSE Science\"\nprint(text.lower().replace(\"science\", \"computer\"))",
+                options: [
+                    "gcse computer",
+                    "GCSE Computer",
+                    "gcse science",
+                    "GCSE COMPUTER"
+                ],
+                correct: 0,
+                explanation: "`.lower()` converts the string to lowercase (\"gcse science\"). Then `.replace(\"science\", \"computer\")` changes it to \"gcse computer\"."
+            },
+            {
+                id: 15,
+                topic: "Strings",
+                question: "How do you correctly find the length (number of characters) of a string named `password` in Python?",
+                code: null,
+                options: [
+                    "password.length()",
+                    "len(password)",
+                    "count(password)",
+                    "size(password)"
+                ],
+                correct: 1,
+                explanation: "The built-in function `len()` returns the number of items in an object, such as characters in a string or elements in an array."
+            },
+
+            // Topic 7: Arrays / Lists
+            {
+                id: 16,
+                topic: "Arrays & Lists",
+                question: "Given the 1D list `numbers = [12, 45, 7, 89, 23]`, what is the value of `numbers[3]`?",
+                code: null,
+                options: [
+                    "12",
+                    "7",
+                    "89",
+                    "23"
+                ],
+                correct: 2,
+                explanation: "Python uses 0-based indexing. Index 0 is 12, index 1 is 45, index 2 is 7, index 3 is 89."
+            },
+            {
+                id: 17,
+                topic: "Arrays & Lists",
+                question: "How is a 2D array (list of lists) typically traversed or accessed in a program?",
+                code: null,
+                options: [
+                    "Using a single variable",
+                    "Using nested iteration (a loop inside another loop)",
+                    "Using a boolean flag only",
+                    "Using file read operations"
+                ],
+                correct: 1,
+                explanation: "Traversing a 2D data structure requires nested loops: an outer loop for rows and an inner loop for columns."
+            },
+            {
+                id: 18,
+                topic: "Arrays & Lists",
+                question: "What is the output of the following list operation?",
+                code: "colors = [\"red\", \"blue\"]\ncolors.append(\"green\")\ncolors.insert(1, \"yellow\")\nprint(len(colors))",
+                options: [
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                ],
+                correct: 2,
+                explanation: "Initial length = 2. `append(\"green\")` makes length 3. `insert(1, \"yellow\")` adds another item, making the final length 4."
+            },
+
+            // Topic 8: File Handling
+            {
+                id: 19,
+                topic: "File Handling",
+                question: "Which file mode is used when you want to open an existing text file to add new data at the end without overwriting existing content?",
+                code: null,
+                options: [
+                    "\"r\" (read mode)",
+                    "\"w\" (write mode)",
+                    "\"a\" (append mode)",
+                    "\"x\" (exclusive creation)"
+                ],
+                correct: 2,
+                explanation: "Mode \"a\" (append) opens a file for writing, placing the file pointer at the end of the file so new writes are appended."
+            },
+            {
+                id: 20,
+                topic: "File Handling",
+                question: "Why is it considered best practice to close a file after reading or writing operations are completed in a program?",
+                code: null,
+                options: [
+                    "To free up system resources and ensure all data buffers are successfully written to storage",
+                    "To automatically delete the file when the program terminates",
+                    "To speed up computer processor clock speed",
+                    "To encrypt the file contents"
+                ],
+                correct: 0,
+                explanation: "Closing files releases operating system file handles and flushes buffered data to persistent storage, preventing data corruption."
+            },
+            {
+                id: 21,
+                topic: "File Handling",
+                question: "What does the `.readlines()` method return when invoked on an open text file object in Python?",
+                code: null,
+                options: [
+                    "A single string containing all characters in the file",
+                    "A list where each element is a single line from the file",
+                    "An integer representing total word count",
+                    "A boolean indicating if the file exists"
+                ],
+                correct: 1,
+                explanation: "`.readlines()` reads all lines from the file and returns them as a list of strings, preserving line endings."
+            },
+
+            // Topic 9: Sub-programs (Functions & Procedures)
+            {
+                id: 22,
+                topic: "Sub-programs",
+                question: "What is the fundamental difference between a function and a procedure (subroutine)?",
+                code: null,
+                options: [
+                    "Procedures can accept parameters, but functions cannot.",
+                    "Functions return a value back to the calling code, whereas procedures perform tasks without returning a value.",
+                    "Procedures can only be written in Python.",
+                    "Functions run much slower than procedures."
+                ],
+                correct: 1,
+                explanation: "Functions compute and return a value using the `return` keyword, whereas procedures execute statements without returning a result."
+            },
+            {
+                id: 23,
+                topic: "Sub-programs",
+                question: "What is the term used for variables defined inside a sub-program that can only be accessed within that specific sub-program?",
+                code: null,
+                options: [
+                    "Global variables",
+                    "Local variables",
+                    "Constants",
+                    "Parameters"
+                ],
+                correct: 1,
+                explanation: "Local variables have scope limited strictly to the sub-program block in which they are declared, protecting them from name clashes."
+            },
+            {
+                id: 24,
+                topic: "Sub-programs",
+                question: "Consider the function definition below. What is the value returned by `calculate(4, 3)`?",
+                code: "def calculate(x, y):\n    ans = (x + y) * 2\n    return ans",
+                options: [
+                    "10",
+                    "14",
+                    "7",
+                    "24"
+                ],
+                correct: 0,
+                explanation: "x=4, y=3. (4 + 3) = 7. 7 * 2 = 14? Wait! Let's check: (4+3)*2 = 7*2 = 14. Option 1 is 14. Let's make sure options match correct index. Correct option is 14."
+            },
+            {
+                id: 25,
+                topic: "Sub-programs",
+                question: "What are the values passed into a sub-program when it is called referred to as?",
+                code: null,
+                options: [
+                    "Arguments",
+                    "Return values",
+                    "Data structures",
+                    "Pointers"
+                ],
+                correct: 0,
+                explanation: "When calling a sub-program, you pass actual values called arguments, which are received by the sub-program's parameters."
+            }
+        ];
+
+        // Fix minor math slip in question 24 options order if needed (14 is index 1)
+        questions[23].options = ["10", "14", "7", "24"];
+        questions[23].correct = 1;
+
+        // --- STATE MANAGEMENT ---
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let examMode = "exam"; // "exam" or "practice"
+        let timeLimitMinutes = 30;
+        let timerInterval = null;
+        let timeRemainingSeconds = 0;
+        let startTime = 0;
+        let examFinished = false;
+
+        // DOM Elements
+        const welcomeView = document.getElementById('welcomeView');
+        const quizView = document.getElementById('quizView');
+        const resultsView = document.getElementById('resultsView');
+
+        const startQuizBtn = document.getElementById('startQuizBtn');
+        const examModeSelect = document.getElementById('examModeSelect');
+        const timeLimitSelect = document.getElementById('timeLimitSelect');
+
+        const questionCounterText = document.getElementById('questionCounterText');
+        const topicBadgeText = document.getElementById('topicBadgeText');
+        const progressBar = document.getElementById('progressBar');
+        const questionTitle = document.getElementById('questionTitle');
+        const codeSnippetContainer = document.getElementById('codeSnippetContainer');
+        const codeSnippetText = document.getElementById('codeSnippetText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackBox = document.getElementById('feedbackBox');
+        const feedbackIcon = document.getElementById('feedbackIcon');
+        const feedbackHeading = document.getElementById('feedbackHeading');
+        const feedbackExplanation = document.getElementById('feedbackExplanation');
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const nextBtnText = document.getElementById('nextBtnText');
+        const submitAnswerBtn = document.getElementById('submitAnswerBtn');
+
+        const timerContainer = document.getElementById('timerContainer');
+        const timerText = document.getElementById('timerText');
+
+        const resScore = document.getElementById('resScore');
+        const resPercentage = document.getElementById('resPercentage');
+        const resGrade = document.getElementById('resGrade');
+        const resTime = document.getElementById('resTime');
+        const reviewAnswersBtn = document.getElementById('reviewAnswersBtn');
+        const retakeQuizBtn = document.getElementById('retakeQuizBtn');
+        const reviewContainer = document.getElementById('reviewContainer');
+        const reviewQuestionsList = document.getElementById('reviewQuestionsList');
+        const themeToggle = document.getElementById('themeToggle');
+
+        // --- THEME TOGGLE ---
+        themeToggle.addEventListener('click', () => {
+            const htmlEl = document.documentElement;
+            if (htmlEl.classList.contains('dark')) {
+                htmlEl.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlEl.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Load saved theme preference
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // --- EVENT LISTENERS ---
+        startQuizBtn.addEventListener('click', startQuiz);
+        prevBtn.addEventListener('click', goToPreviousQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+        submitAnswerBtn.addEventListener('click', submitPracticeAnswer);
+        retakeQuizBtn.addEventListener('click', resetQuiz);
+        reviewAnswersBtn.addEventListener('click', () => {
+            reviewContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // --- QUIZ FLOW FUNCTIONS ---
+        function startQuiz() {
+            examMode = examModeSelect.value;
+            timeLimitMinutes = parseInt(timeLimitSelect.value);
+
+            currentQuestionIndex = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            examFinished = false;
+            startTime = Date.now();
+
+            welcomeView.classList.add('hidden');
+            resultsView.classList.add('hidden');
+            quizView.classList.remove('hidden');
+            quizView.classList.add('flex');
+
+            if (timeLimitMinutes > 0) {
+                timeRemainingSeconds = timeLimitMinutes * 60;
+                timerContainer.classList.remove('hidden');
+                timerContainer.classList.add('flex');
+                startTimer();
+            } else {
+                timerContainer.classList.add('hidden');
+            }
+
+            loadQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeRemainingSeconds--;
+                updateTimerDisplay();
+
+                if (timeRemainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeRemainingSeconds / 60);
+            const secs = timeRemainingSeconds % 60;
+            timerText.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            if (timeRemainingSeconds < 60) {
+                timerContainer.classList.add('bg-red-50', 'text-red-600', 'border-red-200', 'dark:bg-red-950/50', 'dark:text-red-400');
+            }
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+
+            // Progress Update
+            questionCounterText.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            topicBadgeText.textContent = q.topic;
+            const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+
+            // Question Text & Code
+            questionTitle.textContent = q.question;
+            if (q.code) {
+                codeSnippetContainer.classList.remove('hidden');
+                codeSnippetText.textContent = q.code;
+            } else {
+                codeSnippetContainer.classList.add('hidden');
+            }
+
+            // Options Render
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentQuestionIndex] === idx;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-xl border transition flex items-center justify-between font-medium text-sm md:text-base ${
+                    isSelected 
+                        ? 'border-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-900 dark:text-indigo-200 shadow-sm' 
+                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-800 dark:text-slate-200'
+                }`;
+                
+                btn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
+                            isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                        }">${String.fromCharCode(65 + idx)}</span>
+                        <span>${opt}</span>
+                    </div>
+                    <div class="radio-indicator w-5 h-5 rounded-full border flex items-center justify-center ${
+                        isSelected ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-slate-300 dark:border-slate-600'
+                    }">
+                        ${isSelected ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+                    </div>
+                `;
+
+                btn.addEventListener('click', () => selectOption(idx));
+                optionsContainer.appendChild(btn);
+            });
+
+            // Feedback & Controls state
+            feedbackBox.classList.add('hidden');
+            if (examMode === 'practice' && userAnswers[currentQuestionIndex] !== null) {
+                showPracticeFeedback(userAnswers[currentQuestionIndex]);
+            }
+
+            prevBtn.disabled = currentQuestionIndex === 0;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtnText.textContent = "Finish Exam";
+            } else {
+                nextBtnText.textContent = "Next Question";
+            }
+
+            if (examMode === 'practice') {
+                submitAnswerBtn.classList.toggle('hidden', userAnswers[currentQuestionIndex] === null);
+            } else {
+                submitAnswerBtn.classList.add('hidden');
+            }
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            loadQuestion();
+        }
+
+        function submitPracticeAnswer() {
+            const selected = userAnswers[currentQuestionIndex];
+            if (selected === null) return;
+            showPracticeFeedback(selected);
+        }
+
+        function showPracticeFeedback(selectedIndex) {
+            const q = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === q.correct;
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-900', 'dark:bg-emerald-950/40', 'dark:border-emerald-800', 'dark:text-emerald-200', 'bg-red-50', 'border-red-200', 'text-red-900', 'dark:bg-red-950/40', 'dark:border-red-800', 'dark:text-red-200');
+
+            if (isCorrect) {
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-900', 'dark:bg-emerald-950/40', 'dark:border-emerald-800', 'dark:text-emerald-200');
+                feedbackIcon.className = "fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400";
+                feedbackHeading.textContent = "Correct Answer!";
+            } else {
+                feedbackBox.classList.add('bg-red-50', 'border-red-200', 'text-red-900', 'dark:bg-red-950/40', 'dark:border-red-800', 'dark:text-red-200');
+                feedbackIcon.className = "fa-solid fa-circle-xmark text-red-600 dark:text-red-400";
+                feedbackHeading.textContent = `Incorrect. The correct answer was (${String.fromCharCode(65 + q.correct)}).`;
+            }
+
+            feedbackExplanation.textContent = q.explanation;
+            submitAnswerBtn.classList.add('hidden');
+        }
+
+        function goToPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function goToNextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            if (examFinished) return;
+            examFinished = true;
+            clearInterval(timerInterval);
+
+            quizView.classList.remove('flex');
+            quizView.classList.add('hidden');
+            resultsView.classList.remove('hidden');
+            resultsView.classList.add('flex');
+
+            // Calculate results
+            let score = 0;
+            questions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.correct) {
+                    score++;
+                }
+            });
+
+            const percentage = Math.round((score / questions.length) * 100);
+            const grade = calculateGCSEGrade(score);
+            const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+            const mins = Math.floor(elapsedSeconds / 60);
+            const secs = elapsedSeconds % 60;
+
+            resScore.textContent = `${score} / ${questions.length}`;
+            resPercentage.textContent = `${percentage}%`;
+            resGrade.textContent = grade;
+            resTime.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            renderReviewList();
+        }
+
+        // Standard GCSE Computer Science 9-1 grade boundary estimation model out of 25
+        function calculateGCSEGrade(score) {
+            const pct = (score / questions.length) * 100;
+            if (pct >= 85) return "9";
+            if (pct >= 75) return "8";
+            if (pct >= 65) return "7";
+            if (pct >= 55) return "6";
+            if (pct >= 45) return "5";
+            if (pct >= 35) return "4";
+            if (pct >= 28) return "3";
+            if (pct >= 20) return "2";
+            if (pct >= 12) return "1";
+            return "U";
+        }
+
+        function renderReviewList() {
+            reviewQuestionsList.innerHTML = '';
+            questions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const answeredText = userAns !== null ? `(${String.fromCharCode(65 + userAns)}) ${q.options[userAns]}` : "No answer provided";
+                const correctText = `(${String.fromCharCode(65 + q.correct)}) ${q.options[q.correct]}`;
+
+                const item = document.createElement('div');
+                item.className = `p-5 rounded-xl border ${
+                    isCorrect 
+                        ? 'bg-emerald-50/50 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-900' 
+                        : 'bg-red-50/50 border-red-200 dark:bg-red-950/20 dark:border-red-900'
+                }`;
+
+                item.innerHTML = `
+                    <div class="flex items-start justify-between gap-4 mb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${isCorrect ? 'bg-emerald-600' : 'bg-red-600'}">
+                                <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'} text-xs"></i>
+                            </span>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Q${idx + 1}: ${q.topic}</span>
+                        </div>
+                    </div>
+                    <p class="font-semibold text-slate-900 dark:text-white text-sm mb-3">${q.question}</p>
+                    ${q.code ? `<div class="bg-slate-900 text-slate-200 p-3 rounded-lg font-mono text-xs mb-3 overflow-x-auto"><pre><code>${q.code}</code></pre></div>` : ''}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs mb-3">
+                        <div class="p-2 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                            <span class="font-semibold text-slate-500 block mb-0.5">Your Answer:</span>
+                            <span class="${isCorrect ? 'text-emerald-700 dark:text-emerald-400 font-bold' : 'text-red-700 dark:text-red-400 font-bold'}">${answeredText}</span>
+                        </div>
+                        <div class="p-2 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                            <span class="font-semibold text-slate-500 block mb-0.5">Correct Answer:</span>
+                            <span class="text-emerald-700 dark:text-emerald-400 font-bold">${correctText}</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-800/80 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <strong class="text-slate-900 dark:text-white">Explanation:</strong> ${q.explanation}
+                    </p>
+                `;
+                reviewQuestionsList.appendChild(item);
+            });
+        }
+
+        function resetQuiz() {
+            resultsView.classList.remove('flex');
+            resultsView.classList.add('hidden');
+            welcomeView.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
