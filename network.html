@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneNote - 1.3 Computer Networks, Connections and Protocols (Master Revision)</title>
+    <style>
+        :root {
+            --onenote-purple: #701A75;
+            --onenote-light-purple: #F3E8FF;
+            --onenote-bg: #FFFFFF;
+            --onenote-sidebar: #F8FAFC;
+            --onenote-border: #E2E8F0;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --table-header: #EDE9FE;
+            --callout-bg: #F8FAFC;
+            --accent-blue: #0284C7;
+            --accent-green: #059669;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--onenote-bg);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* OneNote App Sidebar Simulation */
+        .sidebar {
+            width: 280px;
+            background-color: var(--onenote-sidebar);
+            border-right: 1px solid var(--onenote-border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            flex-shrink: 0;
+        }
+
+        .notebook-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--onenote-purple);
+            padding: 0 20px 15px 20px;
+            border-bottom: 1px solid var(--onenote-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0 0 0;
+        }
+
+        .section-item {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            background-color: var(--onenote-light-purple);
+            border-left: 4px solid var(--onenote-purple);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Main Content Canvas */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            background-color: #FFFFFF;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--onenote-border);
+            padding-bottom: 15px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--onenote-purple);
+            margin: 0 0 5px 0;
+        }
+
+        .page-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Notebook Sections */
+        h2 {
+            font-size: 1.35rem;
+            color: var(--onenote-purple);
+            border-bottom: 1px solid #DDD;
+            padding-bottom: 5px;
+            margin-top: 45px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: #334155;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            font-size: 0.98rem;
+            line-height: 1.65;
+            color: var(--text-main);
+        }
+
+        ul, ol {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.93rem;
+        }
+
+        th, td {
+            border: 1px solid var(--onenote-border);
+            padding: 12px 15px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--table-header);
+            color: var(--onenote-purple);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #FAFAFA;
+        }
+
+        /* Callout Box / Tip */
+        .callout {
+            background-color: var(--callout-bg);
+            border-left: 4px solid var(--onenote-purple);
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: var(--onenote-purple);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: var(--onenote-light-purple);
+            color: var(--onenote-purple);
+            border-radius: 4px;
+            margin-right: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                overflow: auto;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Simulated OneNote Sidebar -->
+    <div class="sidebar">
+        <div class="notebook-title">
+            <span>📖</span> Year 11 Computer Science
+        </div>
+        <ul class="section-list">
+            <li class="section-item">1.3 — Networks & Protocols</li>
+        </ul>
+    </div>
+
+    <!-- Main Notebook Page Canvas -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">1.3 — Computer Networks, Connections and Protocols</h1>
+            <div class="page-meta">Notebook Page • Detailed Master Revision • Exam Focus</div>
+        </div>
+
+        <p>Comprehensive study notes explaining how computers communicate, the physical and logical architecture of digital networks, hardware devices, and the suite of protocols governing data transfer across the globe.</p>
+
+        <!-- 1.3.1 -->
+        <h2>1.3.1 — Types of Network</h2>
+        <p>Networks are classified primarily by their geographical scale, scope, and who owns the physical infrastructure:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Network Type</th>
+                    <th style="width: 35%;">Geographical Scope & Ownership</th>
+                    <th>Detailed Explanation & Examples</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>PAN (Personal Area Network)</strong></td>
+                    <td>Very small scale (within ~10 meters around a single individual). Owned by the user.</td>
+                    <td>Centers around a single person. Examples include connecting a smartphone to wireless Bluetooth headphones, a smartwatch syncing health data, or a wireless mouse connected to a laptop.</td>
+                </tr>
+                <tr>
+                    <td><strong>LAN (Local Area Network)</strong></td>
+                    <td>Small geographical area — e.g., a single room, building, school campus, or office block. Owned entirely by the organization.</td>
+                    <td>Allows high-speed data sharing and peripheral sharing (e.g., printers). Connected using copper Ethernet cables (wired) or Wi-Fi (wireless access points). High data transfer speeds and strong security control.</td>
+                </tr>
+                <tr>
+                    <td><strong>WAN (Wide Area Network)</strong></td>
+                    <td>Large geographical area spanning towns, cities, countries, or globally. Infrastructure is often leased from telecommunication companies.</td>
+                    <td>Because organizations cannot practically run private cables across continents, they lease lines (fiber optics, satellite links, telephone lines) from telecom providers. <strong>The Internet</strong> is universally recognized as the world's largest WAN.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 1.3.2 -->
+        <h2>1.3.2 — Network Topologies</h2>
+        <p>A network topology defines how physical devices (nodes) and communication links are arranged relative to each other.</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Feature</th>
+                    <th style="width: 40%;">Star Topology</th>
+                    <th style="width: 40%;">Mesh Topology</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Structural Layout</strong></td>
+                    <td>All devices (nodes) are individually connected to a central hub or switch. There is no direct link between standard workstations.</td>
+                    <td>Every device is connected directly to every other device (Full Mesh) or connected to multiple neighboring devices (Partial Mesh).</td>
+                </tr>
+                <tr>
+                    <td><strong>Key Advantages</strong></td>
+                    <td>
+                        <ul>
+                            <li>Extremely reliable: If one cable or device fails, only that device is disconnected.</li>
+                            <li>Easy to add/remove new devices without disrupting the network.</li>
+                            <li>High performance with minimal data collisions.</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>Incredible fault tolerance: Multiple alternate paths exist for data packets. No single point of failure.</li>
+                            <li>Very secure (data passing through dedicated lines cannot easily be intercepted).</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Key Disadvantages</strong></td>
+                    <td>
+                        <ul>
+                            <li>If the central switch or hub fails, <strong>the entire network goes down</strong>.</li>
+                            <li>Requires a significant amount of cable as every device needs its own dedicated wire back to the switch.</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>Extremely expensive to install due to the massive quantities of cabling and specialized hardware ports required.</li>
+                            <li>Complex maintenance, setup, and management.</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Typical Use Cases</strong></td>
+                    <td>School IT suites, modern office buildings, and residential home networks.</td>
+                    <td>The Internet backbone (routing between major ISP nodes), military command systems, and critical industrial infrastructure.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 1.3.3 -->
+        <h2>1.3.3 — Network Hardware</h2>
+        <p>To establish communication between computers, specialized hardware components act as intermediaries and signal conditioners:</p>
+        <ul>
+            <li><strong>Router:</strong> Connects distinct, separate networks together (most commonly connecting a local LAN to the global WAN/Internet). Routers examine the destination <em>IP address</em> of incoming data packets and calculate the most efficient path forward.</li>
+            <li><strong>Switch:</strong> Operates strictly within a single LAN to connect internal devices together. Unlike older "hubs" (which broadcast incoming data to every single port indiscriminately), an intelligent <strong>switch</strong> records device MAC addresses and forwards data <em>only</em> to the specific destination port intended, reducing network traffic and boosting security.</li>
+            <li><strong>WAP (Wireless Access Point):</strong> A hardware transceiver that bridges wireless Wi-Fi devices (smartphones, tablets, laptops) onto a traditional wired Ethernet network infrastructure.</li>
+            <li><strong>NIC (Network Interface Card):</strong> A physical circuit board or built-in chip inside a computer or device that grants network connectivity. Every single NIC in the world is assigned a unique, hardcoded physical address known as a <strong>MAC (Media Access Control) address</strong> during manufacturing.</li>
+            <li><strong>Transmission Media:</strong> The physical channels carrying data signals:
+                <ul>
+                    <li><em>Copper Twisted-Pair Cables (Ethernet/Cat5e/Cat6):</em> Uses electrical signals; cost-effective over short distances within buildings.</li>
+                    <li><em>Fibre Optic Cables:</em> Uses pulses of light total internal reflection; immune to electromagnetic interference, capable of immense bandwidth over long trans-oceanic distances.</li>
+                    <li><em>Wireless Radio Waves:</em> Highly flexible and mobile, though susceptible to physical obstruction and interference.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <!-- 1.3.4 -->
+        <h2>1.3.4 — Client-Server vs. Peer-to-Peer Networks</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Attribute</th>
+                    <th style="width: 40%;">Client-Server Architecture</th>
+                    <th style="width: 40%;">Peer-to-Peer (P2P) Architecture</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Core Role Distribution</strong></td>
+                    <td>Roles are clearly separated: A powerful dedicated server manages centralized files, security, and databases, while client workstations make requests to it.</td>
+                    <td>All devices (peers) hold equal status. There is no central server; every device can act as both a client (requesting files) and a server (sharing files).</td>
+                </tr>
+                <tr>
+                    <td><strong>Administration & Security</strong></td>
+                    <td>Centralized control. User accounts, passwords, software updates, and backups are managed effortlessly from one central server location.</td>
+                    <td>Decentralized. Each device must be configured, secured, backed up, and updated individually by its respective user. Higher security risk.</td>
+                </tr>
+                <tr>
+                    <td><strong>Scalability & Performance</strong></td>
+                    <td>Can handle heavy concurrent workloads smoothly, provided the central server has robust processing power and high bandwidth capacity.</td>
+                    <td>Performance can degrade as more peers join or leave the network, because processing load is distributed across consumer hardware.</td>
+                </tr>
+                <tr>
+                    <td><strong>Real-World Examples</strong></td>
+                    <td>School networks, corporate office networks, web application hosting servers (like cloud storage or online banking).</td>
+                    <td>BitTorrent file sharing networks, direct printer sharing between two computers at home.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 1.3.5 -->
+        <h2>1.3.5 — Factors Affecting Network Performance</h2>
+        <p>Network speed and user experience fluctuate based on several technical bottlenecks:</p>
+        <ul>
+            <li><span class="badge">Bandwidth</span> The theoretical maximum volume of data that can be transferred across a transmission medium per second (measured in Mbps or Gbps). Think of this as the width of a highway.</li>
+            <li><span class="badge">Latency</span> The actual time delay (measured in milliseconds) it takes for a data packet to travel from the source sender to the destination receiver. Low latency is critical for real-time applications like online gaming and video calls.</li>
+            <li><span class="badge">Contention Ratio</span> The ratio of users sharing the same bandwidth capacity at any given time. A low contention ratio (e.g., 1:1 dedicated business lines) ensures high speed, whereas high contention ratios (e.g., 50:1 residential broadband) slow down during peak evening hours.</li>
+            <li><span class="badge">Interference</span> Physical walls, thick concrete, microwave ovens, and competing Wi-Fi channels can distort wireless radio signals, leading to packet loss and retransmissions.</li>
+        </ul>
+
+        <!-- 1.3.6 -->
+        <h2>1.3.6 — The Internet, Protocols, and Packet Switching</h2>
+        <p>A <strong>protocol</strong> is a standardized set of rules that govern how data is formatted, transmitted, received, and processed across a network so different hardware manufacturers can understand each other.</p>
+
+        <h3>The Crucial Distinction: Internet vs. WWW</h3>
+        <p>Students often confuse these terms in exams:</p>
+        <ul>
+            <li><strong>The Internet:</strong> The physical global hardware infrastructure—cables, routers, servers, and switches connecting computers worldwide.</li>
+            <li><strong>The World Wide Web (WWW):</strong> A service that runs <em>on top of</em> the Internet. It consists of interconnected hypertext documents and web pages accessed via browsers using HTTP/HTTPS.</li>
+        </ul>
+
+        <h3>Key Networking Protocols Suite</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Protocol</th>
+                    <th>Primary Function & Detailed Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>TCP/IP</strong><br>(Transmission Control Protocol / Internet Protocol)</td>
+                    <td>The foundational 2-layer engine of the internet. <strong>IP</strong> handles addressing and routing packets across multiple networks. <strong>TCP</strong> establishes connection sessions, breaks data down, numbers packets sequentially, checks for errors, and requests retransmission of lost packets.</td>
+                </tr>
+                <tr>
+                    <td><strong>HTTP / HTTPS</strong><br>(HyperText Transfer Protocol [Secure])</td>
+                    <td>Governs the transfer of web pages between a web server and a client browser. <strong>HTTPS</strong> adds a layer of encryption (using SSL/TLS certificates) to protect sensitive data like credit card numbers from eavesdropping.</td>
+                </tr>
+                <tr>
+                    <td><strong>DNS</strong><br>(Domain Name System)</td>
+                    <td>Acts as the "phone book" of the Internet. Automatically translates easy-to-remember human domain names (e.g., <code>www.google.com</code>) into numerical IP addresses (e.g., <code>142.250.190.46</code>).</td>
+                </tr>
+                <tr>
+                    <td><strong>SMTP</strong><br>(Simple Mail Transfer Protocol)</td>
+                    <td>Used specifically for <em>pushing and sending</em> outgoing emails from an email client to a mail server, or between mail servers.</td>
+                </tr>
+                <tr>
+                    <td><strong>IMAP</strong><br>(Internet Message Access Protocol)</td>
+                    <td>Used for <em>retrieving and syncing</em> incoming emails from a mail server. Crucially, IMAP leaves a copy of the email on the server so you can access your inbox across multiple devices simultaneously.</td>
+                </tr>
+                <tr>
+                    <td><strong>FTP</strong><br>(File Transfer Protocol)</td>
+                    <td>Used for uploading and downloading raw files securely between computers over a network connection.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Deep Dive Callout: Packet Switching -->
+        <div class="callout">
+            <div class="callout-title">
+                <span>📌</span> Deep Dive: The Lifecycle of Packet Switching
+            </div>
+            <p>Instead of sending a massive file in one continuous stream (which would block network lines), the internet uses <strong>packet switching</strong>. Messages are broken down into small, manageable chunks called packets.</p>
+            <p><strong>Each packet contains vital metadata:</strong></p>
+            <ul>
+                <li><strong>Sender & Recipient IP Addresses:</strong> Ensures routers know where the packet originated and where it must ultimately go.</li>
+                <li><strong>Sequence Number:</strong> Tells the destination computer the correct order to piece the chunks back together.</li>
+                <li><strong>Data Payload:</strong> The actual fragment of the file or message being transmitted.</li>
+            </ul>
+            <p><em>Exam Note:</em> Because routers dynamically choose the best route moment-by-moment, packets often take entirely different physical paths and arrive out of order at the destination. <strong>TCP</strong> sorts and reassembles them, requesting replacements for any corrupted or dropped packets.</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
