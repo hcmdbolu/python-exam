@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 11 Computer Science - Master Revision Quiz</title>
+    <style>
+        :root {
+            --primary: #701A75;
+            --primary-light: #F3E8FF;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --success: #059669;
+            --error: #DC2626;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 750px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .progress-indicator {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--primary-light);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .question-box {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option-btn {
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            padding: 14px 18px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+
+        .option-btn.correct {
+            background-color: #ECFDF5;
+            border-color: var(--success);
+            color: #065F46;
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: #FEF2F2;
+            border-color: var(--error);
+            color: #991B1B;
+            font-weight: 600;
+        }
+
+        .feedback-box {
+            background: var(--bg-color);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            transition: opacity 0.2s;
+        }
+
+        .next-btn:hover {
+            opacity: 0.9;
+        }
+
+        .results-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .results-screen h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .score-badge {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+            margin: 20px 0;
+        }
+
+        .restart-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div id="quiz-screen">
+            <div class="header">
+                <h1>Year 11 Master Revision Quiz</h1>
+                <div class="progress-indicator" id="progress">Question 1 of 30</div>
+            </div>
+
+            <div class="question-box" id="question-text">Loading question...</div>
+            <div class="options-list" id="options-container"></div>
+            
+            <div class="feedback-box" id="feedback-box"></div>
+
+            <div class="footer-nav">
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➔</button>
+            </div>
+        </div>
+
+        <div class="results-screen" id="results-screen">
+            <h2>Quiz Completed! 🎉</h2>
+            <p>Fantastic effort working through this rigorous Year 11 Computer Science master check.</p>
+            <div class="score-badge" id="final-score">0 / 30</div>
+            <p id="performance-comment">Review your notes and try again to cement your knowledge for the final exam.</p>
+            <button class="restart-btn" onclick="restartQuiz()">Restart Master Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Which network topology requires the highest amount of dedicated physical cabling and hardware ports when fully implemented?",
+                options: ["Star topology", "Bus topology", "Mesh topology", "Ring topology"],
+                correct: 2,
+                rationale: "A full mesh topology connects every single node directly to every other node, requiring an immense amount of cabling compared to star or bus layouts."
+            },
+            {
+                q: "What is the key functional difference between a network switch and a traditional network hub?",
+                options: [
+                    "A hub uses IP addresses while a switch uses MAC addresses.",
+                    "A switch sends data frames only to the specific destination port, whereas a hub broadcasts data to all ports.",
+                    "A hub connects LANs to WANs while a switch only routes packets internally.",
+                    "A switch is wireless while a hub requires copper cabling."
+                ],
+                correct: 1,
+                rationale: "Intelligent switches maintain MAC address tables and forward data selectively, minimizing network congestion compared to hubs which blindly broadcast traffic everywhere."
+            },
+            {
+                q: "Which protocol is specifically responsible for translating human-readable domain names (e.g., www.bbc.co.uk) into numerical IP addresses?",
+                options: ["TCP", "DNS", "SMTP", "FTP"],
+                correct: 1,
+                rationale: "The Domain Name System (DNS) acts as the phone book of the internet, resolving text domain names into numeric IP routing addresses."
+            },
+            {
+                q: "In packet switching, what specific piece of metadata ensures that reassembled packets appear in the correct sequence at the destination computer?",
+                options: ["Source MAC address", "TTL (Time to Live)", "Sequence number", "Checksum validation bit"],
+                correct: 2,
+                rationale: "Sequence numbers allow the destination TCP layer to correctly reorder packets that may have arrived out of sequence due to taking different dynamic routes."
+            },
+            {
+                q: "What is the primary structural vulnerability of a star topology network architecture?",
+                options: [
+                    "If any client cable breaks, the entire network shuts down.",
+                    "If the central switch or hub fails, all connected client devices lose connection.",
+                    "It cannot support wireless devices.",
+                    "Data collisions increase exponentially with every new node."
+                ],
+                correct: 1,
+                rationale: "The central switch represents a single point of failure in a star topology; if it goes down, every dependent node loses connectivity."
+            },
+            {
+                q: "Which transmission medium provides the highest possible bandwidth and is entirely immune to electromagnetic interference (EMI)?",
+                options: ["Cat6 Shielded Twisted Pair copper", "Coaxial cable", "Fibre optic cable", "Wi-Fi 6 radio waves"],
+                correct: 2,
+                rationale: "Fibre optic cables transmit data using pulses of light through glass cores, meaning they are completely unaffected by electrical or magnetic interference."
+            },
+            {
+                q: "What fundamental characteristic distinguishes a Wide Area Network (WAN) from a Local Area Network (LAN)?",
+                options: [
+                    "WANs use wireless radio waves exclusively.",
+                    "WANs span large geographical distances and typically lease telecommunication infrastructure.",
+                    "LANs are owned exclusively by internet service providers.",
+                    "WANs cannot use copper cabling."
+                ],
+                correct: 1,
+                rationale: "WANs cover vast geographical regions (cities, countries, global) and rely on leased carrier infrastructure rather than private in-building wiring."
+            },
+            {
+                q: "Which protocol is utilized to retrieve and synchronize incoming emails across multiple devices while keeping copies stored on the remote mail server?",
+                options: ["SMTP", "FTP", "IMAP", "HTTP"],
+                correct: 2,
+                rationale: "Internet Message Access Protocol (IMAP) synchronizes mailboxes across devices by leaving master copies stored securely on the mail server."
+            },
+            {
+                q: "What is the primary advantage of a client-server network architecture over a peer-to-peer (P2P) setup?",
+                options: [
+                    "Lower initial hardware setup costs",
+                    "Centralized security management, backups, and user access control",
+                    "Elimination of the need for network routers",
+                    "Infinite scalability without bandwidth bottlenecks"
+                ],
+                correct: 1,
+                rationale: "Client-server systems allow administrators to manage user accounts, permissions, and automated backups centrally from a secure server location."
+            },
+            {
+                q: "Which networking hardware device operates at the network layer to route packets between distinct, separate networks using IP addresses?",
+                options: ["Network Switch", "Wireless Access Point", "Router", "Network Interface Card"],
+                correct: 2,
+                rationale: "Routers connect separate networks (such as LANs to the WAN/Internet) by examining destination IP addresses and determining optimal paths."
+            },
+            {
+                q: "What does a high network latency measurement indicate during data transmission?",
+                options: [
+                    "A massive volume of data transferred per second",
+                    "A significant time delay for packets to travel from source to destination",
+                    "A high contention ratio among users",
+                    "Strong encryption standards applied to packets"
+                ],
+                correct: 1,
+                rationale: "Latency measures the delay (in milliseconds) taken for a data packet to travel across the network from sender to receiver."
+            },
+            {
+                q: "What is the core distinction between the Internet and the World Wide Web (WWW)?",
+                options: [
+                    "The Internet is wireless while the WWW is wired.",
+                    "The Internet is the physical hardware infrastructure, whereas the WWW is a service running on top of it.",
+                    "The WWW is older than the Internet.",
+                    "There is no technical distinction; they are synonymous."
+                ],
+                correct: 1,
+                rationale: "The Internet is the global physical network of interconnected hardware, while the WWW is the collection of web pages and services accessed via browsers."
+            },
+            {
