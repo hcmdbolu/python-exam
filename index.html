@@ -412,4 +412,143 @@
                 options: ["4", "6", "8", "16"],
                 correct: 2,
                 rationale: "The number of rows follows 2^n where n is the number of inputs. For 3 variables, 2^3 = 8 possible input combinations."
-           
+            },
+            {
+                q: "Which protocol is responsible for sending outgoing emails from an email client application to a mail server?",
+                options: ["IMAP", "POP3", "SMTP", "HTTP"],
+                correct: 2,
+                rationale: "Simple Mail Transfer Protocol (SMTP) handles pushing and sending outgoing mail messages across servers."
+            },
+            {
+                q: "What is the primary function of a Wireless Access Point (WAP) in a computer network?",
+                options: [
+                    "To assign dynamic IP addresses to client devices",
+                    "To bridge wireless Wi-Fi devices onto a wired local area network infrastructure",
+                    "To encrypt all web browser traffic",
+                    "To amplify fibre optic light signals over long distances"
+                ],
+                correct: 1,
+                rationale: "A WAP acts as a transceiver connecting wireless client devices directly into the physical wired Ethernet backbone of a LAN."
+            },
+            {
+                q: "According to the idempotent law in Boolean algebra, what does the expression A AND A simplify to?",
+                options: ["0", "1", "A", "NOT A"],
+                correct: 2,
+                rationale: "The idempotent law states that operating a variable with itself yields the variable itself (A AND A = A and A OR A = A)."
+            },
+            {
+                q: "Which factor is least likely to directly impact wireless network performance in a school building?",
+                options: [
+                    "Thick concrete load-bearing walls",
+                    "Overlapping Wi-Fi channels from nearby classrooms",
+                    "The brand and color of the computer monitor connected to student workstations",
+                    "Microwave ovens and electronic appliances operating nearby"
+                ],
+                correct: 2,
+                rationale: "Peripheral hardware like monitor brands have zero impact on Wi-Fi radio transmission, whereas walls, channel congestion, and interference directly degrade wireless signals."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const progressIndicator = document.getElementById("progress");
+        const feedbackBox = document.getElementById("feedback-box");
+        const nextBtn = document.getElementById("next-btn");
+        const quizScreen = document.getElementById("quiz-screen");
+        const resultsScreen = document.getElementById("results-screen");
+        const finalScore = document.getElementById("final-score");
+
+        function loadQuestion() {
+            answered = false;
+            feedbackBox.style.display = "none";
+            nextBtn.style.display = "none";
+            
+            const qData = questions[currentQuestion];
+            progressIndicator.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            questionText.textContent = qData.q;
+            
+            optionsContainer.innerHTML = "";
+            qData.options.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.textContent = opt;
+                btn.onclick = () => selectOption(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex) {
+            if (answered) return;
+            answered = true;
+
+            const qData = questions[currentQuestion];
+            const buttons = optionsContainer.getElementsByTagName("button");
+
+            if (selectedIndex === qData.correct) {
+                buttons[selectedIndex].classList.add("correct");
+                score++;
+                feedbackBox.innerHTML = `<strong>Correct!</strong> ${qData.rationale}`;
+            } else {
+                buttons[selectedIndex].classList.add("incorrect");
+                buttons[qData.correct].classList.add("correct");
+                feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${qData.rationale}`;
+            }
+
+            feedbackBox.style.display = "block";
+            
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+
+            if (currentQuestion < questions.length - 1) {
+                nextBtn.textContent = "Next Question ➔";
+            } else {
+                nextBtn.textContent = "View Results ➔";
+            }
+            nextBtn.style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.style.display = "none";
+            resultsScreen.style.display = "block";
+            finalScore.textContent = `${score} / ${questions.length}`;
+            
+            const comment = document.getElementById("performance-comment");
+            const percentage = (score / questions.length) * 100;
+            if (percentage >= 85) {
+                comment.textContent = "Outstanding mastery! You are fully prepared for your Year 11 Computer Science exams.";
+            } else if (percentage >= 60) {
+                comment.textContent = "Solid understanding! Review your weaker topics (like protocols or Boolean laws) to aim for top marks.";
+            } else {
+                comment.textContent = "Keep revising! Re-read your OneNote revision notes carefully and try the quiz again.";
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            resultsScreen.style.display = "none";
+            quizScreen.style.display = "block";
+            loadQuestion();
+        }
+
+        // Safely initialize when the page finishes loading
+        window.onload = function() {
+            loadQuestion();
+        };
+    </script>
+</body>
+</html>
