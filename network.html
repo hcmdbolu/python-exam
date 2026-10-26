@@ -3,429 +3,549 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OneNote - 1.3 Computer Networks, Connections and Protocols (Master Revision)</title>
+    <title>Year 11 Computer Science - Master Revision Quiz</title>
     <style>
         :root {
-            --onenote-purple: #701A75;
-            --onenote-light-purple: #F3E8FF;
-            --onenote-bg: #FFFFFF;
-            --onenote-sidebar: #F8FAFC;
-            --onenote-border: #E2E8F0;
+            --primary: #701A75;
+            --primary-light: #F3E8FF;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
             --text-main: #1E293B;
             --text-muted: #64748B;
-            --table-header: #EDE9FE;
-            --callout-bg: #F8FAFC;
-            --accent-blue: #0284C7;
-            --accent-green: #059669;
+            --border: #E2E8F0;
+            --success: #059669;
+            --error: #DC2626;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--onenote-bg);
+            background-color: var(--bg-color);
             color: var(--text-main);
+            margin: 0;
+            padding: 20px;
             display: flex;
-            height: 100vh;
-            overflow: hidden;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        /* OneNote App Sidebar Simulation */
-        .sidebar {
-            width: 280px;
-            background-color: var(--onenote-sidebar);
-            border-right: 1px solid var(--onenote-border);
+        .quiz-container {
+            width: 100%;
+            max-width: 750px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .progress-indicator {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--primary-light);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .question-box {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-list {
             display: flex;
             flex-direction: column;
-            padding: 20px 0;
-            flex-shrink: 0;
+            gap: 12px;
+            margin-bottom: 25px;
         }
 
-        .notebook-title {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--onenote-purple);
-            padding: 0 20px 15px 20px;
-            border-bottom: 1px solid var(--onenote-border);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-list {
-            list-style: none;
-            padding: 0;
-            margin: 15px 0 0 0;
-        }
-
-        .section-item {
-            padding: 12px 20px;
-            font-size: 0.9rem;
-            color: var(--text-main);
-            background-color: var(--onenote-light-purple);
-            border-left: 4px solid var(--onenote-purple);
-            font-weight: 500;
+        .option-btn {
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            padding: 14px 18px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95rem;
             cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-main);
         }
 
-        /* Main Content Canvas */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 40px;
-            background-color: #FFFFFF;
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
         }
 
-        .page-header {
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--onenote-border);
-            padding-bottom: 15px;
+        .option-btn.correct {
+            background-color: #ECFDF5;
+            border-color: var(--success);
+            color: #065F46;
+            font-weight: 600;
         }
 
-        .page-title {
+        .option-btn.incorrect {
+            background-color: #FEF2F2;
+            border-color: var(--error);
+            color: #991B1B;
+            font-weight: 600;
+        }
+
+        .feedback-box {
+            background: var(--bg-color);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            transition: opacity 0.2s;
+        }
+
+        .next-btn:hover {
+            opacity: 0.9;
+        }
+
+        .results-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .results-screen h2 {
+            color: var(--primary);
             font-size: 2rem;
-            font-weight: 700;
-            color: var(--onenote-purple);
-            margin: 0 0 5px 0;
-        }
-
-        .page-meta {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* Notebook Sections */
-        h2 {
-            font-size: 1.35rem;
-            color: var(--onenote-purple);
-            border-bottom: 1px solid #DDD;
-            padding-bottom: 5px;
-            margin-top: 45px;
-            margin-bottom: 15px;
-        }
-
-        h3 {
-            font-size: 1.1rem;
-            color: #334155;
-            margin-top: 25px;
             margin-bottom: 10px;
         }
 
-        p, li {
-            font-size: 0.98rem;
-            line-height: 1.65;
-            color: var(--text-main);
-        }
-
-        ul, ol {
-            margin-top: 5px;
-            margin-bottom: 15px;
-            padding-left: 25px;
-        }
-
-        /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .score-badge {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
             margin: 20px 0;
-            font-size: 0.93rem;
         }
 
-        th, td {
-            border: 1px solid var(--onenote-border);
-            padding: 12px 15px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        th {
-            background-color: var(--table-header);
-            color: var(--onenote-purple);
+        .restart-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-size: 1rem;
             font-weight: 600;
-        }
-
-        tr:nth-child(even) {
-            background-color: #FAFAFA;
-        }
-
-        /* Callout Box / Tip */
-        .callout {
-            background-color: var(--callout-bg);
-            border-left: 4px solid var(--onenote-purple);
-            padding: 15px 20px;
-            margin: 25px 0;
-            border-radius: 0 6px 6px 0;
-        }
-
-        .callout-title {
-            font-weight: 600;
-            color: var(--onenote-purple);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2px 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background-color: var(--onenote-light-purple);
-            color: var(--onenote-purple);
-            border-radius: 4px;
-            margin-right: 6px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-                height: auto;
-                overflow: auto;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-            }
-            .main-content {
-                padding: 20px;
-            }
+            cursor: pointer;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Simulated OneNote Sidebar -->
-    <div class="sidebar">
-        <div class="notebook-title">
-            <span>📖</span> Year 11 Computer Science
-        </div>
-        <ul class="section-list">
-            <li class="section-item">1.3 — Networks & Protocols</li>
-        </ul>
-    </div>
-
-    <!-- Main Notebook Page Canvas -->
-    <div class="main-content">
-        <div class="page-header">
-            <h1 class="page-title">1.3 — Computer Networks, Connections and Protocols</h1>
-            <div class="page-meta">Notebook Page • Detailed Master Revision • Exam Focus</div>
-        </div>
-
-        <p>Comprehensive study notes explaining how computers communicate, the physical and logical architecture of digital networks, hardware devices, and the suite of protocols governing data transfer across the globe.</p>
-
-        <!-- 1.3.1 -->
-        <h2>1.3.1 — Types of Network</h2>
-        <p>Networks are classified primarily by their geographical scale, scope, and who owns the physical infrastructure:</p>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 25%;">Network Type</th>
-                    <th style="width: 35%;">Geographical Scope & Ownership</th>
-                    <th>Detailed Explanation & Examples</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>PAN (Personal Area Network)</strong></td>
-                    <td>Very small scale (within ~10 meters around a single individual). Owned by the user.</td>
-                    <td>Centers around a single person. Examples include connecting a smartphone to wireless Bluetooth headphones, a smartwatch syncing health data, or a wireless mouse connected to a laptop.</td>
-                </tr>
-                <tr>
-                    <td><strong>LAN (Local Area Network)</strong></td>
-                    <td>Small geographical area — e.g., a single room, building, school campus, or office block. Owned entirely by the organization.</td>
-                    <td>Allows high-speed data sharing and peripheral sharing (e.g., printers). Connected using copper Ethernet cables (wired) or Wi-Fi (wireless access points). High data transfer speeds and strong security control.</td>
-                </tr>
-                <tr>
-                    <td><strong>WAN (Wide Area Network)</strong></td>
-                    <td>Large geographical area spanning towns, cities, countries, or globally. Infrastructure is often leased from telecommunication companies.</td>
-                    <td>Because organizations cannot practically run private cables across continents, they lease lines (fiber optics, satellite links, telephone lines) from telecom providers. <strong>The Internet</strong> is universally recognized as the world's largest WAN.</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- 1.3.2 -->
-        <h2>1.3.2 — Network Topologies</h2>
-        <p>A network topology defines how physical devices (nodes) and communication links are arranged relative to each other.</p>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 20%;">Feature</th>
-                    <th style="width: 40%;">Star Topology</th>
-                    <th style="width: 40%;">Mesh Topology</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Structural Layout</strong></td>
-                    <td>All devices (nodes) are individually connected to a central hub or switch. There is no direct link between standard workstations.</td>
-                    <td>Every device is connected directly to every other device (Full Mesh) or connected to multiple neighboring devices (Partial Mesh).</td>
-                </tr>
-                <tr>
-                    <td><strong>Key Advantages</strong></td>
-                    <td>
-                        <ul>
-                            <li>Extremely reliable: If one cable or device fails, only that device is disconnected.</li>
-                            <li>Easy to add/remove new devices without disrupting the network.</li>
-                            <li>High performance with minimal data collisions.</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>Incredible fault tolerance: Multiple alternate paths exist for data packets. No single point of failure.</li>
-                            <li>Very secure (data passing through dedicated lines cannot easily be intercepted).</li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Key Disadvantages</strong></td>
-                    <td>
-                        <ul>
-                            <li>If the central switch or hub fails, <strong>the entire network goes down</strong>.</li>
-                            <li>Requires a significant amount of cable as every device needs its own dedicated wire back to the switch.</li>
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            <li>Extremely expensive to install due to the massive quantities of cabling and specialized hardware ports required.</li>
-                            <li>Complex maintenance, setup, and management.</li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Typical Use Cases</strong></td>
-                    <td>School IT suites, modern office buildings, and residential home networks.</td>
-                    <td>The Internet backbone (routing between major ISP nodes), military command systems, and critical industrial infrastructure.</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- 1.3.3 -->
-        <h2>1.3.3 — Network Hardware</h2>
-        <p>To establish communication between computers, specialized hardware components act as intermediaries and signal conditioners:</p>
-        <ul>
-            <li><strong>Router:</strong> Connects distinct, separate networks together (most commonly connecting a local LAN to the global WAN/Internet). Routers examine the destination <em>IP address</em> of incoming data packets and calculate the most efficient path forward.</li>
-            <li><strong>Switch:</strong> Operates strictly within a single LAN to connect internal devices together. Unlike older "hubs" (which broadcast incoming data to every single port indiscriminately), an intelligent <strong>switch</strong> records device MAC addresses and forwards data <em>only</em> to the specific destination port intended, reducing network traffic and boosting security.</li>
-            <li><strong>WAP (Wireless Access Point):</strong> A hardware transceiver that bridges wireless Wi-Fi devices (smartphones, tablets, laptops) onto a traditional wired Ethernet network infrastructure.</li>
-            <li><strong>NIC (Network Interface Card):</strong> A physical circuit board or built-in chip inside a computer or device that grants network connectivity. Every single NIC in the world is assigned a unique, hardcoded physical address known as a <strong>MAC (Media Access Control) address</strong> during manufacturing.</li>
-            <li><strong>Transmission Media:</strong> The physical channels carrying data signals:
-                <ul>
-                    <li><em>Copper Twisted-Pair Cables (Ethernet/Cat5e/Cat6):</em> Uses electrical signals; cost-effective over short distances within buildings.</li>
-                    <li><em>Fibre Optic Cables:</em> Uses pulses of light total internal reflection; immune to electromagnetic interference, capable of immense bandwidth over long trans-oceanic distances.</li>
-                    <li><em>Wireless Radio Waves:</em> Highly flexible and mobile, though susceptible to physical obstruction and interference.</li>
-                </ul>
-            </li>
-        </ul>
-
-        <!-- 1.3.4 -->
-        <h2>1.3.4 — Client-Server vs. Peer-to-Peer Networks</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 20%;">Attribute</th>
-                    <th style="width: 40%;">Client-Server Architecture</th>
-                    <th style="width: 40%;">Peer-to-Peer (P2P) Architecture</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Core Role Distribution</strong></td>
-                    <td>Roles are clearly separated: A powerful dedicated server manages centralized files, security, and databases, while client workstations make requests to it.</td>
-                    <td>All devices (peers) hold equal status. There is no central server; every device can act as both a client (requesting files) and a server (sharing files).</td>
-                </tr>
-                <tr>
-                    <td><strong>Administration & Security</strong></td>
-                    <td>Centralized control. User accounts, passwords, software updates, and backups are managed effortlessly from one central server location.</td>
-                    <td>Decentralized. Each device must be configured, secured, backed up, and updated individually by its respective user. Higher security risk.</td>
-                </tr>
-                <tr>
-                    <td><strong>Scalability & Performance</strong></td>
-                    <td>Can handle heavy concurrent workloads smoothly, provided the central server has robust processing power and high bandwidth capacity.</td>
-                    <td>Performance can degrade as more peers join or leave the network, because processing load is distributed across consumer hardware.</td>
-                </tr>
-                <tr>
-                    <td><strong>Real-World Examples</strong></td>
-                    <td>School networks, corporate office networks, web application hosting servers (like cloud storage or online banking).</td>
-                    <td>BitTorrent file sharing networks, direct printer sharing between two computers at home.</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- 1.3.5 -->
-        <h2>1.3.5 — Factors Affecting Network Performance</h2>
-        <p>Network speed and user experience fluctuate based on several technical bottlenecks:</p>
-        <ul>
-            <li><span class="badge">Bandwidth</span> The theoretical maximum volume of data that can be transferred across a transmission medium per second (measured in Mbps or Gbps). Think of this as the width of a highway.</li>
-            <li><span class="badge">Latency</span> The actual time delay (measured in milliseconds) it takes for a data packet to travel from the source sender to the destination receiver. Low latency is critical for real-time applications like online gaming and video calls.</li>
-            <li><span class="badge">Contention Ratio</span> The ratio of users sharing the same bandwidth capacity at any given time. A low contention ratio (e.g., 1:1 dedicated business lines) ensures high speed, whereas high contention ratios (e.g., 50:1 residential broadband) slow down during peak evening hours.</li>
-            <li><span class="badge">Interference</span> Physical walls, thick concrete, microwave ovens, and competing Wi-Fi channels can distort wireless radio signals, leading to packet loss and retransmissions.</li>
-        </ul>
-
-        <!-- 1.3.6 -->
-        <h2>1.3.6 — The Internet, Protocols, and Packet Switching</h2>
-        <p>A <strong>protocol</strong> is a standardized set of rules that govern how data is formatted, transmitted, received, and processed across a network so different hardware manufacturers can understand each other.</p>
-
-        <h3>The Crucial Distinction: Internet vs. WWW</h3>
-        <p>Students often confuse these terms in exams:</p>
-        <ul>
-            <li><strong>The Internet:</strong> The physical global hardware infrastructure—cables, routers, servers, and switches connecting computers worldwide.</li>
-            <li><strong>The World Wide Web (WWW):</strong> A service that runs <em>on top of</em> the Internet. It consists of interconnected hypertext documents and web pages accessed via browsers using HTTP/HTTPS.</li>
-        </ul>
-
-        <h3>Key Networking Protocols Suite</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 25%;">Protocol</th>
-                    <th>Primary Function & Detailed Role</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>TCP/IP</strong><br>(Transmission Control Protocol / Internet Protocol)</td>
-                    <td>The foundational 2-layer engine of the internet. <strong>IP</strong> handles addressing and routing packets across multiple networks. <strong>TCP</strong> establishes connection sessions, breaks data down, numbers packets sequentially, checks for errors, and requests retransmission of lost packets.</td>
-                </tr>
-                <tr>
-                    <td><strong>HTTP / HTTPS</strong><br>(HyperText Transfer Protocol [Secure])</td>
-                    <td>Governs the transfer of web pages between a web server and a client browser. <strong>HTTPS</strong> adds a layer of encryption (using SSL/TLS certificates) to protect sensitive data like credit card numbers from eavesdropping.</td>
-                </tr>
-                <tr>
-                    <td><strong>DNS</strong><br>(Domain Name System)</td>
-                    <td>Acts as the "phone book" of the Internet. Automatically translates easy-to-remember human domain names (e.g., <code>www.google.com</code>) into numerical IP addresses (e.g., <code>142.250.190.46</code>).</td>
-                </tr>
-                <tr>
-                    <td><strong>SMTP</strong><br>(Simple Mail Transfer Protocol)</td>
-                    <td>Used specifically for <em>pushing and sending</em> outgoing emails from an email client to a mail server, or between mail servers.</td>
-                </tr>
-                <tr>
-                    <td><strong>IMAP</strong><br>(Internet Message Access Protocol)</td>
-                    <td>Used for <em>retrieving and syncing</em> incoming emails from a mail server. Crucially, IMAP leaves a copy of the email on the server so you can access your inbox across multiple devices simultaneously.</td>
-                </tr>
-                <tr>
-                    <td><strong>FTP</strong><br>(File Transfer Protocol)</td>
-                    <td>Used for uploading and downloading raw files securely between computers over a network connection.</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Deep Dive Callout: Packet Switching -->
-        <div class="callout">
-            <div class="callout-title">
-                <span>📌</span> Deep Dive: The Lifecycle of Packet Switching
+    <div class="quiz-container">
+        <div id="quiz-screen">
+            <div class="header">
+                <h1>Year 11 Master Revision Quiz</h1>
+                <div class="progress-indicator" id="progress">Question 1 of 30</div>
             </div>
-            <p>Instead of sending a massive file in one continuous stream (which would block network lines), the internet uses <strong>packet switching</strong>. Messages are broken down into small, manageable chunks called packets.</p>
-            <p><strong>Each packet contains vital metadata:</strong></p>
-            <ul>
-                <li><strong>Sender & Recipient IP Addresses:</strong> Ensures routers know where the packet originated and where it must ultimately go.</li>
-                <li><strong>Sequence Number:</strong> Tells the destination computer the correct order to piece the chunks back together.</li>
-                <li><strong>Data Payload:</strong> The actual fragment of the file or message being transmitted.</li>
-            </ul>
-            <p><em>Exam Note:</em> Because routers dynamically choose the best route moment-by-moment, packets often take entirely different physical paths and arrive out of order at the destination. <strong>TCP</strong> sorts and reassembles them, requesting replacements for any corrupted or dropped packets.</p>
+
+            <div class="question-box" id="question-text">Loading question...</div>
+            <div class="options-list" id="options-container"></div>
+            
+            <div class="feedback-box" id="feedback-box"></div>
+
+            <div class="footer-nav">
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➔</button>
+            </div>
         </div>
 
+        <div class="results-screen" id="results-screen">
+            <h2>Quiz Completed! 🎉</h2>
+            <p>Fantastic effort working through this rigorous Year 11 Computer Science master check.</p>
+            <div class="score-badge" id="final-score">0 / 30</div>
+            <p id="performance-comment">Review your notes and try again to cement your knowledge for the final exam.</p>
+            <button class="restart-btn" onclick="restartQuiz()">Restart Master Quiz</button>
+        </div>
     </div>
 
+    <script>
+        const questions = [
+            {
+                q: "Which network topology requires the highest amount of dedicated physical cabling and hardware ports when fully implemented?",
+                options: ["Star topology", "Bus topology", "Mesh topology", "Ring topology"],
+                correct: 2,
+                rationale: "A full mesh topology connects every single node directly to every other node, requiring an immense amount of cabling compared to star or bus layouts."
+            },
+            {
+                q: "What is the key functional difference between a network switch and a traditional network hub?",
+                options: [
+                    "A hub uses IP addresses while a switch uses MAC addresses.",
+                    "A switch sends data frames only to the specific destination port, whereas a hub broadcasts data to all ports.",
+                    "A hub connects LANs to WANs while a switch only routes packets internally.",
+                    "A switch is wireless while a hub requires copper cabling."
+                ],
+                correct: 1,
+                rationale: "Intelligent switches maintain MAC address tables and forward data selectively, minimizing network congestion compared to hubs which blindly broadcast traffic everywhere."
+            },
+            {
+                q: "Which protocol is specifically responsible for translating human-readable domain names (e.g., www.bbc.co.uk) into numerical IP addresses?",
+                options: ["TCP", "DNS", "SMTP", "FTP"],
+                correct: 1,
+                rationale: "The Domain Name System (DNS) acts as the phone book of the internet, resolving text domain names into numeric IP routing addresses."
+            },
+            {
+                q: "In packet switching, what specific piece of metadata ensures that reassembled packets appear in the correct sequence at the destination computer?",
+                options: ["Source MAC address", "TTL (Time to Live)", "Sequence number", "Checksum validation bit"],
+                correct: 2,
+                rationale: "Sequence numbers allow the destination TCP layer to correctly reorder packets that may have arrived out of sequence due to taking different dynamic routes."
+            },
+            {
+                q: "What is the primary structural vulnerability of a star topology network architecture?",
+                options: [
+                    "If any client cable breaks, the entire network shuts down.",
+                    "If the central switch or hub fails, all connected client devices lose connection.",
+                    "It cannot support wireless devices.",
+                    "Data collisions increase exponentially with every new node."
+                ],
+                correct: 1,
+                rationale: "The central switch represents a single point of failure in a star topology; if it goes down, every dependent node loses connectivity."
+            },
+            {
+                q: "Which transmission medium provides the highest possible bandwidth and is entirely immune to electromagnetic interference (EMI)?",
+                options: ["Cat6 Shielded Twisted Pair copper", "Coaxial cable", "Fibre optic cable", "Wi-Fi 6 radio waves"],
+                correct: 2,
+                rationale: "Fibre optic cables transmit data using pulses of light through glass cores, meaning they are completely unaffected by electrical or magnetic interference."
+            },
+            {
+                q: "What fundamental characteristic distinguishes a Wide Area Network (WAN) from a Local Area Network (LAN)?",
+                options: [
+                    "WANs use wireless radio waves exclusively.",
+                    "WANs span large geographical distances and typically lease telecommunication infrastructure.",
+                    "LANs are owned exclusively by internet service providers.",
+                    "WANs cannot use copper cabling."
+                ],
+                correct: 1,
+                rationale: "WANs cover vast geographical regions (cities, countries, global) and rely on leased carrier infrastructure rather than private in-building wiring."
+            },
+            {
+                q: "Which protocol is utilized to retrieve and synchronize incoming emails across multiple devices while keeping copies stored on the remote mail server?",
+                options: ["SMTP", "FTP", "IMAP", "HTTP"],
+                correct: 2,
+                rationale: "Internet Message Access Protocol (IMAP) synchronizes mailboxes across devices by leaving master copies stored securely on the mail server."
+            },
+            {
+                q: "What is the primary advantage of a client-server network architecture over a peer-to-peer (P2P) setup?",
+                options: [
+                    "Lower initial hardware setup costs",
+                    "Centralized security management, backups, and user access control",
+                    "Elimination of the need for network routers",
+                    "Infinite scalability without bandwidth bottlenecks"
+                ],
+                correct: 1,
+                rationale: "Client-server systems allow administrators to manage user accounts, permissions, and automated backups centrally from a secure server location."
+            },
+            {
+                q: "Which networking hardware device operates at the network layer to route packets between distinct, separate networks using IP addresses?",
+                options: ["Network Switch", "Wireless Access Point", "Router", "Network Interface Card"],
+                correct: 2,
+                rationale: "Routers connect separate networks (such as LANs to the WAN/Internet) by examining destination IP addresses and determining optimal paths."
+            },
+            {
+                q: "What does a high network latency measurement indicate during data transmission?",
+                options: [
+                    "A massive volume of data transferred per second",
+                    "A significant time delay for packets to travel from source to destination",
+                    "A high contention ratio among users",
+                    "Strong encryption standards applied to packets"
+                ],
+                correct: 1,
+                rationale: "Latency measures the delay (in milliseconds) taken for a data packet to travel across the network from sender to receiver."
+            },
+            {
+                q: "What is the core distinction between the Internet and the World Wide Web (WWW)?",
+                options: [
+                    "The Internet is wireless while the WWW is wired.",
+                    "The Internet is the physical hardware infrastructure, whereas the WWW is a service running on top of it.",
+                    "The WWW is older than the Internet.",
+                    "There is no technical distinction; they are synonymous."
+                ],
+                correct: 1,
+                rationale: "The Internet is the global physical network of interconnected hardware, while the WWW is the collection of web pages and services accessed via browsers."
+            },
+            {
+                q: "Which protocol layer combination correctly describes TCP and IP functions respectively?",
+                options: [
+                    "TCP handles packet addressing; IP handles reassembly.",
+                    "TCP ensures reliable ordered delivery and error checking; IP handles packet addressing and routing.",
+                    "TCP encrypts web pages; IP translates domain names.",
+                    "TCP controls wireless radio frequencies; IP routes emails."
+                ],
+                correct: 1,
+                rationale: "IP is responsible for addressing and routing packets across networks, while TCP manages connection sessions, sequencing, and error recovery."
+            },
+            {
+                q: "What does a Network Interface Card (NIC) utilize to uniquely identify a computing device on a local network?",
+                options: ["An IPv4 address", "A Domain Name", "A 48-bit or 64-bit hardware MAC address", "A port number"],
+                correct: 2,
+                rationale: "Every NIC is assigned a globally unique physical MAC (Media Access Control) address during manufacturing."
+            },
+            {
+                q: "Why is HTTPS considered significantly more secure than standard HTTP?",
+                options: [
+                    "It compresses files to make them smaller.",
+                    "It encrypts data in transit using SSL/TLS protocols to prevent eavesdropping.",
+                    "It bypasses routers entirely to avoid interception.",
+                    "It requires users to log in with biometrics."
+                ],
+                correct: 1,
+                rationale: "HTTPS wraps web traffic in an SSL/TLS cryptographic encryption layer so intercepted data packets cannot be read by malicious actors."
+            },
+            {
+                q: "What is the output of the Boolean expression Q = (A AND B) OR (NOT A) when A = 0 and B = 1?",
+                options: ["0", "1", "Undefined", "Depends on clock speed"],
+                correct: 1,
+                rationale: "When A = 0, NOT A = 1. Since it's an OR operation with 1 on one side, the entire expression evaluates to 1 regardless of (A AND B)."
+            },
+            {
+                q: "Which logic gate outputs 1 exclusively when its inputs are different from one another?",
+                options: ["AND gate", "OR gate", "XOR gate", "NOR gate"],
+                correct: 2,
+                rationale: "An Exclusive-OR (XOR) gate outputs 1 only when inputs differ (0,1 or 1,0), outputting 0 if both inputs match."
+            },
+            {
+                q: "According to Boolean algebra laws, what is the simplification of the expression A OR 1?",
+                options: ["0", "A", "NOT A", "1"],
+                correct: 3,
+                rationale: "Under the dominance (null) law, anything ORed with 1 always evaluates to 1 because at least one input is guaranteed true."
+            },
+            {
+                q: "Why are NAND and NOR gates frequently referred to as 'universal gates'?",
+                options: [
+                    "They consume zero electrical power.",
+                    "Any Boolean function or logic circuit can be constructed using only that single gate type.",
+                    "They operate faster than all other gates.",
+                    "They can process three inputs simultaneously."
+                ],
+                correct: 1,
+                rationale: "Universal gates possess the functional completeness property, meaning any logical expression can be built entirely using only NAND or only NOR gates."
+            },
+            {
+                q: "What is the simplified equivalent of the Boolean expression NOT(NOT A)?",
+                options: ["0", "1", "A", "NOT A"],
+                correct: 2,
+                rationale: "Double negation cancels itself out: inverting a signal twice returns it to its original state (A)."
+            },
+            {
+                q: "Which protocol is primarily used for uploading and downloading raw files between client computers and remote servers?",
+                options: ["SMTP", "FTP", "IMAP", "DNS"],
+                correct: 1,
+                rationale: "File Transfer Protocol (FTP) is dedicated to transferring raw file directories between computers across a network."
+            },
+            {
+                q: "In a wireless mesh network, what makes the architecture exceptionally reliable compared to a star topology?",
+                options: [
+                    "It relies on a central high-speed server.",
+                    "Multiple interconnected pathways exist between nodes, preventing a single point of failure.",
+                    "It operates without any power cables.",
+                    "It blocks all external interference automatically."
+                ],
+                correct: 1,
+                rationale: "Mesh networks feature redundant multi-path routing, meaning if one link or node fails, traffic dynamically reroutes through neighboring nodes."
+            },
+            {
+                q: "What is the output of the Boolean expression Q = A AND (NOT A) for any input value of A?",
+                options: ["0", "1", "A", "NOT A"],
+                correct: 0,
+                rationale: "According to the complement law, a variable ANDed with its own negation (A AND NOT A) is always 0 because both cannot be true simultaneously."
+            },
+            {
+                q: "Which networking hardware device connects local area networks to wide area networks while filtering traffic via IP addresses?",
+                options: ["Hub", "Switch", "Router", "Repeater"],
+                correct: 2,
+                rationale: "Routers connect LANs to WANs and inspect Layer 3 IP addresses to direct traffic."
+            },
+            {
+                q: "What does a contention ratio of 50:1 mean in broadband internet service performance?",
+                options: [
+                    "50 users share the exact same dedicated fibre line simultaneously.",
+                    "Up to 50 residential customers share the same core bandwidth capacity provided by the ISP.",
+                    "Data is transmitted 50 times faster than normal broadband.",
+                    "There are 50 routers between your computer and the server."
+                ],
+                correct: 1,
+                rationale: "A 50:1 contention ratio means up to 50 users share the same pool of bandwidth, which can cause slowdowns during peak evening hours."
+            },
+            {
+                q: "How many rows are required in a complete truth table for a Boolean expression featuring 3 distinct input variables (A, B, C)?",
+                options: ["4", "6", "8", "16"],
+                correct: 2,
+                rationale: "The number of rows follows 2^n where n is the number of inputs. For 3 variables, 2^3 = 8 possible input combinations."
+            },
+            {
+                q: "Which protocol is responsible for sending outgoing emails from an email client application to a mail server?",
+                options: ["IMAP", "POP3", "SMTP", "HTTP"],
+                correct: 2,
+                rationale: "Simple Mail Transfer Protocol (SMTP) handles pushing and sending outgoing mail messages across servers."
+            },
+            {
+                q: "What is the primary function of a Wireless Access Point (WAP) in a computer network?",
+                options: [
+                    "To assign dynamic IP addresses to client devices",
+                    "To bridge wireless Wi-Fi devices onto a wired local area network infrastructure",
+                    "To encrypt all web browser traffic",
+                    "To amplify fibre optic light signals over long distances"
+                ],
+                correct: 1,
+                rationale: "A WAP acts as a transceiver connecting wireless client devices directly into the physical wired Ethernet backbone of a LAN."
+            },
+            {
+                q: "According to the idempotent law in Boolean algebra, what does the expression A AND A simplify to?",
+                options: ["0", "1", "A", "NOT A"],
+                correct: 2,
+                rationale: "The idempotent law states that operating a variable with itself yields the variable itself (A AND A = A and A OR A = A)."
+            },
+            {
+                q: "Which factor is least likely to directly impact wireless network performance in a school building?",
+                options: [
+                    "Thick concrete load-bearing walls",
+                    "Overlapping Wi-Fi channels from nearby classrooms",
+                    "The brand and color of the computer monitor connected to student workstations",
+                    "Microwave ovens and electronic appliances operating nearby"
+                ],
+                correct: 2,
+                rationale: "Peripheral hardware like monitor brands have zero impact on Wi-Fi radio transmission, whereas walls, channel congestion, and interference directly degrade wireless signals."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const progressIndicator = document.getElementById("progress");
+        const feedbackBox = document.getElementById("feedback-box");
+        const nextBtn = document.getElementById("next-btn");
+        const quizScreen = document.getElementById("quiz-screen");
+        const resultsScreen = document.getElementById("results-screen");
+        const finalScore = document.getElementById("final-score");
+
+        function loadQuestion() {
+            answered = false;
+            feedbackBox.style.display = "none";
+            nextBtn.style.display = "none";
+            
+            const qData = questions[currentQuestion];
+            progressIndicator.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            questionText.textContent = qData.q;
+            
+            optionsContainer.innerHTML = "";
+            qData.options.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.textContent = opt;
+                btn.onclick = () => selectOption(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex) {
+            if (answered) return;
+            answered = true;
+
+            const qData = questions[currentQuestion];
+            const buttons = optionsContainer.getElementsByTagName("button");
+
+            if (selectedIndex === qData.correct) {
+                buttons[selectedIndex].classList.add("correct");
+                score++;
+                feedbackBox.innerHTML = `<strong>Correct!</strong> ${qData.rationale}`;
+            } else {
+                buttons[selectedIndex].classList.add("incorrect");
+                buttons[qData.correct].classList.add("correct");
+                feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${qData.rationale}`;
+            }
+
+            feedbackBox.style.display = "block";
+            
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+
+            if (currentQuestion < questions.length - 1) {
+                nextBtn.textContent = "Next Question ➔";
+            } else {
+                nextBtn.textContent = "View Results ➔";
+            }
+            nextBtn.style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.style.display = "none";
+            resultsScreen.style.display = "block";
+            finalScore.textContent = `${score} / ${questions.length}`;
+            
+            const comment = document.getElementById("performance-comment");
+            const percentage = (score / questions.length) * 100;
+            if (percentage >= 85) {
+                comment.textContent = "Outstanding mastery! You are fully prepared for your Year 11 Computer Science exams.";
+            } else if (percentage >= 60) {
+                comment.textContent = "Solid understanding! Review your weaker topics (like protocols or Boolean laws) to aim for top marks.";
+            } else {
+                comment.textContent = "Keep revising! Re-read your OneNote revision notes carefully and try the quiz again.";
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            resultsScreen.style.display = "none";
+            quizScreen.style.display = "block";
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
 </body>
 </html>
