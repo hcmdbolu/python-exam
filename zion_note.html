@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCSE Computer Science (9-1) — 2026 Mock Master OneNote Notebook</title>
+<style>
+  :root {
+    --onenote-purple: #7719AA;
+    --onenote-purple-dark: #5C1285;
+    --onenote-purple-light: #F3E8FF;
+    --sidebar-bg: #F3F2F1;
+    --page-list-bg: #FAF9F8;
+    --border-color: #E1DFDD;
+    --text-main: #252423;
+    --text-muted: #605E5C;
+    --accent-teal: #008272;
+    --accent-blue: #0078D4;
+    --accent-amber: #D83B01;
+    --accent-green: #107C10;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-main);
+    background-color: #FFFFFF;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Top OneNote Ribbon */
+  header.onenote-ribbon {
+    background-color: var(--onenote-purple);
+    color: #FFFFFF;
+    padding: 0 20px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.18);
+    z-index: 20;
+  }
+  .ribbon-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .onenote-icon {
+    width: 32px;
+    height: 32px;
+    background: #FFFFFF;
+    color: var(--onenote-purple);
+    font-weight: 800;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+  }
+  .notebook-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .notebook-badge {
+    font-size: 11.5px;
+    background: rgba(255,255,255,0.18);
+    padding: 3px 10px;
+    border-radius: 12px;
+  }
+  .ribbon-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .search-box {
+    background: rgba(255,255,255,0.94);
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 13px;
+    width: 240px;
+    color: #252423;
+    outline: none;
+  }
+  .btn-print {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.35);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .btn-print:hover { background: rgba(255,255,255,0.32); }
+
+  /* 3-Pane OneNote Workspace */
+  .workspace {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 54px);
+    overflow: hidden;
+  }
+
+  /* Pane 1: Sections */
+  .sections-pane {
+    width: 235px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .pane-header {
+    padding: 11px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .paper-group-label {
+    padding: 10px 14px 4px 14px;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--onenote-purple);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .section-tab {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-left: 5px solid transparent;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-main);
+    transition: background 0.15s;
+    gap: 10px;
+  }
+  .section-tab:hover { background-color: #E8E6E4; }
+  .section-tab.active {
+    background-color: #FFFFFF;
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .tab-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* Pane 2: Pages List */
+  .pages-pane {
+    width: 255px;
+    background-color: var(--page-list-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .page-item {
+    padding: 11px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    border-bottom: 1px solid #F0EFEF;
+    color: var(--text-main);
+    transition: background 0.15s;
+    line-height: 1.35;
+  }
+  .page-item:hover { background-color: #EFECE9; }
+  .page-item.active {
+    background-color: #FFFFFF;
+    border-left: 4px solid var(--onenote-purple);
+    font-weight: 700;
+    color: var(--onenote-purple);
+  }
+  .page-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: #EDEBE9;
+    color: #605E5C;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  /* Pane 3: Ruled Note Canvas */
+  .canvas-pane {
+    flex: 1;
+    background-color: #FFFFFF;
+    overflow-y: auto;
+    padding: 32px 44px 80px 44px;
+    background-image: linear-gradient(#F8F9FA 1px, transparent 1px);
+    background-size: 100% 32px;
+  }
+  .note-container {
+    max-width: 940px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.97);
+    padding: 30px 38px;
+    border-radius: 6px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+
+  .note-title-block {
+    border-bottom: 2px solid var(--onenote-purple);
+    padding-bottom: 10px;
+    margin-bottom: 22px;
+  }
+  .note-title {
+    font-size: 25px;
+    font-weight: 700;
+    color: #1B1A19;
+    margin-bottom: 5px;
+  }
+  .note-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  h2 {
+    font-size: 18.5px;
+    color: var(--onenote-purple);
+    margin: 24px 0 10px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #EDEBE9;
+  }
+  h3 {
+    font-size: 15.5px;
+    color: #005A9E;
+    margin: 16px 0 8px 0;
+  }
+  p {
+    line-height: 1.65;
+    margin-bottom: 12px;
+    font-size: 14.5px;
+  }
+  ul, ol {
+    margin: 8px 0 16px 24px;
+    line-height: 1.65;
+    font-size: 14.5px;
+  }
+  li { margin-bottom: 6px; }
+  code {
+    background: #F3F2F1;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'Consolas', monospace;
+    font-size: 13.5px;
+    color: #A4262C;
+  }
+
+  /* OneNote Callouts */
+  .callout {
+    border-left: 4px solid var(--accent-blue);
+    background: #F3F9FD;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .callout.exam-tip {
+    border-left-color: #D83B01;
+    background: #FFF6F2;
+  }
+  .callout.key-def {
+    border-left-color: var(--accent-teal);
+    background: #F0FDF9;
+  }
+  .callout-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 22px 0;
+    font-size: 13.8px;
+    background: #FFFFFF;
+  }
+  th {
+    background-color: var(--onenote-purple);
+    color: #FFFFFF;
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+  }
+  th.teal-hdr { background-color: var(--accent-teal); }
+  td {
+    border: 1px solid #E1DFDD;
+    padding: 9px 12px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tr:nth-child(even) td { background-color: #FAF9F8; }
+
+  /* Code Blocks */
+  pre.code-block {
+    background: #1E1E1E;
+    color: #D4D4D4;
+    padding: 16px 18px;
+    border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13.5px;
+    line-height: 1.55;
+    overflow-x: auto;
+    margin: 14px 0;
+  }
+  .kw { color: #569CD6; font-weight: bold; }
+  .str { color: #CE9178; }
+  .num { color: #B5CEA8; }
+  .cmt { color: #6A9955; font-style: italic; }
+
+  /* Diagrams */
+  .diagram-card {
+    border: 1px solid #E1DFDD;
+    background: #FAFAFA;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 18px 0;
+    text-align: center;
+    overflow-x: auto;
+  }
+  .diagram-caption {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* Interactive Widgets */
+  .interactive-box {
+    border: 1px solid #C7E0F4;
+    background: #F8FBFF;
+    border-radius: 8px;
+    padding: 18px;
+    margin: 18px 0;
+  }
+  .interactive-box h4 {
+    color: #005A9E;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  .calc-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .calc-input {
+    padding: 7px 10px;
+    border: 1px solid #8A8886;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 170px;
+  }
+  .calc-btn {
+    background: var(--onenote-purple);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .calc-btn:hover { background: var(--onenote-purple-dark); }
+  .quiz-answer {
+    display: none;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #E6F4EA;
+    border-left: 3px solid #137333;
+    font-size: 13.5px;
+    color: #137333;
+    line-height: 1.5;
+  }
+
+  .note-page { display: none; }
+  .note-page.active { display: block; animation: fadeIn 0.2s ease-in-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media print {
+    header.onenote-ribbon, .sections-pane, .pages-pane, .btn-print { display: none !important; }
+    .workspace, .canvas-pane { height: auto; overflow: visible; padding: 0; background: none; }
+    .note-page { display: block !important; page-break-after: always; }
+    .note-container { box-shadow: none; max-width: 100%; padding: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="onenote-ribbon">
+  <div class="ribbon-left">
+    <div class="onenote-icon">N</div>
+    <div class="notebook-title">GCSE Computer Science (9–1) — 2026 Mock Notebook</div>
+    <span class="notebook-badge">Paper 1 &amp; Paper 2 Complete Syllabus</span>
+  </div>
+  <div class="ribbon-actions">
+    <input type="text" id="noteSearch" class="search-box" placeholder="Search all notes (e.g., SQL, Overflow, SSD)..." onkeyup="searchNotes()">
+    <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
+  </div>
+</header>
+
+<div class="workspace">
+  <!-- PANE 1: ONENOTE SECTIONS -->
+  <aside class="sections-pane" id="sectionsPane">
+    <div class="pane-header">Notebook Sections</div>
+
+    <div class="paper-group-label">Paper 1: Systems</div>
+    <div class="section-tab active" data-section="p1-data" onclick="selectSection('p1-data', this)">
+      <span class="tab-dot" style="background:#7719AA;"></span>
+      <span>1. Data &amp; Number Bases</span>
+    </div>
+    <div class="section-tab" data-section="p1-net" onclick="selectSection('p1-net', this)">
+      <span class="tab-dot" style="background:#D83B01;"></span>
+      <span>2. Networks &amp; Security</span>
+    </div>
+    <div class="section-tab" data-section="p1-arch" onclick="selectSection('p1-arch', this)">
+      <span class="tab-dot" style="background:#0078D4;"></span>
+      <span>3. Architecture &amp; Storage</span>
+    </div>
+    <div class="section-tab" data-section="p1-media" onclick="selectSection('p1-media', this)">
+      <span class="tab-dot" style="background:#8764B8;"></span>
+      <span>4. Media, Embedded &amp; 8-Mark</span>
+    </div>
+
+    <div class="paper-group-label" style="margin-top:8px;">Paper 2: Programming</div>
+    <div class="section-tab" data-section="p2-think" onclick="selectSection('p2-think', this)">
+      <span class="tab-dot" style="background:#008272;"></span>
+      <span>5. Thinking, Errors &amp; IDE</span>
+    </div>
+    <div class="section-tab" data-section="p2-algo" onclick="selectSection('p2-algo', this)">
+      <span class="tab-dot" style="background:#107C10;"></span>
+      <span>6. Search, Sort &amp; Trace</span>
+    </div>
+    <div class="section-tab" data-section="p2-logic" onclick="selectSection('p2-logic', this)">
+      <span class="tab-dot" style="background:#C239B3;"></span>
+      <span>7. Constructs &amp; Logic Gates</span>
+    </div>
+    <div class="section-tab" data-section="p2-code" onclick="selectSection('p2-code', this)">
+      <span class="tab-dot" style="background:#CA5010;"></span>
+      <span>8. Coding, SQL &amp; Arrays</span>
+    </div>
+  </aside>
+
+  <!-- PANE 2: SECTION PAGES -->
+  <aside class="pages-pane" id="pagesPane">
+    <div class="pane-header">Section Pages</div>
+    <div id="pageListContainer"></div>
+  </aside>
+
+  <!-- PANE 3: NOTE CANVAS -->
+  <main class="canvas-pane" id="canvasPane">
+    <div class="note-container">
+
+      <!-- ========================================================= -->
+      <!-- PAPER 1 - SECTION 1: DATA & NUMBER BASES                  -->
+      <!-- ========================================================= -->
+
+      <article class="note-page active" id="page-p1-units" data-section="p1-data" data-title="1.1 Binary Units & Storage Capacities" data-tag="Paper 1">
+        <div class="note-title-block">
+          <div class="note-title">1.1 Binary Units &amp; Data Storage Capacities</div>
+          <div class="note-meta"><span>📌 Mock List: Binary unit</span><span>🏷️ Paper 1: Data Representation</span></div>
+        </div>
+
+        <div class="callout key-def">
+          <div class="callout-title">💡 Why Computers Use Binary</div>
+          Computers contain billions of microscopic switches called <strong>transistors</strong>. A transistor only has two reliable physical states: <strong>ON (1 / High Voltage)</strong> and <strong>OFF (0 / Low Voltage)</strong>. Using two distinct states prevents electrical noise from corrupting data.
+        </div>
+
+        <h2>1. Unit Hierarchy</h2>
+        <ul>
+          <li><strong>Bit (b):</strong> The smallest unit of data — a single <code>0</code> or <code>1</code>.</li>
+          <li><strong>Nibble:</strong> A group of <strong>4 bits</strong>. Represents exactly <strong>1 Hexadecimal digit</strong>.</li>
+          <li><strong>Byte (B):</strong> A group of <strong>8 bits</strong>. Large enough to store 1 standard ASCII character (e.g., <code>'A'</code> = <code>01000001₂</code>).</li>
+        </ul>
+
+        <div class="diagram-card">
+          <svg width="620" height="145" viewBox="0 0 620 145">
+            <rect x="10" y="10" width="600" height="125" rx="8" fill="#F3E8FF" stroke="#7719AA" stroke-width="2"/>
+            <text x="310" y="32" font-size="13.5" font-weight="bold" text-anchor="middle" fill="#5C1285">1 BYTE = 8 BITS (2 NIBBLES)</text>
+            <rect x="30" y="45" width="260" height="75" rx="6" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.5"/>
+            <text x="160" y="64" font-size="12" font-weight="bold" text-anchor="middle" fill="#0078D4">Nibble 1 (4 Bits)</text>
+            <rect x="45" y="74" width="50" height="34" fill="#E1DFDD"/><text x="70" y="96" font-weight="bold" text-anchor="middle">1</text>
+            <rect x="105" y="74" width="50" height="34" fill="#E1DFDD"/><text x="130" y="96" font-weight="bold" text-anchor="middle">0</text>
+            <rect x="165" y="74" width="50" height="34" fill="#E1DFDD"/><text x="190" y="96" font-weight="bold" text-anchor="middle">1</text>
+            <rect x="225" y="74" width="50" height="34" fill="#E1DFDD"/><text x="250" y="96" font-weight="bold" text-anchor="middle">0</text>
+            <rect x="330" y="45" width="260" height="75" rx="6" fill="#FFFFFF" stroke="#008272" stroke-width="1.5"/>
+            <text x="460" y="64" font-size="12" font-weight="bold" text-anchor="middle" fill="#008272">Nibble 2 (4 Bits)</text>
+            <rect x="345" y="74" width="50" height="34" fill="#E1DFDD"/><text x="370" y="96" font-weight="bold" text-anchor="middle">1</text>
+            <rect x="405" y="74" width="50" height="34" fill="#E1DFDD"/><text x="430" y="96" font-weight="bold" text-anchor="middle">1</text>
+            <rect x="465" y="74" width="50" height="34" fill="#E1DFDD"/><text x="490" y="96" font-weight="bold" text-anchor="middle">0</text>
+            <rect x="525" y="74" width="50" height="34" fill="#E1DFDD"/><text x="550" y="96" font-weight="bold" text-anchor="middle">0</text>
+          </svg>
+          <div class="diagram-caption">Figure 1.1: Relationship between Bits, Nibbles, and a Byte.</div>
+        </div>
+
+        <h2>2. Capacity Multipliers Table</h2>
+        <table>
+          <thead><tr><th>Unit</th><th>Symbol</th><th>GCSE Exam Standard (Base 10)</th><th>Strict Binary Standard (IEC)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Kilobyte</strong></td><td>KB</td><td>1,000 Bytes (10³)</td><td>1,024 Bytes (Kibibyte / KiB)</td></tr>
+            <tr><td><strong>Megabyte</strong></td><td>MB</td><td>1,000 KB = 1,000,000 Bytes</td><td>1,024 KiB (Mebibyte / MiB)</td></tr>
+            <tr><td><strong>Gigabyte</strong></td><td>GB</td><td>1,000 MB = 10⁹ Bytes</td><td>1,024 MiB (Gibibyte / GiB)</td></tr>
+            <tr><td><strong>Terabyte</strong></td><td>TB</td><td>1,000 GB = 10¹² Bytes</td><td>1,024 GiB (Tebibyte / TiB)</td></tr>
+            <tr><td><strong>Petabyte</strong></td><td>PB</td><td>1,000 TB = 10¹⁵ Bytes</td><td>1,024 TiB (Pebibyte / PiB)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout exam-tip">
+          <div class="callout-title">⚠️ Exam Rule: Bits (b) vs. Bytes (B)</div>
+          Broadband speeds use <strong>bits per second (Mbps)</strong>; file sizes use <strong>Bytes (MB)</strong>. Always divide bits by <strong>8</strong> to convert to Bytes (or multiply Bytes by 8 to get bits).
+        </div>
+      </article>
+
+      <article class="note-page" id="page-p1-conv" data-section="p1-data" data-title="1.2 Binary / Denary / Hex Conversion" data-tag="Paper 1">
+        <div class="note-title-block">
+          <div class="note-title">1.2 Binary, Denary &amp; Hexadecimal Conversions</div>
+          <div class="note-meta"><span>📌 Mock List: Binary/denary/hex conversion</span><span>🏷️ Paper 1: Number Systems</span></div>
+        </div>
+
+        <h2>1. Why Programmers Use Hexadecimal (Base 16)</h2>
+        <p>Computers do <strong>not</strong> execute hexadecimal—they only understand binary. Hexadecimal uses digits <code>0–9</code> and letters <code>A–F</code> (<code>A=10, B=11, C=12, D=13, E=14, F=15</code>) as a human shorthand for MAC addresses, IPv6 addresses, memory dumps, and HTML colors (<code>#FF5733</code>) because:</p>
+        <ul>
+          <li><strong>Compactness:</strong> 2 Hex characters represent a full 8-bit byte (e.g., <code>11111111₂</code> = <code>FF₁₆</code>).</li>
+          <li><strong>Fewer Human Errors:</strong> Humans are far less likely to misread or mistype <code>DAF2</code> than <code>1101101011110010</code>.</li>
+        </ul>
+
+        <h2>2. Binary ↔ Denary Place Value Table</h2>
+        <table>
+          <thead><tr><th>128 (2⁷)</th><th>64 (2⁶)</th><th>32 (2⁵)</th><th>16 (2⁴)</th><th>8 (2³)</th><th>4 (2²)</th><th>2 (2¹)</th><th>1 (2⁰)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1</strong></td><td>0</td><td><strong>1</strong></td><td>0</td><td><strong>1</strong></td><td><strong>1</strong></td><td>0</td><td>0</td></tr>
+            <tr><td>128</td><td>—</td><td>32</td><td>—</td><td>8</td><td>4</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Calculation:</strong> <code>128 + 32 + 8 + 4 = 172₁₀</code>. To convert Denary back to Binary, subtract the largest fitting place value from left to right (128 down to 1).</p>
+
+        <h2>3. Binary ↔ Hexadecimal (The Nibble Split)</h2>
+        <div class="callout">
+          <div class="callout-title">⚡ Worked Example: Convert 11011011₂ to Hex</div>
+          1. Split into two 4-bit nibbles: <code>1101</code> and <code>1011</code><br>
+          2. Apply <code>8 - 4 - 2 - 1</code> to each nibble:<br>
+          &nbsp;&nbsp;&nbsp;• Left nibble: <code>8 + 4 + 0 + 1 = 13</code> → <strong>D</strong><br>
+          &nbsp;&nbsp;&nbsp;• Right nibble: <code>8 + 0 + 2 + 1 = 11</code> → <strong>B</strong><br>
+          3. Combine: <strong><code>DB₁₆</code></strong>
+        </div>
+
+        <div class="interactive-box">
+          <h4>🧪 Interactive Live Base Converter (0–255)</h4>
+          <div class="calc-row">
+            <input type="number" id="denInput" class="calc-input" min="0" max="255" value="172">
+            <button class="calc-btn" onclick="convertNumber()">Convert</button>
+          </div>
+          <div id="convResult" style="font-family:Consolas, monospace; font-size:14px; font-weight:bold;">8-Bit Binary: 10101100₂ | Hexadecimal: AC₁₆</div>
+        </div>
+      </article>
+
+      <article class="note-page" id="page-p1-arith" data-section="p1-data" data-title="1.3 Binary Arithmetic & Shifts" data-tag="Paper 1">
+        <div class="note-title-block">
+          <div class="note-title">1.3 Binary Arithmetic, Overflow &amp; Logical Shifts</div>
+          <div class="note-meta"><span>📌 Mock List: Binary arithmetic</span><span>🏷️ Paper 1: Data Representation</span></div>
+        </div>
+
+        <h2>1. Binary Addition Rules</h2>
+        <table>
+          <thead><tr><th>Operation</th><th>Result</th><th>Carry</th><th>Explanation</th></tr></thead>
+          <tbody>
+            <tr><td><code>0 + 0</code></td><td><strong>0</strong></td><td>0</td><td>Zero plus zero equals zero</td></tr>
+            <tr><td><code>0 + 1</code> or <code>1 + 0</code></td><td><strong>1</strong></td><td>0</td><td>Equals one</td></tr>
+            <tr><td><code>1 + 1</code></td><td><strong>0</strong></td><td><strong>1</strong></td><td>Equals 2 in denary (<code>10₂</code>) → write 0, carry 1</td></tr>
+            <tr><td><code>1 + 1 + 1</code></td><td><strong>1</strong></td><td><strong>1</strong></td><td>Equals 3 in denary (<code>11₂</code>) → write 1, carry 1</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout exam-tip">
+          <div class="callout-title">🚨 Overflow Error</div>
+          An 8-bit register can only store integers from <code>0</code> to <code>255</code>. If a binary addition generates a carry out of the 8th bit (needing a 9th bit), an <strong>Overflow Error</strong> occurs. The CPU drops the 9th bit, producing an incorrect stored value.
+        </div>
+
+        <h2>2. Logical Binary Shifts</h2>
+        <ul>
+          <li><strong>Logical Left Shift:</strong> Moves all bits left and pads empty spaces on the right with <code>0</code>s. Shifting left by <em>n</em> places <strong>multiplies by 2ⁿ</strong> (1 place = ×2, 2 places = ×4, 3 places = ×8). Pushing a <code>1</code> off the left causes an overflow error.</li>
+          <li><strong>Logical Right Shift:</strong> Moves all bits right and pads empty spaces on the left with <code>0</code>s. Shifting right by <em>n</em> places <strong>divides by 2ⁿ</strong> (1 place = ÷2, 2 places = ÷4). Shifting a <code>1</code> off the right causes <strong>loss of precision</strong>.</li>
+        </ul>
+      </article>
+
+      <!-- ========================================================= -->
+      <!-- PAPER 1 - SECTION 2: NETWORKS & SECURITY                  -->
+      <!-- ========================================================= -->
+
+      <article class="note-page" id="page-p1-net" data-section="p1-net" data-title="2.1 Types of Networks & Client-Server" data-tag="Paper 1">
+        <div class="note-title-block">
+          <div class="note-title">2.1 Types of Networks (LAN/WAN) &amp; Client-Server vs. P2P</div>
+          <div class="note-meta"><span>📌 Mock List: Types of networks, client-server</span><span>🏷️ Paper 1: Networks</span></div>
+        </div>
+
+        <h2>1. LAN vs. WAN</h2>
+        <table>
+          <thead><tr><th>Feature</th><th>LAN (Local Area Network)</th><th>WAN (Wide Area Network)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Geographical Coverage</strong></td><td>Small site: single building, home, office, or school campus.</td><td>Large geographical area: across cities, countries, or globally.</td></tr>
+            <tr><td><strong>Infrastructure Ownership</strong></td><td>Privately owned and managed by the local organization.</td><td>Uses leased external telecom links (undersea fiber, satellites).</td></tr>
+            <tr><td><strong>Example</strong></td><td>School ICT lab or home Wi-Fi network.</td><td>The Internet (the world's largest WAN).</td></tr>
+          </tbody>
+        </table>
+
+        <h2>2. Client-Server vs. Peer-to-Peer (P2P)</h2>
+        <div class="diagram-card">
+          <svg width="640" height="185" viewBox="0 0 640 185">
+            <rect x="15" y="10" width="290" height="165" rx="8" fill="#F3F9FD" stroke="#0078D4" stroke-width="1.5"/>
+            <text x="160" y="30" font-size="13" font-weight="bold" text-anchor="middle" fill="#004578">Client-Server Model</text>
+            <rect x="105" y="42" width="110" height="36" rx="5" fill="#0078D4"/><text x="160" y="64" font-size="11" font-weight="bold" text-anchor="middle" fill="#FFF">Central Server</text>
+            <line x1="160" y1="78" x2="70" y2="118" stroke="#605E5C" stroke-width="1.5"/>
+            <line x1="160" y1="78" x2="160" y2="118" stroke="#605E5C" stroke-width="1.5"/>
+            <line x1="160" y1="78" x2="250" y2="118" stroke="#605E5C" stroke-width="1.5"/>
+            <rect x="35" y="118" width="70" height="32" rx="4" fill="#008272"/><text x="70" y="138" font-size="10" font-weight="bold" text-anchor="middle" fill="#FFF">Client 1</text>
+            <rect x="125" y="118" width="70" height="32" rx="4" fill="#008272"/><text x="160" y="138" font-size="10" font-weight="bold" text-anchor="middle" fill="#FFF">Client 2</text>
+            <rect x="215" y="118" width="70" height="32" rx="4" fill="#008272"/><text x="250" y="138" font-size="10" font-weight="bold" text-anchor="middle" fill="#FFF">Client 3</text>
+
+            <rect x="335" y="10" width="290" height="165" rx="8" fill="#FFF6F2" stroke="#D83B01" stroke-width="1.5"/>
+            <text x="480" y="30" font-size="13" font-weight="bold" text-anchor="middle" fill="#8A2500">Peer-to-Peer (P2P) Model</text>
+            <line x1="415" y1="62" x2="545" y2="62" stroke="#605E5C" stroke-dasharray="4"/>
+            <line x1="415" y1="134" x2="545" y2="134" stroke="#605E5C" stroke-dasharray="4"/>
+            <line x1="415" y1="62" x2="415" y2="134" stroke="#605E5C" stroke-dasharray="4"/>
+            <line x1="545" y1="62" x2="545" y2="134" stroke="#605E5C" stroke-dasharray="4"/>
+            <line x1="415" y1="62" x2="545" y2="134" stroke="#605E5C" stroke-dasharray="4"/>
+            <rect x="380" y="46" width="70" height="32" rx="4" fill="#D83B01"/><text x="415" y="66" font-size="10" font-weight="bold" text-anchor="middle" fill="#FFF">Peer 1</text>
+            <rect x="510" y="46" width="70" height="32" rx="4" fill="#D83B01"/><text x="545" y="66" font-size="10" font-weight="bold" text-anchor="middle" fill="#FFF">Peer 2</text>
+            <rect x="380" y="118" width="70" height="32" rx="4" fill="#D83B01"/><text x="415" y="138" font-size="10" font-weight="bold" text-anchor="middle" fill="#FFF">Peer 3</text>
+            <rect x="510" y="118" width="70" height="32" rx="4" fill="#D83B01"/><text x="545" y="138" font-size="10" font-weight="bold" text-anchor="middle" fill="#FFF">Peer 4</text>
+          </svg>
+          <div class="diagram-caption">Figure 2.1: Client-Server centralized control vs. Peer-to-Peer decentralized connections.</div>
+        </div>
+
+        <table>
+          <thead><tr><th>Aspect</th><th>Client-Server</th><th>Peer-to-Peer (P2P)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Security &amp; Backups</strong></td><td>Centralized on the server (easy to enforce logins &amp; run backups).</td><td>Decentralized (each user manages their own backups &amp; antivirus).</td></tr>
+            <tr><td><strong>Cost &amp; Expertise</strong></td><td>Expensive server hardware; requires specialist IT staff.</td><td>Cheap and simple to set up at home.</td></tr>
+            <tr><td><strong>Failure Impact</strong></td><td><strong>Single point of failure:</strong> Server crash stops file access.</td><td>No single point of failure: one peer turning off doesn't stop others.</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="note-page" id="page-p1-enc" data-section="p1-net" data-title="2.2 Encryption & Network Protocols" data-tag="Paper 1">
+        <div class="note-title-block">
+          <div class="note-title">2.2 Encryption &amp; Essential Network Protocols</div>
+          <div class="note-meta"><span>📌 Mock List: Encryption, protocols</span><span>🏷️ Paper 1: Network Security</span></div>
+        </div>
+
+        <h2>1. Encryption (Plaintext → Ciphertext)</h2>
+        <p><strong>Encryption</strong> scrambles readable data (<strong>Plaintext</strong>) into unreadable code (<strong>Ciphertext</strong>) using a cipher algorithm and a secret <strong>Key</strong>. If a hacker intercepts packets over public Wi-Fi, they cannot read the message without the decryption key.</p>
+        <ul>
+          <li><strong>Symmetric Encryption:</strong> Uses the <strong>same single key</strong> to both encrypt and decrypt data. Fast, but sharing the key securely is risky.</li>
+          <li><strong>Asymmetric Encryption:</strong> Uses a <strong>Public Key</strong> (shared openly so anyone can encrypt messages) and a mathematically linked <strong>Private Key</strong> (kept strictly secret by the owner to decrypt). Used by <strong>HTTPS</strong>.</li>
+        </ul>
+
+        <h2>2. Network Protocols Cheat Sheet</h2>
+        <table>
+          <thead><tr><th>Protocol</th><th>Full Name</th><th>Role in GCSE Exams</th></tr></thead>
+          <tbody>
+            <tr><td><strong>TCP / IP</strong></td><td>Transmission Control / Internet Protocol</td><td><strong>TCP</strong> splits data into numbered packets and reassembles them in order; <strong>IP</strong> routes packets using IP addresses.</td></tr>
+            <tr><td><strong>HTTP</strong></td><td>Hypertext Transfer Protocol</td><td>Transfers unencrypted web pages between web server and browser.</td></tr>
+            <tr><td><strong>HTTPS</strong></td><td>HTTP Secure</td><td>Encrypts web traffic using <strong>TLS/SSL</strong> so passwords and card numbers stay safe in transit.</td></tr>
+            <tr><td><strong>FTP</strong></td><td>File Transfer Protocol</td><td>Uploads, downloads, and manages files on a remote server.</td></tr>
+            <tr><td><strong>SMTP</strong></td><td>Simple Mail Transfer Protocol</td><td>Used to <strong>SEND</strong> outgoing emails to a mail server.</td></tr>
+            <tr><td><strong>IMAP</strong></td><td>Internet Message Access Protocol</td><td>Retrieves emails while keeping synced copies on the server (ideal for multiple devices).</td></tr>
+            <tr><td><strong>POP3</strong></td><td>Post Office Protocol v3</td><td>Downloads emails to one device and deletes them from the server.</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- ========================================================= -->
+      <!-- PAPER 1 - SECTION 3: ARCHITECTURE & STORAGE               -->
+      <!-- ========================================================= -->
+
+      <article class="note-page" id="page-p1-arch" data-section="p1-arch" data-title="3.1 System Architecture (Von Neumann & CPU)" data-tag="Paper 1">
+        <div class="note-title-block">
+          <div class="note-title">3.1 System Architecture: Von Neumann, Registers &amp; FDE Cycle</div>
+          <div class="note-meta"><span>📌 Mock List: System architecture</span><span>🏷️ Paper 1: Computer Systems</span></div>
+        </div>
+
+        <p><strong>Von Neumann Architecture</strong> stores both program instructions and data together in the same main memory (<strong>RAM</strong>).</p>
+
+        <div class="diagram-card">
+          <svg width="640" height="220" viewBox="0 0 640 220">
+            <rect x="20" y="15" width="380" height="190" rx="10" fill="#EFF6FF" stroke="#0078D4" stroke-width="2.5"/>
+            <text x="210" y="36" font-size="13.5" font-weight="bold" text-anchor="middle" fill="#004578">CENTRAL PROCESSING UNIT (CPU)</text>
+            <rect x="40" y="50" width="155" height="52" rx="6" fill="#0078D4"/>
+            <text x="117" y="73" font-size="12" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Control Unit (CU)</text>
+            <text x="117" y="90" font-size="10" text-anchor="middle" fill="#E1DFDD">Decodes &amp; Timing</text>
+            <rect x="40" y="118" width="155" height="65" rx="6" fill="#008272"/>
+            <text x="117" y="145" font-size="12" font-weight="bold" text-anchor="middle" fill="#FFFFFF">ALU</text>
+            <text x="117" y="163" font-size="10" text-anchor="middle" fill="#E1DFDD">Math (+,-) &amp; Logic (&gt;,&lt;)</text>
+            <rect x="215" y="50" width="165" height="133" rx="6" fill="#FFFFFF" stroke="#7719AA" stroke-width="1.5"/>
+            <text x="297" y="68" font-size="12" font-weight="bold" text-anchor="middle" fill="#7719AA">CPU Registers</text>
+            <rect x="228" y="77" width="140" height="21" rx="3" fill="#F3E8FF"/><text x="298" y="91" font-size="10.5" font-weight="bold" text-anchor="middle">PC (Program Counter)</text>
+            <rect x="228" y="103" width="140" height="21" rx="3" fill="#F3E8FF"/><text x="298" y="117" font-size="10.5" font-weight="bold" text-anchor="middle">MAR (Address Reg)</text>
+            <rect x="228" y="129" width="140" height="21" rx="3" fill="#F3E8FF"/><text x="298" y="143" font-size="10.5" font-weight="bold" text-anchor="middle">MDR (Data Reg)</text>
+            <rect x="228" y="155" width="140" height="21" rx="3" fill="#F3E8FF"/><text x="298" y="169" font-size="10.5" font-weight="bold" text-anchor="middle">ACC (Accumulator)</text>
+            <line x1="400" y1="80" x2="480" y2="80" stroke="#D83B01" stroke-width="3"/>
+            <text x="440" y="72" font-size="10" font-weight="bold" text-anchor="middle" fill="#D83B01">Address Bus</text>
+            <line x1="400" y1="140" x2="480" y2="140" stroke="#107C10" stroke-width="3"/>
+            <text x="440" y="132" font-size="10" font-weight="bold" text-anchor="middle" fill="#107C10">Data Bus</text>
+            <rect x="480" y="45" width="140" height="135" rx="8" fill="#FFF4CE" stroke="#D83B01" stroke-width="2"/>
+            <text x="550" y="108" font-size="14" font-weight="bold" text-anchor="middle" fill="#8A3B00">MAIN MEMORY</text>
+            <text x="550" y="126" font-size="12" text-anchor="middle" fill="#8A3B00">(RAM)</text>
+          </svg>
+          <div class="diagram-caption">Figure 3.1: Von Neumann CPU Registers, ALU, CU, and System Buses connected to RAM.</div>
+        </div>
+
+        <h2>1. The Four Essential Registers &amp; FDE Cycle</h2>
+        <ul>
+          <li><strong>PC (Program Counter):</strong> Holds the memory address of the <strong>next</strong> instruction to be fetched.</li>
+          <li><strong>MAR (Memory Address Register):</strong> Holds the RAM address currently being read from or written to.</li>
+          <li><strong>MDR (Memory Data Register):</strong> Holds the actual instruction or data fetched from RAM.</li>
+          <li><strong>ACC (Accumulator):</strong> Stores intermediate and final calculation results from the ALU.</li>
+          <li><strong>Fetch–Decode–Execute (FDE) Cycle:</strong>
+            <ol>
+              <li><strong>Fetch:</strong> PC copies address into MAR → instruction fetched from RAM along Data Bus into MDR → PC increments by 1.</li>
+              <li><strong>Decode:</strong> Control Unit (CU) decodes the instruction in the MDR.</li>
+              <li><strong>Execute:</strong> Operation runs (e.g., ALU performs calculation and updates ACC).</li>
+            </ol>
+          </li>
+        </ul>
+
+        <h2>2. Factors Affecting CPU Performance</h2>
+        <table>
+          <thead><tr><th>Factor</th><th>Mechanism &amp; Performance Impact</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Clock Speed (GHz)</strong></td><td>Number of FDE cycles executed per second (e.g., 3.5 GHz = 3.5 billion cycles/sec). Higher clock speed processes more instructions per second.</td></tr>
+            <tr><td><strong>Cache Size (MB)</strong></td><td>Fast onboard SRAM (L1, L2, L3) storing frequently used instructions/data close to the CPU, reducing slow trips to RAM.</td></tr>
+            <tr><td><strong>Number of Cores</strong></td><td>Independent processing units on one chip (Dual, Quad, Octa-core) enabling parallel execution of multiple instructions simultaneously.</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="note-page" id="page-p1-storage" data-section="p1-arch" data-title="3.2 Storage & Utility Software" data-tag="Paper 1">
+        <div class="note-title-block">
+          <div class="note-title">3.2 Primary &amp; Secondary Storage + Utility Software</div>
+          <div class="note-meta"><span>📌 Mock List: Primary and secondary storage, utility software</span><span>🏷️ Paper 1: Memory &amp; Storage</span></div>
+        </div>
+
+        <h2>1. Primary Memory: RAM, ROM &amp; Virtual Memory</h2>
+        <table>
+          <thead><tr><th>Feature</th><th>RAM (Random Access Memory)</th><th>ROM (Read-Only Memory)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Volatility</strong></td><td><strong>Volatile:</strong> Loses data when power turns off.</td><td><strong>Non-Volatile:</strong> Retains data without power.</td></tr>
+            <tr><td><strong>Purpose</strong></td><td>Stores active programs, open files, and running OS.</td><td>Stores the <strong>BIOS / Bootstrap</strong> startup firmware.</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Virtual Memory:</strong> When RAM is full, the OS moves inactive pages of data onto a reserved section of secondary storage (HDD/SSD). Because secondary storage is much slower than RAM, excessive swapping ("disk thrashing") slows the computer down.</p>
+
+        <h2>2. Secondary Storage &amp; Utility Software</h2>
+        <table>
+          <thead><tr><th>Category</th><th>Key Exam Points</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Magnetic (HDD)</strong></td><td>Spinning magnetic platters + moving read/write heads. High capacity, cheap per GB, but fragile, noisy, and slower.</td></tr>
+            <tr><td><strong>Solid State (SSD)</strong></td><td>NAND flash memory cells trapping electrons. No moving parts—very fast, silent, shock-proof, low power, costlier per GB.</td></tr>
+            <tr><td><strong>Optical (CD/DVD/Blu-ray)</strong></td><td>Laser reads microscopic <strong>pits</strong> and flat <strong>lands</strong>. Cheap distribution, low capacity, easily scratched.</td></tr>
+            <tr><td><strong>Utility Software</strong></td><td>• <strong>Encryption:</strong> Scrambles files on disk.<br>• <strong>Defragmentation:</strong> Reorders fragmented file blocks on an <strong>HDD</strong> so heads move less (<em>never needed on SSDs</em>).<br>• <strong>Compression:</strong> <strong>Lossy</strong> discards data permanently (JPEG, MP3); <strong>Lossless</strong> restores 100% original data (ZIP, PNG).</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- ========================================================= -->
+      <!-- PAPER 1 - SECTION 4: IMAGES, EMBEDDED & 8-MARKER          -->
+      <!-- ========================================================= -->
+
+      <article class="note-page" id="page-p1-media" data-section="p1-media" data-title="4.1 Images, Embedded Systems & ASCII" data-tag="Paper 1">
+        <div class="note-title-block">
+          <div class="note-title">4.1 Bitmap Images, Embedded Systems &amp; ASCII / Unicode</div>
+          <div class="note-meta"><span>📌 Mock List: Image, embedded system, ASCII</span><span>🏷️ Paper 1: Systems &amp; Data</span></div>
+        </div>
+
+        <h2>1. Bitmap Images &amp; File Size Formula</h2>
+        <ul>
+          <li><strong>Pixel:</strong> Smallest single block of color in a bitmap image.</li>
+          <li><strong>Resolution:</strong> Dimensions in pixels (<code>Width × Height</code>).</li>
+          <li><strong>Color Depth:</strong> Bits per pixel; $n$-bit depth gives $2^n$ colors (e.g., 8-bit = 256 colors; 24-bit = 16.7 million colors).</li>
+          <li><strong>Metadata:</strong> File header data (width, height, color depth, camera model, GPS, date).</li>
+          <li><strong>Formula:</strong> <code>File Size (bits) = Width × Height × Color Depth</code> (divide by 8 for Bytes).</li>
+        </ul>
+
+        <h2>2. Embedded Systems &amp; Character Sets (ASCII vs. Unicode)</h2>
+        <ul>
+          <li><strong>Embedded System:</strong> Dedicated computer built into a larger device for one specific control task (washing machine, car ECU, traffic lights, pacemaker). Firmware in ROM, low power, cheap, reliable.</li>
+          <li><strong>ASCII vs. Unicode:</strong> <strong>Standard ASCII</strong> uses 7 bits ($128$ characters; Extended ASCII = 8 bits / $256$ chars) for English text. <strong>Unicode</strong> uses 16/32 bits to support global alphabets (Arabic, Mandarin, Yoruba) and emojis, increasing file size.</li>
+        </ul>
+      </article>
+
+      <article class="note-page" id="page-p1-8mark" data-section="p1-media" data-title="4.2 Mastering the 8-Marker Question" data-tag="Paper 1">
+        <div class="note-title-block">
+          <div class="note-title">4.2 Mastering the GCSE 8-Marker Extended Question</div>
+          <div class="note-meta"><span>📌 Mock List: 8 marker question</span><span>🏷️ Paper 1: Legal, Ethical, Cultural &amp; Environmental</span></div>
+        </div>
+
+        <div class="callout exam-tip">
+          <div class="callout-title">🎯 PEEL + Stakeholder Strategy (Score 7–8 Marks)</div>
+          1. Cover <strong>at least 3 perspectives</strong>: <em>Legal</em> (Data Protection Act 2018 / UK GDPR, Computer Misuse Act 1990, Copyright), <em>Environmental</em> (e-waste, mining, data center power), <em>Ethical / Privacy</em> (surveillance, bias, digital divide).<br>
+          2. Write each paragraph using <strong>PEEL</strong>: <strong>P</strong>oint → <strong>E</strong>xplain why → <strong>E</strong>xample in context → <strong>L</strong>ink back to the prompt.<br>
+          3. Give both <strong>benefits and drawbacks</strong> plus a clear concluding judgment.
+        </div>
+      </article>
+
+      <!-- ========================================================= -->
+      <!-- PAPER 2 - SECTION 5: THINKING, ERRORS & IDE               -->
+      <!-- ========================================================= -->
+
+      <article class="note-page" id="page-p2-think" data-section="p2-think" data-title="5.1 Computational Thinking & Structure Diagrams" data-tag="Paper 2">
+        <div class="note-title-block">
+          <div class="note-title">5.1 Computational Thinking, Decomposition &amp; Structure Diagrams</div>
+          <div class="note-meta"><span>📌 Mock List: Computational thinking, decomposition/structure diagram</span><span>🏷️ Paper 2</span></div>
+        </div>
+
+        <ul>
+          <li><strong>Abstraction:</strong> Removing unnecessary detail to focus purely on essential information needed to solve a problem (e.g., London Underground map).</li>
+          <li><strong>Decomposition:</strong> Breaking a complex problem down into smaller, manageable sub-problems that can be coded and tested independently as subroutines.</li>
+          <li><strong>Algorithmic Thinking:</strong> Creating a logical, step-by-step set of rules to solve a problem.</li>
+          <li><strong>Structure Diagrams:</strong> Top-down hierarchical tree charts showing how a system breaks down into modules and sub-modules.</li>
+        </ul>
+
+        <div class="diagram-card">
+          <svg width="580" height="175" viewBox="0 0 580 175">
+            <rect x="200" y="10" width="180" height="36" rx="6" fill="#008272"/><text x="290" y="33" font-size="12" font-weight="bold" text-anchor="middle" fill="#FFF">Quiz Application</text>
+            <line x1="290" y1="46" x2="290" y2="70" stroke="#605E5C" stroke-width="1.5"/>
+            <line x1="95" y1="70" x2="485" y2="70" stroke="#605E5C" stroke-width="1.5"/>
+            <line x1="95" y1="70" x2="95" y2="95" stroke="#605E5C" stroke-width="1.5"/>
+            <line x1="290" y1="70" x2="290" y2="95" stroke="#605E5C" stroke-width="1.5"/>
+            <line x1="485" y1="70" x2="485" y2="95" stroke="#605E5C" stroke-width="1.5"/>
+            <rect x="25" y="95" width="140" height="34" rx="5" fill="#0078D4"/><text x="95" y="116" font-size="11" font-weight="bold" text-anchor="middle" fill="#FFF">1. User Login</text>
+            <rect x="220" y="95" width="140" height="34" rx="5" fill="#0078D4"/><text x="290" y="116" font-size="11" font-weight="bold" text-anchor="middle" fill="#FFF">2. Ask Questions</text>
+            <rect x="415" y="95" width="140" height="34" rx="5" fill="#0078D4"/><text x="485" y="116" font-size="11" font-weight="bold" text-anchor="middle" fill="#FFF">3. Save Score</text>
+          </svg>
+          <div class="diagram-caption">Figure 5.1: Top-down Decomposition Structure Diagram.</div>
+        </div>
+      </article>
+
+      <article class="note-page" id="page-p2-err" data-section="p2-think" data-title="5.2 Test Data, Errors & IDEs" data-tag="Paper 2">
+        <div class="note-title-block">
+          <div class="note-title">5.2 Test Data, Types of Errors, IDEs &amp; Languages</div>
+          <div class="note-meta"><span>📌 Mock List: Test data, finding/fixing errors, IDE, programming languages</span><span>🏷️ Paper 2</span></div>
+        </div>
+
+        <h2>1. Test Data &amp; Programming Errors</h2>
+        <table>
+          <thead><tr><th class="teal-hdr">Category</th><th class="teal-hdr">Definition &amp; Examples (Valid input: 1 to 100)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Normal Data</strong></td><td>Typical valid input inside the range (e.g., <code>50</code>).</td></tr>
+            <tr><td><strong>Boundary Data</strong></td><td>Values right on the edge of acceptance and immediately outside (e.g., <code>1</code>, <code>100</code>, <code>0</code>, <code>101</code>).</td></tr>
+            <tr><td><strong>Invalid / Erroneous</strong></td><td>Wrong data type or impossible values that must be rejected (e.g., <code>"hello"</code>, <code>-15</code>).</td></tr>
+            <tr><td><strong>Syntax Error</strong></td><td>Breaks language grammar rules (missing colon/bracket). Code refuses to run/compile.</td></tr>
+            <tr><td><strong>Logic Error</strong></td><td>Code runs without crashing, but produces the wrong output (e.g., <code>+</code> instead of <code>*</code>, or wrong <code>&lt;</code> sign).</td></tr>
+          </tbody>
+        </table>
+
+        <h2>2. High/Low-Level Languages, Translators &amp; IDEs</h2>
+        <ul>
+          <li><strong>High-Level Languages (Python, Java):</strong> English-like, portable, easy to debug; translated by a <strong>Compiler</strong> (all at once into an executable) or <strong>Interpreter</strong> (line-by-line, stops at first error).</li>
+          <li><strong>Low-Level Languages:</strong> <strong>Machine Code</strong> (pure binary executed directly by CPU) and <strong>Assembly Language</strong> (mnemonics like <code>LDA</code>, <code>ADD</code>, <code>STO</code> with 1:1 mapping to machine code).</li>
+          <li><strong>IDE Features:</strong> Code editor (syntax highlighting, auto-complete), error diagnostics, breakpoints, stepping, and variable watch windows.</li>
+        </ul>
+      </article>
+
+      <!-- ========================================================= -->
+      <!-- PAPER 2 - SECTION 6: SEARCH, SORT & TRACE                 -->
+      <!-- ========================================================= -->
+
+      <article class="note-page" id="page-p2-algo" data-section="p2-algo" data-title="6.1 Searching & Sorting Algorithms" data-tag="Paper 2">
+        <div class="note-title-block">
+          <div class="note-title">6.1 Searching &amp; Sorting Algorithms</div>
+          <div class="note-meta"><span>📌 Mock List: Searching, sorting algorithms</span><span>🏷️ Paper 2: Algorithms</span></div>
+        </div>
+
+        <table>
+          <thead><tr><th class="teal-hdr">Algorithm</th><th class="teal-hdr">How It Works &amp; Exam Conditions</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Linear Search</strong></td><td>Checks every item sequentially from index 0 until found or list ends. Works on <strong>unsorted</strong> lists; slow on large lists.</td></tr>
+            <tr><td><strong>Binary Search</strong></td><td><strong>Requires a SORTED list.</strong> Checks middle item; eliminates half the list each step until found. Much faster than linear search.</td></tr>
+            <tr><td><strong>Bubble Sort</strong></td><td>Compares adjacent pairs and swaps if out of order. Repeats passes until a full pass makes <strong>zero swaps</strong>. Simple, slow on large lists.</td></tr>
+            <tr><td><strong>Merge Sort</strong></td><td>Divide-and-conquer: splits list in half down to single items, then merges pairs back in sorted order. Very fast on large lists.</td></tr>
+            <tr><td><strong>Insertion Sort</strong></td><td>Builds sorted section one item at a time by inserting each unsorted item into its correct position among earlier items. Fast on small/nearly sorted lists.</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="note-page" id="page-p2-trace" data-section="p2-algo" data-title="6.2 Algorithms, Output & Trace Tables" data-tag="Paper 2">
+        <div class="note-title-block">
+          <div class="note-title">6.2 Algorithms, Output &amp; Trace Tables</div>
+          <div class="note-meta"><span>📌 Mock List: Algorithms and output, Trace table</span><span>🏷️ Paper 2: Dry-Running</span></div>
+        </div>
+
+        <pre class="code-block"><span class="num">01</span>  total = <span class="num">0</span>
+<span class="num">02</span>  <span class="kw">FOR</span> count = <span class="num">1</span> <span class="kw">TO</span> <span class="num">4</span>
+<span class="num">03</span>      <span class="kw">IF</span> count <span class="kw">MOD</span> <span class="num">2</span> == <span class="num">0</span> <span class="kw">THEN</span>
+<span class="num">04</span>          total = total + (count * <span class="num">2</span>)
+<span class="num">05</span>      <span class="kw">ELSE</span>
+<span class="num">06</span>          total = total + <span class="num">1</span>
+<span class="num">07</span>      <span class="kw">ENDIF</span>
+<span class="num">08</span>  <span class="kw">NEXT</span> count
+<span class="num">09</span>  <span class="kw">OUTPUT</span> total</pre>
+
+        <table>
+          <thead><tr><th class="teal-hdr">Step</th><th class="teal-hdr"><code>count</code></th><th class="teal-hdr"><code>count MOD 2 == 0</code></th><th class="teal-hdr"><code>total</code></th><th class="teal-hdr"><code>OUTPUT</code></th></tr></thead>
+          <tbody>
+            <tr><td>Line 01</td><td>—</td><td>—</td><td><code>0</code></td><td></td></tr>
+            <tr><td>Pass 1</td><td><code>1</code></td><td>False (odd)</td><td><code>1</code> (0 + 1)</td><td></td></tr>
+            <tr><td>Pass 2</td><td><code>2</code></td><td>True (even)</td><td><code>5</code> (1 + 4)</td><td></td></tr>
+            <tr><td>Pass 3</td><td><code>3</code></td><td>False (odd)</td><td><code>6</code> (5 + 1)</td><td></td></tr>
+            <tr><td>Pass 4</td><td><code>4</code></td><td>True (even)</td><td><code>14</code> (6 + 8)</td><td></td></tr>
+            <tr><td>Line 09</td><td>—</td><td>—</td><td><code>14</code></td><td><strong><code>14</code></strong></td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- ========================================================= -->
+      <!-- PAPER 2 - SECTION 7: CONSTRUCTS & LOGIC GATES             -->
+      <!-- ========================================================= -->
+
+      <article class="note-page" id="page-p2-logic" data-section="p2-logic" data-title="7.1 Constructs & Logic Gates" data-tag="Paper 2">
+        <div class="note-title-block">
+          <div class="note-title">7.1 Programming Constructs &amp; Logic Gates</div>
+          <div class="note-meta"><span>📌 Mock List: Programming constructs, Logic gates</span><span>🏷️ Paper 2: Logic &amp; Flow</span></div>
+        </div>
+
+        <h2>1. Core Programming Constructs</h2>
+        <ul>
+          <li><strong>Sequence:</strong> Executing statements strictly one after another in order.</li>
+          <li><strong>Selection:</strong> Decision branching via <code>IF / ELIF / ELSE</code> or <code>SWITCH / CASE</code>.</li>
+          <li><strong>Iteration:</strong> Repeating code via Count-Controlled loops (<code>FOR i = 0 TO 9</code>) or Condition-Controlled loops (<code>WHILE x &lt; 10</code> / <code>DO...UNTIL</code>).</li>
+          <li><strong>Operators:</strong> Arithmetic (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>MOD</code> [remainder], <code>DIV</code> [integer quotient]); Relational (<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>); Boolean (<code>AND</code>, <code>OR</code>, <code>NOT</code>).</li>
+        </ul>
+
+        <h2>2. Logic Gates &amp; Truth Tables</h2>
+        <table>
+          <thead><tr><th class="teal-hdr">Gate</th><th class="teal-hdr">Boolean Expression</th><th class="teal-hdr">Truth Table &amp; Rule</th></tr></thead>
+          <tbody>
+            <tr><td><strong>NOT</strong></td><td><code>Q = NOT A</code></td><td>Inverts input: <code>0 → 1</code>, <code>1 → 0</code>.</td></tr>
+            <tr><td><strong>AND</strong></td><td><code>Q = A AND B</code></td><td><code>1</code> ONLY when BOTH inputs are <code>1</code>: <code>(0,0)→0, (0,1)→0, (1,0)→0, (1,1)→1</code>.</td></tr>
+            <tr><td><strong>OR</strong></td><td><code>Q = A OR B</code></td><td><code>1</code> when AT LEAST ONE input is <code>1</code>: <code>(0,0)→0, (0,1)→1, (1,0)→1, (1,1)→1</code>.</td></tr>
+            <tr><td><strong>XOR</strong></td><td><code>Q = A XOR B</code></td><td><code>1</code> when inputs are DIFFERENT: <code>(0,0)→0, (0,1)→1, (1,0)→1, (1,1)→0</code>.</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- ========================================================= -->
+      <!-- PAPER 2 - SECTION 8: CODING, SQL & ARRAYS                 -->
+      <!-- ========================================================= -->
+
+      <article class="note-page" id="page-p2-code" data-section="p2-code" data-title="8.1 Subroutines, File Handling, SQL, Validation & Arrays" data-tag="Paper 2">
+        <div class="note-title-block">
+          <div class="note-title">8.1 Coding Tasks: Subroutines, File Handling, SQL, Validation &amp; Arrays</div>
+          <div class="note-meta"><span>📌 Mock List: Coding tasks, subroutine, file handling, SQL, input validation, array</span><span>🏷️ Paper 2</span></div>
+        </div>
+
+        <table>
+          <thead><tr><th class="teal-hdr">Topic</th><th class="teal-hdr">Detailed Explanation &amp; GCSE Code Syntax</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Arrays (1D &amp; 2D)</strong></td><td>Fixed-size data structures storing items of the <strong>same data type</strong> under one identifier, indexed from <code>0</code>.<br>1D: <code>scores[2]</code> • 2D (Grid): <code>board[row][col]</code>.</td></tr>
+            <tr><td><strong>Subroutines</strong></td><td>Reusable modular blocks of code. <strong>Procedures</strong> perform a task without returning a value; <strong>Functions</strong> perform a task and <strong>RETURN</strong> a value to the caller.</td></tr>
+            <tr><td><strong>Input Validation</strong></td><td>Checks data before processing: <strong>Range check</strong> (<code>0–100</code>), <strong>Length check</strong> (password ≥ 8 chars), <strong>Presence check</strong> (not blank), <strong>Type check</strong> (integer), <strong>Format check</strong> (postcode).</td></tr>
+            <tr><td><strong>File Handling</strong></td><td>Persistent external <code>.txt</code>/<code>.csv</code> storage:<br><code>f = open("data.txt", "r")</code> (<code>"r"</code> read, <code>"w"</code> write, <code>"a"</code> append) → <code>f.readLine()</code> / <code>f.writeLine()</code> → <code>f.close()</code>.</td></tr>
+            <tr><td><strong>SQL Queries</strong></td><td>Relational database querying:<br><code>SELECT StudentName, Grade FROM Results WHERE Grade &gt;= 7 ORDER BY Grade DESC;</code><br>(<code>SELECT *</code> selects all columns; <code>LIKE 'A%'</code> matches names starting with A).</td></tr>
+          </tbody>
+        </table>
+
+        <div class="interactive-box">
+          <h4>✅ Quick Mock Self-Check</h4>
+          <p><strong>Q:</strong> Why is <code>SELECT * FROM Students WHERE Age &gt;= 14 ORDER BY Surname ASC;</code> valid SQL, and what does <code>ASC</code> do?</p>
+          <button class="calc-btn" onclick="toggleAns('qFinal')">Reveal Answer</button>
+          <div id="qFinal" class="quiz-answer">It uses the required <code>SELECT ... FROM ... WHERE ... ORDER BY</code> structure, and <strong><code>ASC</code> sorts the matching student records alphabetically from A to Z by Surname</strong>.</div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  const pages = Array.from(document.querySelectorAll('.note-page'));
+
+  function renderPageList(sectionId) {
+    const container = document.getElementById('pageListContainer');
+    container.innerHTML = '';
+    const sectionPages = pages.filter(p => p.dataset.section === sectionId);
+    sectionPages.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'page-item' + (p.classList.contains('active') ? ' active' : '');
+      div.innerHTML = `<div>${p.dataset.title}</div><span class="page-tag">${p.dataset.tag}</span>`;
+      div.onclick = () => activatePage(p.id, div);
+      container.appendChild(div);
+    });
+  }
+
+  function selectSection(sectionId, tabEl) {
+    document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+    const firstPage = pages.find(p => p.dataset.section === sectionId);
+    if (firstPage) {
+      pages.forEach(p => p.classList.remove('active'));
+      firstPage.classList.add('active');
+    }
+    renderPageList(sectionId);
+    document.getElementById('canvasPane').scrollTop = 0;
+  }
+
+  function activatePage(pageId, pageItemEl) {
+    pages.forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(pageId);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.page-item').forEach(item => item.classList.remove('active'));
+    if (pageItemEl) pageItemEl.classList.add('active');
+    document.getElementById('canvasPane').scrollTop = 0;
+  }
+
+  function convertNumber() {
+    const val = parseInt(document.getElementById('denInput').value, 10);
+    const out = document.getElementById('convResult');
+    if (isNaN(val) || val < 0 || val > 255) {
+      out.textContent = "Enter an integer between 0 and 255.";
+      return;
+    }
+    const bin = val.toString(2).padStart(8, '0');
+    const hex = val.toString(16).toUpperCase().padStart(2, '0');
+    out.textContent = `8-Bit Binary: ${bin}₂  |  Hexadecimal: ${hex}₁₆`;
+  }
+
+  function toggleAns(id) {
+    const el = document.getElementById(id);
+    el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+  }
+
+  function searchNotes() {
+    const query = document.getElementById('noteSearch').value.toLowerCase().trim();
+    if (!query) {
+      const activeTab = document.querySelector('.section-tab.active');
+      renderPageList(activeTab.dataset.section);
+      return;
+    }
+    const container = document.getElementById('pageListContainer');
+    container.innerHTML = '';
+    const matches = pages.filter(p => p.innerText.toLowerCase().includes(query));
+    matches.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'page-item' + (p.classList.contains('active') ? ' active' : '');
+      div.innerHTML = `<div>${p.dataset.title}</div><span class="page-tag">Match • ${p.dataset.tag}</span>`;
+      div.onclick = () => {
+        document.querySelectorAll('.section-tab').forEach(t => {
+          t.classList.toggle('active', t.dataset.section === p.dataset.section);
+        });
+        activatePage(p.id, div);
+      };
+      container.appendChild(div);
+    });
+  }
+
+  renderPageList('p1-data');
+</script>
+</body>
+</html>
